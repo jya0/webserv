@@ -3,11 +3,10 @@ NAME		=	webserv
 # LIB			=	./lib/
 CC			=	c++
 RM			=	rm
-SRCS		=	srcs/main.cpp
+SRCS		=	srcs/main.cpp srcs/server/server.cpp
 # srcs/cgi/
 # srcs/http/
 # srcs/parser/
-# srcs/server/
 # srcs/socket/
 
 OBJS		=	${SRCS:.cpp=.o}
