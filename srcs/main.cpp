@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
 	(void) argc;
 	(void) argv;
-	TCPServer server = TCPServer("127.0.0.1", 8080);
-	server.startListening();
+	WebServer server = WebServer("127.0.0.1", 8080);
+	// server.startListening();
 	return (0);
 }
