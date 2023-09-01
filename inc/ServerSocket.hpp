@@ -14,7 +14,7 @@
 
 #define BUFFER_SIZE 20000
 
-class TCPServer
+class ServerSocket
 {
 protected:
 	std::string ip_address;
@@ -23,20 +23,19 @@ protected:
 	int peer_socket;
 	struct sockaddr_in socket_address;
 	unsigned int socket_address_len;
-	std::string response;
 
 public:
-	TCPServer();
-	TCPServer(std::string ip_addr, int port);
-	~TCPServer();
+	ServerSocket();
+	ServerSocket(std::string ip_addr, int port);
+	~ServerSocket();
 
 	std::string GenerateDefaultResponse();
 
-	void SendData();
-	void RecieveData();
+	void SendData(std::string message);
+	std::string RecieveData();
 
 
-	int StartConnection();
+	void StartConnection();
 	void StartListening();
 	void AcceptConnection();
 	void CloseConnection();

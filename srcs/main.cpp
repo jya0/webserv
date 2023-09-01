@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/01 18:12:14 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/01 20:11:21 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ int main(int argc, char **argv)
 	(void) argv;
 	WebServer s1 = WebServer("127.0.0.1", 8080);
 	std::vector<WebServer> servers;
+
+
 	servers.push_back(s1);
 	if (argc != 2)
 	{
@@ -113,10 +115,8 @@ int main(int argc, char **argv)
 	}
 	try
 	{
-		// servers = HTTPServerParser::parseConfigFile(argv[1]);
-		// start listening on all sockets
-		for (std::vector<WebServer>::iterator it = servers.begin(); it != servers.end(); it++)
-			it->InitiateServer();
+		servers = HTTPServerParser::parseConfigFile(argv[1]);
+		StartServers(servers);
 	}
 	catch (HTTPServerParser::ParseError &e)
 	{
@@ -129,14 +129,6 @@ int main(int argc, char **argv)
 	catch (...)
 	{
 
-	}
-	try
-	{
-		StartServers(servers);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
 	}
 
 
