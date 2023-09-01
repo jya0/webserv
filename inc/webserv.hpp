@@ -23,7 +23,7 @@ private:
     void StartServer();
 public:
     WebServer();
-    WebServer(std::string filename);
+    WebServer(std::string config);
     WebServer(std::string ip, int port);
 
     ~WebServer();
@@ -37,9 +37,9 @@ WebServer::WebServer(std::string ip, int port) {
 }
 
 
-WebServer::WebServer(std::string filename) {
+WebServer::WebServer(std::string config) {
     try {
-        sockets = HTTPServerParser::parseConfigFile(filename);
+        sockets = HTTPServerParser::parseConfigFile(config);
         
         //start listening on all sockets
         for (std::vector<TCPSocket>::iterator it = sockets.begin(); it != sockets.end(); it++)
