@@ -13,9 +13,10 @@
 # include	<unistd.h>
 
 #define BUFFER_SIZE 20000
-class TCPSocket
+
+class TCPServer
 {
-private:
+protected:
 	std::string ip_address;
 	int port;
 	int passive_socket;
@@ -25,12 +26,12 @@ private:
 	std::string response;
 
 public:
-	TCPSocket();
-	TCPSocket(std::string ip_addr, int port);
-	~TCPSocket();
+	TCPServer();
+	TCPServer(std::string ip_addr, int port);
+	~TCPServer();
 
 	std::string GenerateDefaultResponse();
-	
+
 	void SendData();
 	void RecieveData();
 
@@ -39,6 +40,11 @@ public:
 	void StartListening();
 	void AcceptConnection();
 	void CloseConnection();
+
+
+	const int &getPeerSocket();
+	const int &getPassiveSocket();
+
 
 	class SocketIOError : public std::exception
 	{

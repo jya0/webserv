@@ -1,11 +1,11 @@
-#include "../inc/TCPSocket.hpp"
+#include "../inc/TCPServer.hpp"
 
 static void log(std::string mesg)
 {
 	std::cout << mesg << std::endl;
 }
 
-TCPSocket::TCPSocket()
+TCPServer::TCPServer()
 {
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
@@ -13,9 +13,9 @@ TCPSocket::TCPSocket()
 	StartConnection();
 }
 
-TCPSocket::TCPSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
+TCPServer::TCPServer(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
 													  passive_socket(), peer_socket(), socket_address(),
-													  socket_address_len(sizeof(socket_address)), response(TCPSocket::GenerateDefaultResponse())
+													  socket_address_len(sizeof(socket_address)), response(TCPServer::GenerateDefaultResponse())
 {
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
@@ -23,12 +23,12 @@ TCPSocket::TCPSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(
 	StartConnection();
 }
 
-TCPSocket::~TCPSocket()
+TCPServer::~TCPServer()
 {
 	CloseConnection();
 }
 
-std::string TCPSocket::GenerateDefaultResponse()
+std::string TCPServer::GenerateDefaultResponse()
 {
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
@@ -37,13 +37,13 @@ std::string TCPSocket::GenerateDefaultResponse()
 	return ss.str();
 }
 
-void TCPSocket::SendData()
+void TCPServer::RecieveData()
 {
 	long bytesRecieved;
     char buffer[BUFFER_SIZE] = {0};
-	
+
 	//replace read with receieve
-	bytesRecieved = read(peer_socket, buffer, BUFFER_SIZE);
+	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
 	if (bytesRecieved < 0)
 	{
 		log("Failed to read bytes from client socket connection\n");
@@ -54,11 +54,11 @@ void TCPSocket::SendData()
 	ss << "------ Received Request from client ------\n\n";
 	log(ss.str());
 
-	SendData();
+	// RecieveData();
 	close(peer_socket);
 }
 
-void TCPSocket::RecieveData()
+void TCPServer::SendData()
 {
     long bytesSent;
     //replace write with SEND function
@@ -70,7 +70,7 @@ void TCPSocket::RecieveData()
 		log("Error sending response to client");
 }
 
-int TCPSocket::StartConnection()
+int TCPServer::StartConnection()
 {
 	passive_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (passive_socket < 0)
@@ -86,7 +86,7 @@ int TCPSocket::StartConnection()
 	return passive_socket;
 }
 
-void TCPSocket::StartListening()
+void TCPServer::StartListening()
 {
     if (listen(passive_socket, 20) < 0)
 	{
@@ -100,7 +100,7 @@ void TCPSocket::StartListening()
 	log(ss.str());
 }
 
-void TCPSocket::AcceptConnection()
+void TCPServer::AcceptConnection()
 {
     peer_socket = accept(passive_socket, (sockaddr *)&socket_address,
 						&socket_address_len);
@@ -112,16 +112,29 @@ void TCPSocket::AcceptConnection()
 		   << ntohs(socket_address.sin_port);
 		log(ss.str());
 	}
+	std::cout<<"Connection accepted!\n";
 }
 
-void TCPSocket::CloseConnection()
+void TCPServer::CloseConnection()
 {
 	close(passive_socket);
 	close(peer_socket);
 	exit(0);
 }
 
-const char *TCPSocket::SocketIOError::what() const throw()
+
+const int &TCPServer::getPeerSocket()
+{
+	return (peer_socket);
+}
+
+const int &TCPServer::getPassiveSocket()
+{
+	return (passive_socket);
+}
+
+
+const char *TCPServer::SocketIOError::what() const throw()
 {
     return ("Socket IO error!\n");
 }

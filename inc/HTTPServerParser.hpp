@@ -1,7 +1,7 @@
 #ifndef HTTP_SERVER_PARSER_HPP
 #define HTTP_SERVER_PARSER_HPP
 
-#include "TCPSocket.hpp"
+#include "WebServer.hpp"
 
 class HTTPServerParser
 {
@@ -9,7 +9,7 @@ private:
     HTTPServerParser();
 
 public:
-    static std::vector<TCPSocket> &parseConfigFile(std::string filename);
+    static std::vector<WebServer> &parseConfigFile(std::string filename);
     ~HTTPServerParser();
 
     class ParseError : public std::exception
