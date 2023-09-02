@@ -43,7 +43,8 @@ namespace http {
 			std::string	getHttpMethod(void);
 			std::string	getHttpVersion(void);
 			std::string	getUri(void);
+			bool validate(void);
 	};
-}
+};
 
 #endif

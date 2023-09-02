@@ -32,6 +32,7 @@ class	Response: private AMessage
 		Response	&operator=(Response &responseREF);
 		std::string	getHttpVersion(void);
 		unsigned short	getHttpStatusCode(void);
+		bool validate(void);
 };
 
 

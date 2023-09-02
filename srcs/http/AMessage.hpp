@@ -37,6 +37,7 @@ namespace http {
 			AMessage	&operator=(AMessage &aMessageREF);
 			std::string	getMessageBody(void);
 			std::string	getRawMessage(void);
+			virtual bool validate(void) = 0;
 	};
 }
 
