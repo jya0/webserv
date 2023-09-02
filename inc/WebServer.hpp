@@ -36,15 +36,15 @@ protected:
 	std::string index;
 	std::string root;
 	bool CGI;
-	std::string cgi-bin;
-	Context	_serverConfig;
+	std::string cgi_bin;
+	// Context	_serverConfig;
 
 public:
     WebServer();
     WebServer(std::string ip, int port);
     ~WebServer();
 
-	Request &recieveRequest();
+	Request &receiveRequest();
 	void sendResponse(const Response &response);
 	Response &handleRequest(const Request &request);
 

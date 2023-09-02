@@ -20,6 +20,17 @@
 # include	"Http_namespace.hpp"
 
 namespace http {
+	/**
+	 * @brief 	This class describes a TCP/HTTP message. 
+	 * @field	_startLine		The first line of the message.
+	 * @field	_headers		The list of headers of the message.
+	 * @field	_messageBody	The body of the message.
+	 * @method	getStartLine	Returns the start line of the message.
+	 * @method	getHeaders		Returns the headers of the message.
+	 * @method	getMessageBody	Returns the body of the message.
+	 * @method	getRawMessage	Returns the raw message.
+	 * @method	validate		Validates the message.
+	 */
 	class	AMessage {
 		protected:
 			std::string			_startLine;
