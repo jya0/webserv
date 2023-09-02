@@ -18,17 +18,19 @@
 # include	<list>
 # include	<utility>
 
-class	AMessage
-{
+class	AMessage {
 	private:
 		AMessage(void);
 	protected:
-		int	_httpVersion;
-		std::list<std::pair<std::string, std::string> >	_headers;
-		std::string	_messageBody;
+		std::string										_startLine;
+		std::list<std::pair<std::string, std::string>>	_headers;
+		std::string										_messageBody;
 	public:
 		AMessage(AMessage &aMessageREF);
-		virtual ~AMessage(void);
+		AMessage(std::string startLine, std::list<std::pair<std::string,
+				std::string>> headers, std::string messageBody);
+		AMessage(std::string rawMessage);
+		virtual		~AMessage(void);
 		AMessage	&operator=(AMessage &aMessageREF);
 };
 
