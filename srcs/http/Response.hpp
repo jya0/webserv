@@ -17,17 +17,21 @@
 # include	<string>
 # include	"AMessage.hpp"
 
-class	Response: private Message
+class	Response: private AMessage
 {
 	private:
-		int	_httpStatusCode;
+		std::string		_httpVersion;
+		unsigned short	_httpStatusCode;
 	protected:
 	public:
 		Response(void);
 		Response(int status);
+		Response(std::string httpRaw);
 		Response(Response &responseREF);
 		~Response(void);
 		Response	&operator=(Response &responseREF);
+		std::string	getHttpVersion(void);
+		unsigned short	getHttpStatusCode(void);
 };
 
 
