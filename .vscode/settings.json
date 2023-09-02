@@ -73,6 +73,7 @@
 		"optional": "cpp",
 		"ratio": "cpp",
 		"stack": "cpp",
-		"map": "cpp"
+		"map": "cpp",
+		"__tree": "cpp"
 	}
 }
