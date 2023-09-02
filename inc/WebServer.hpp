@@ -11,13 +11,14 @@
 # include	<arpa/inet.h>
 # include	<fstream>
 # include	<unistd.h>
+# include	<cstddef>
+# include	<netinet/in.h>
+# include	<sys/socket.h>
+# include	<sys/event.h>
+# include	"../srcs/http/Http_namespace.hpp"
+# include	"../srcs/ServerConfig/ServerConfig_namespace.hpp"
 # include	"cgi.hpp"
 # include	"ServerSocket.hpp"
-# include <cstddef>
-# include <netinet/in.h>
-# include <sys/socket.h>
-# include <sys/event.h>
-# include "../srcs/http/Http_namespace.hpp"
 # define SERVERS_UP 2
 
 using namespace http;
@@ -37,7 +38,7 @@ protected:
 	std::string root;
 	bool CGI;
 	std::string cgi_bin;
-	// Context	_serverConfig;
+	DirectiveBlock	_serverConfig;
 
 public:
     WebServer();
