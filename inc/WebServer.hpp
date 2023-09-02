@@ -20,12 +20,18 @@
 # include	"../srcs/ServerConfig/ServerConfig_namespace.hpp"
 # include	"cgi.hpp"
 # include	"ServerSocket.hpp"
+# include <cstddef>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/event.h>
+#include <sys/ioctl.h>
+# include "../srcs/http/Http_namespace.hpp"
 # define SERVERS_UP 2
 
 using namespace http;
 
-class WebServer
-{
+class WebServer {
 protected:
 	/* add stuff*/
 	ServerSocket connection;
@@ -47,12 +53,30 @@ public:
     WebServer(std::string ip, int port);
     ~WebServer();
 
-	Request &receiveRequest();
+	ServerSocket &getConnection();
+	Request &recieveRequest();
 	void sendResponse(const Response &response);
-	Response &handleRequest(const Request &request);
 
+	void sendData(std::string message);
+	std::string recieveData();
+	Request receiveRequest(std::string );
+	void sendResponse(const Response &response);
+	Response handleRequest(const Request &request);
+	Response handleGet(const Request &request);
+	Response handlePost(const Request &request);
+	Response handlePut(const Request &request);
+	Response handleDelete(const Request &request);
+	Response handleHead(const Request &request);
 	Response handleCGI();
 
+	void startConnection();
+	void startListening();
+	void acceptConnection();
+	void closeConnection();
+
+
+
+	Response handleCGI();
 };
 
 #endif

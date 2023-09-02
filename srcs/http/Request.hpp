@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/02 13:38:16 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/02 15:13:51 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ namespace http {
 			Request(std::string httpRaw);
 			~Request(void);
 			Request	&operator=(Request const &RequestREF);
-			std::string	getHttpMethod(void);
-			std::string	getHttpVersion(void);
+			std::string	getHttpMethod(void) const;
+			std::string	getHttpVersion(void) const;
 			std::string	getUri(void);
 			bool validate(void);
 	};

@@ -20,6 +20,8 @@
 # include	"Http_namespace.hpp"
 
 namespace http {
+	class Header;
+
 	/**
 	 * @brief 	This class describes a TCP/HTTP message. 
 	 * @field	_startLine		The first line of the message.
@@ -47,7 +49,7 @@ namespace http {
 			virtual		~AMessage(void);
 			AMessage	&operator=(AMessage &aMessageREF);
 			std::string	getMessageBody(void);
-			std::string	getRawMessage(void);
+			std::string	getRawMessage(void) const;
 			virtual bool validate(void) = 0;
 	};
 }
