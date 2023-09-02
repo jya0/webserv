@@ -17,13 +17,23 @@
 # include	<string>
 # include	"AMessage.hpp"
 
+enum e_httpMethod {
+	GET,
+	POST,
+	HEAD,
+	PUT,
+	DELETE
+};
+
 class	Request: private AMessage {
 	private:
-		std::string	_httpMethod;
-		std::string _httpVersion;
-		std::string	_uri;
+		e_httpMethod	_httpMethod;
+		std::string		_httpVersion;
+		std::string		_uri;
 	protected:
 	public:
+		static std::string methodName(e_httpMethod method);
+		static e_httpMethod methodEnum(std::string method);
 		Request(void);
 		Request(Request const &RequestREF);
 		Request(std::string httpRaw);
