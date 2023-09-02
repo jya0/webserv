@@ -11,6 +11,7 @@
 # include	<sys/un.h>
 # include	<arpa/inet.h>
 # include	<fstream>
+# include	<istream>
 # include	<unistd.h>
 # include	<cstddef>
 # include	<netinet/in.h>
@@ -49,6 +50,7 @@ protected:
 
 public:
     WebServer();
+	WebServer(DirectiveBlock const	&serverBlockREF);
     WebServer(std::string ip, int port);
     ~WebServer();
 
