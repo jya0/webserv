@@ -33,9 +33,7 @@ Request	&Request::operator=(Request const &RequestREF) {
     return (*this);
 }
 
-Request::Request(std::string httpRaw) {
-    // AMessage(httpRaw); @note: this is not working, how would I call the
-    // parent constructor?
+Request::Request(std::string httpRaw): AMessage(httpRaw) {
     std::string method = this->_startLine.substr(0, this->_startLine.find(' '));
     this->_httpMethod = this->methodEnum(method);
     this->_uri = this->_startLine.substr(this->_startLine.find(' ') + 1,
