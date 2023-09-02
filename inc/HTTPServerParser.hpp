@@ -3,8 +3,7 @@
 
 #include "WebServer.hpp"
 
-class HTTPServerParser
-{
+class HTTPServerParser {
 private:
     HTTPServerParser();
 
@@ -12,8 +11,7 @@ public:
     static std::vector<WebServer> &parseConfigFile(std::string filename);
     ~HTTPServerParser();
 
-    class ParseError : public std::exception
-    {
+    class ParseError : public std::exception {
     public:
         virtual const char *what() const throw();
     };
