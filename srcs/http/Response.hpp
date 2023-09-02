@@ -15,7 +15,7 @@
 
 # include	<iostream>
 # include	<string>
-# include	"Message.hpp"
+# include	"AMessage.hpp"
 
 class	Response: private Message
 {

@@ -64,3 +64,25 @@ AMessage::AMessage(std::string rawMessage) {
     }
     this->_messageBody = iss.str().substr(iss.tellg());
 }
+
+std::string	AMessage::getStartLine(void) {
+    return (this->_startLine);
+}
+
+std::list<std::pair<std::string, std::string>>	AMessage::getHeaders(void) {
+    return (this->_headers);
+}
+
+std::string	AMessage::getMessageBody(void) {
+    return (this->_messageBody);
+}
+
+std::string	AMessage::getRawMessage(void) {
+    std::string rawMessage = this->_startLine;
+    for (std::list<std::pair<std::string, std::string>>::iterator it =
+            this->_headers.begin(); it != this->_headers.end(); it++) {
+        rawMessage += it->first + ": " + it->second + "\r\n";
+    }
+    rawMessage += "\r\n" + this->_messageBody;
+    return (rawMessage);
+}
