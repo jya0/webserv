@@ -15,7 +15,7 @@
 
 # include	<iostream>
 # include	<string>
-# include	"AMessage.hpp"
+# include	"Http_namespace.hpp"
 
 enum e_httpMethod {
 	GET,
@@ -25,23 +25,25 @@ enum e_httpMethod {
 	DELETE
 };
 
-class	Request: private AMessage {
-	private:
-		e_httpMethod	_httpMethod;
-		std::string		_httpVersion;
-		std::string		_uri;
-	protected:
-	public:
-		static std::string methodName(e_httpMethod method);
-		static e_httpMethod methodEnum(std::string method);
-		Request(void);
-		Request(Request const &RequestREF);
-		Request(std::string httpRaw);
-		~Request(void);
-		Request	&operator=(Request const &RequestREF);
-		std::string	getHttpMethod(void);
-		std::string	getHttpVersion(void);
-		std::string	getUri(void);
-};
+namespace http {
+	class	Request: private AMessage {
+		private:
+			e_httpMethod	_httpMethod;
+			std::string		_httpVersion;
+			std::string		_uri;
+		protected:
+		public:
+			static std::string methodName(e_httpMethod method);
+			static e_httpMethod methodEnum(std::string method);
+			Request(void);
+			Request(Request const &RequestREF);
+			Request(std::string httpRaw);
+			~Request(void);
+			Request	&operator=(Request const &RequestREF);
+			std::string	getHttpMethod(void);
+			std::string	getHttpVersion(void);
+			std::string	getUri(void);
+	};
+}
 
 #endif

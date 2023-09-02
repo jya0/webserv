@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"AMessage.hpp"
+#include	"Http_namespace.hpp"
 #include    <sstream>
+
+using namespace http;
 
 AMessage::AMessage(void) {
     return ;
@@ -35,8 +37,7 @@ AMessage	&AMessage::operator=(AMessage &aMessageREF) {
     return (*this);
 }
 
-AMessage::AMessage(std::string startLine, std::list<std::pair<std::string,
-        std::string>> headers, std::string messageBody) {
+AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string messageBody) {
     this->_startLine = startLine;
     this->_headers = headers;
     this->_messageBody = messageBody;
@@ -59,7 +60,7 @@ AMessage::AMessage(std::string rawMessage) {
             std::istringstream iss2(line);
             std::getline(iss2, key, ':');
             std::getline(iss2, value, '\r');
-            this->_headers.push_back(std::make_pair(key, value));
+            this->_headers.push_back(Header(key, value));
         }
     }
     this->_messageBody = iss.str().substr(iss.tellg());
@@ -69,7 +70,7 @@ std::string	AMessage::getStartLine(void) {
     return (this->_startLine);
 }
 
-std::list<std::pair<std::string, std::string>>	AMessage::getHeaders(void) {
+std::list<Header>	AMessage::getHeaders(void) {
     return (this->_headers);
 }
 
@@ -79,9 +80,9 @@ std::string	AMessage::getMessageBody(void) {
 
 std::string	AMessage::getRawMessage(void) {
     std::string rawMessage = this->_startLine;
-    for (std::list<std::pair<std::string, std::string>>::iterator it =
+    for (std::list<Header>::iterator it =
             this->_headers.begin(); it != this->_headers.end(); it++) {
-        rawMessage += it->first + ": " + it->second + "\r\n";
+        rawMessage += it->getName() + ": " + it->getValue() + "\r\n";
     }
     rawMessage += "\r\n" + this->_messageBody;
     return (rawMessage);

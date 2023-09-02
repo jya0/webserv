@@ -1,10 +1,9 @@
 #ifndef HTTP_NAMESPACE_HPP
 # define HTTP_NAMESPACE_HPP
 
-namespace http {
-    class AMessage;
-    class Request;
-    class Response;
-}
+#include "AMessage.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
+#include "Header.hpp"
 
 #endif
