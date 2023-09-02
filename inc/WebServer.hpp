@@ -13,11 +13,14 @@
 # include	<unistd.h>
 # include	"cgi.hpp"
 # include	"ServerSocket.hpp"
-#include <cstddef>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <sys/event.h>
+# include <cstddef>
+# include <netinet/in.h>
+# include <sys/socket.h>
+# include <sys/event.h>
+# include "../srcs/http/Http_namespace.hpp"
 # define SERVERS_UP 2
+
+using namespace http;
 
 class WebServer
 {
@@ -40,11 +43,11 @@ public:
     WebServer(std::string ip, int port);
     ~WebServer();
 
-	HTTPRequest &recieveRequest();
-	void sendResponse(const HTTPResponse &response);
-	HTTPResponse &handleRequest(const HTTPRequest &request);
+	Request &recieveRequest();
+	void sendResponse(const Response &response);
+	Response &handleRequest(const Request &request);
 
-	HTTPResponse handleCGI()
+	Response handleCGI()
 
 };
 
