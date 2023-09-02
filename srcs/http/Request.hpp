@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Request.class.hpp                              :+:      :+:    :+:   */
+/*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/13 17:44:06 by jyao              #+#    #+#             */
-/*   Updated: 2023/08/13 18:22:40 by rriyas           ###   ########.fr       */
+/*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
+/*   Updated: 2023/09/02 15:13:51 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,11 @@
 
 # include	<iostream>
 # include	<string>
-# include	"AMessage.hpp"
+# include	"Http_namespace.hpp"
 
+/**
+ * @brief An enum for the HTTP methods supported by the server.
+ */
 enum e_httpMethod {
 	GET,
 	POST,
@@ -25,23 +28,38 @@ enum e_httpMethod {
 	DELETE
 };
 
-class	Request: private AMessage {
-	private:
-		e_httpMethod	_httpMethod;
-		std::string		_httpVersion;
-		std::string		_uri;
-	protected:
-	public:
-		static std::string methodName(e_httpMethod method);
-		static e_httpMethod methodEnum(std::string method);
-		Request(void);
-		Request(Request const &RequestREF);
-		Request(std::string httpRaw);
-		~Request(void);
-		Request	&operator=(Request const &RequestREF);
-		std::string	getHttpMethod(void);
-		std::string	getHttpVersion(void);
-		std::string	getUri(void);
+namespace http {
+	/**
+	 * @brief This class describes an HTTP Request.
+	 * @field _httpMethod		The HTTP method of the request.
+	 * @field _httpVersion		The HTTP version of the request.
+	 * @field _uri				The URI of the request.
+	 * @method getHttpMethod	Returns the HTTP method of the request.
+	 * @method getHttpVersion	Returns the HTTP version of the request.
+	 * @method getUri			Returns the URI of the request.
+	 * @method validate			Validates the headers of the request.
+	 * @method methodName		Returns the name of an HTTP method enum.
+	 * @method methodEnum		Returns the enum of an HTTP method name.
+	 */
+	class	Request: private AMessage {
+		private:
+			e_httpMethod	_httpMethod;
+			std::string		_httpVersion;
+			std::string		_uri;
+		protected:
+		public:
+			static std::string methodName(e_httpMethod method);
+			static e_httpMethod methodEnum(std::string method);
+			Request(void);
+			Request(Request const &RequestREF);
+			Request(std::string httpRaw);
+			~Request(void);
+			Request	&operator=(Request const &RequestREF);
+			std::string	getHttpMethod(void) const;
+			std::string	getHttpVersion(void) const;
+			std::string	getUri(void);
+			bool validate(void);
+	};
 };
 
 #endif

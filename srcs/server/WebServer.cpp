@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/02 20:14:35 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/02 20:50:07 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ WebServer::WebServer(std::string ip, int port) : connection(ip, port)
 {
 }
 
-WebServer::~WebServer()
-{
+WebServer::~WebServer() {
 }
 
 void WebServer::startConnection()

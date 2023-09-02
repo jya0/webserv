@@ -11,6 +11,12 @@
 # include	<arpa/inet.h>
 # include	<fstream>
 # include	<unistd.h>
+# include	<cstddef>
+# include	<netinet/in.h>
+# include	<sys/socket.h>
+# include	<sys/event.h>
+# include	"../srcs/http/Http_namespace.hpp"
+# include	"../srcs/ServerConfig/ServerConfig_namespace.hpp"
 # include	"cgi.hpp"
 # include	"ServerSocket.hpp"
 # include <cstddef>
@@ -24,8 +30,7 @@
 
 using namespace http;
 
-class WebServer
-{
+class WebServer {
 protected:
 	/* add stuff*/
 	ServerSocket connection;
@@ -39,6 +44,7 @@ protected:
 	std::string root;
 	bool CGI;
 	std::string cgi_bin;
+	DirectiveBlock	_serverConfig;
 
 public:
     WebServer();
@@ -48,10 +54,18 @@ public:
 	ServerSocket &getConnection();
 	Request &recieveRequest();
 	void sendResponse(const Response &response);
-	Response &handleRequest(const Request &request);
 
 	void sendData(std::string message);
 	std::string recieveData();
+	Request receiveRequest(std::string );
+	void sendResponse(const Response &response);
+	Response handleRequest(const Request &request);
+	Response handleGet(const Request &request);
+	Response handlePost(const Request &request);
+	Response handlePut(const Request &request);
+	Response handleDelete(const Request &request);
+	Response handleHead(const Request &request);
+	Response handleCGI();
 
 	void startConnection();
 	void startListening();

@@ -72,6 +72,8 @@
 		"mutex": "cpp",
 		"optional": "cpp",
 		"ratio": "cpp",
-		"stack": "cpp"
+		"stack": "cpp",
+		"map": "cpp",
+		"__tree": "cpp"
 	}
 }
