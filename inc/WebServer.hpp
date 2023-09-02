@@ -37,6 +37,7 @@ protected:
 	std::string root;
 	bool CGI;
 	std::string cgi-bin;
+	Context	_serverConfig;
 
 public:
     WebServer();
