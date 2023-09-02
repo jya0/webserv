@@ -10,26 +10,25 @@ ServerSocket::ServerSocket()
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
-	StartConnection();
-	StartListening();
+	startConnection();
 }
 
 ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
 													  passive_socket(), peer_socket(), socket_address(),
-													  socket_address_len(sizeof(socket_address)), response(ServerSocket::GenerateDefaultResponse())
+													  socket_address_len(sizeof(socket_address))
 {
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
-	StartConnection();
+	startConnection();
 }
 
 ServerSocket::~ServerSocket()
 {
-	CloseConnection();
+	closeConnection();
 }
 
-std::string ServerSocket::GenerateDefaultResponse()
+std::string ServerSocket::generateDefaultResponse()
 {
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
@@ -38,7 +37,7 @@ std::string ServerSocket::GenerateDefaultResponse()
 	return ss.str();
 }
 
-std::string ServerSocket::RecieveData()
+std::string ServerSocket::recieveData()
 {
 	long bytesRecieved;
     char buffer[BUFFER_SIZE] = {0};
@@ -53,42 +52,49 @@ std::string ServerSocket::RecieveData()
 
 	std::ostringstream ss;
 	ss << "------ Received Request from client ------\n\n";
+	std::cout<<std::string(buffer)<<"\n";
 	log(ss.str());
 
 	// RecieveData();
-	close(peer_socket);
+	// close(peer_socket);
 	return ("");
 }
 
-void ServerSocket::SendData(std::string message)
+void ServerSocket::sendData(std::string message)
 {
     long bytesSent;
     //replace write with SEND function
-	bytesSent = write(peer_socket, message.c_str(), message.size());
-
+	message = generateDefaultResponse();
+	const char *s = message.c_str();
+	bytesSent = write(peer_socket, s, message.size());
 	if (bytesSent == message.size())
 		log("------ Server Response sent to client ------\n\n");
 	else
 		log("Error sending response to client");
 }
 
-void ServerSocket::StartConnection()
+void ServerSocket::startConnection()
 {
 	passive_socket = socket(AF_INET, SOCK_STREAM, 0);
+	const int enable = 1;
+	// setsockopt(passive_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+	// setsockopt(passive_socket, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
+
 	if (passive_socket < 0)
 	{
 		log("Socket creation failed\n");
-		return (1);
+		return ;
 	}
 	if (bind(passive_socket, (sockaddr *)&socket_address, socket_address_len) < 0)
 	{
 		log("Cannot connect socket to address");
-		return (1);
+		return ;
 	}
-
+	fcntl(passive_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
+	std::cout<<"Socket connection created and started succesfully!\n";
 }
 
-void ServerSocket::StartListening()
+void ServerSocket::startListening()
 {
     if (listen(passive_socket, 20) < 0)
 	{
@@ -102,7 +108,7 @@ void ServerSocket::StartListening()
 	log(ss.str());
 }
 
-void ServerSocket::AcceptConnection()
+void ServerSocket::acceptConnection()
 {
     peer_socket = accept(passive_socket, (sockaddr *)&socket_address,
 						&socket_address_len);
@@ -114,14 +120,14 @@ void ServerSocket::AcceptConnection()
 		   << ntohs(socket_address.sin_port);
 		log(ss.str());
 	}
+	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	std::cout<<"Connection accepted!\n";
 }
 
-void ServerSocket::CloseConnection()
+void ServerSocket::closeConnection()
 {
-	close(passive_socket);
 	close(peer_socket);
-	exit(0);
+	// close(passive_socket);
 }
 
 

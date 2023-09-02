@@ -14,9 +14,11 @@
 # include	"cgi.hpp"
 # include	"ServerSocket.hpp"
 # include <cstddef>
-# include <netinet/in.h>
-# include <sys/socket.h>
-# include <sys/event.h>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/event.h>
+#include <sys/ioctl.h>
 # include "../srcs/http/Http_namespace.hpp"
 # define SERVERS_UP 2
 
@@ -36,19 +38,29 @@ protected:
 	std::string index;
 	std::string root;
 	bool CGI;
-	std::string cgi-bin;
+	std::string cgi_bin;
 
 public:
     WebServer();
     WebServer(std::string ip, int port);
     ~WebServer();
 
+	ServerSocket &getConnection();
 	Request &recieveRequest();
 	void sendResponse(const Response &response);
 	Response &handleRequest(const Request &request);
 
-	Response handleCGI()
+	void sendData(std::string message);
+	std::string recieveData();
 
+	void startConnection();
+	void startListening();
+	void acceptConnection();
+	void closeConnection();
+
+
+
+	Response handleCGI();
 };
 
 #endif

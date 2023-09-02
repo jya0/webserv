@@ -11,7 +11,7 @@
 # include	<arpa/inet.h>
 # include	<fstream>
 # include	<unistd.h>
-
+# include <fcntl.h>
 #define BUFFER_SIZE 20000
 
 class ServerSocket
@@ -29,16 +29,16 @@ public:
 	ServerSocket(std::string ip_addr, int port);
 	~ServerSocket();
 
-	std::string GenerateDefaultResponse();
+	std::string generateDefaultResponse();
 
-	void SendData(std::string message);
-	std::string RecieveData();
+	void sendData(std::string message);
+	std::string recieveData();
 
 
-	void StartConnection();
-	void StartListening();
-	void AcceptConnection();
-	void CloseConnection();
+	void startConnection();
+	void startListening();
+	void acceptConnection();
+	void closeConnection();
 
 
 	const int &getPeerSocket();
