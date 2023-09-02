@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/02 14:40:40 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/02 15:12:05 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,16 @@ Response::Response(void) {
     return ;
 }
 
+/**
+ * @brief Construct a new Response object from a status code.
+ * 
+ * @param status The status code of the response
+ */
+Response::Response(int status) {
+    this->_httpVersion = "HTTP/1.1";
+    this->_httpStatusCode = status;
+    return ;
+}
 /**
  * @brief Construct a new Response object (copy constructor)
  * 

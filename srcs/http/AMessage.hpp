@@ -49,7 +49,7 @@ namespace http {
 			virtual		~AMessage(void);
 			AMessage	&operator=(AMessage &aMessageREF);
 			std::string	getMessageBody(void);
-			std::string	getRawMessage(void);
+			std::string	getRawMessage(void) const;
 			virtual bool validate(void) = 0;
 	};
 }

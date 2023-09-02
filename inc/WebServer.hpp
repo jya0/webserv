@@ -23,8 +23,7 @@
 
 using namespace http;
 
-class WebServer
-{
+class WebServer {
 protected:
 	/* add stuff*/
 	ServerSocket connection;
@@ -45,10 +44,14 @@ public:
     WebServer(std::string ip, int port);
     ~WebServer();
 
-	Request &receiveRequest();
+	Request receiveRequest(std::string );
 	void sendResponse(const Response &response);
-	Response &handleRequest(const Request &request);
-
+	Response handleRequest(const Request &request);
+	Response handleGet(const Request &request);
+	Response handlePost(const Request &request);
+	Response handlePut(const Request &request);
+	Response handleDelete(const Request &request);
+	Response handleHead(const Request &request);
 	Response handleCGI();
 
 };

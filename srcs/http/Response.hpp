@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/02 14:36:56 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/02 15:04:52 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ namespace http {
 	 * @method getHttpStatusCode	Returns the HTTP status code of the response.
 	 * @method validate			Validates the headers of the response.
 	 */
-	class	Response: private AMessage
+	class	Response: public AMessage
 	{
 		private:
 			std::string		_httpVersion;
