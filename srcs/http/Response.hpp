@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Response.class.hpp                             :+:      :+:    :+:   */
+/*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/13 17:44:08 by jyao              #+#    #+#             */
-/*   Updated: 2023/08/13 18:22:40 by rriyas           ###   ########.fr       */
+/*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
+/*   Updated: 2023/09/02 14:36:56 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,32 @@
 # include	<string>
 # include   "Http_namespace.hpp"
 
-class	Response: private AMessage
-{
-	private:
-		std::string		_httpVersion;
-		unsigned short	_httpStatusCode;
-	protected:
-	public:
-		Response(void);
-		Response(int status);
-		Response(std::string httpRaw);
-		Response(Response &responseREF);
-		~Response(void);
-		Response	&operator=(Response &responseREF);
-		std::string	getHttpVersion(void);
-		unsigned short	getHttpStatusCode(void);
-		bool validate(void);
+namespace http {
+	/**
+	 * @brief This class describes an HTTP Response.
+	 * @field _httpVersion		The HTTP version of the response.
+	 * @field _httpStatusCode	The HTTP status code of the response.
+	 * @method getHttpVersion	Returns the HTTP version of the response.
+	 * @method getHttpStatusCode	Returns the HTTP status code of the response.
+	 * @method validate			Validates the headers of the response.
+	 */
+	class	Response: private AMessage
+	{
+		private:
+			std::string		_httpVersion;
+			unsigned short	_httpStatusCode;
+		protected:
+		public:
+			Response(void);
+			Response(int status);
+			Response(std::string httpRaw);
+			Response(Response &responseREF);
+			~Response(void);
+			Response	&operator=(Response &responseREF);
+			std::string	getHttpVersion(void);
+			unsigned short	getHttpStatusCode(void);
+			bool validate(void);
+	};
 };
-
 
 #endif

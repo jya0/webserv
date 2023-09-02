@@ -20,6 +20,8 @@
 # include	"Http_namespace.hpp"
 
 namespace http {
+	class Header;
+
 	/**
 	 * @brief 	This class describes a TCP/HTTP message. 
 	 * @field	_startLine		The first line of the message.
