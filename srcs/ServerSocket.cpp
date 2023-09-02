@@ -10,11 +10,12 @@ ServerSocket::ServerSocket()
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
+	peer_socket = -1;
 	startConnection();
 }
 
 ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
-													  passive_socket(), peer_socket(), socket_address(),
+													  passive_socket(), peer_socket(-1), socket_address(),
 													  socket_address_len(sizeof(socket_address))
 {
 	socket_address.sin_family = AF_INET;
@@ -91,7 +92,7 @@ void ServerSocket::startConnection()
 		return ;
 	}
 	fcntl(passive_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
-	std::cout<<"Socket connection created and started succesfully!\n";
+	// std::cout<<"Socket connection created and started succesfully!\n";
 }
 
 void ServerSocket::startListening()
@@ -121,12 +122,13 @@ void ServerSocket::acceptConnection()
 		log(ss.str());
 	}
 	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
-	std::cout<<"Connection accepted!\n";
+	// std::cout<<"Connection accepted!\n";
 }
 
 void ServerSocket::closeConnection()
 {
 	close(peer_socket);
+	peer_socket = -1;
 	// close(passive_socket);
 }
 

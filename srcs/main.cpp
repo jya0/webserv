@@ -6,59 +6,59 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/02 20:45:45 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/02 23:04:36 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/WebServer.hpp"
 #include "../inc/HTTPServerParser.hpp"
 
-void StartServers(std::vector<WebServer> &servers)
-{
 
+void StartServers(std::map<int, WebServer*> &servers)
+{
 	int kq = kqueue();
 	if (kq == -1){
 		//error
 	}
-
-	struct kevent events[4] = {0};
-
-	EV_SET(events, servers[0].getConnection().getPassiveSocket(), EVFILT_READ, EV_ADD | EV_ENABLE | EV_CLEAR, 0, 0, NULL);
-	kevent(kq, events, 2, NULL, 0, NULL);
-	servers[0].startListening();
+	struct kevent events[40] = {0};
+	for (std::map<int, WebServer*>::iterator itr = servers.begin(); itr != servers.end(); itr++)
+		EV_SET(events, itr->second->getConnection().getPassiveSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, NULL);
+	kevent(kq, events, servers.size(), NULL, 0, NULL);
+	for (std::map<int, WebServer*>::iterator itr = servers.begin(); itr != servers.end(); itr++)
+		itr->second->startListening();
 	while (true)
 	{
 		int n = kevent(kq, NULL, 0, events, 1, NULL);
 		for (int i = 0; i < n; i++)
 		{
 			std::cerr<<"*****************************************\n";
-			if (events[i].flags & EV_EOF)
+			int triggered = events[i].ident;
+			if (servers.find(triggered) != servers.end() && events[i].flags & EV_EOF)
 			{
 				std::cout << "Client disconnected!\n";
-				EV_SET(events, servers[0].getConnection().getPeerSocket(), EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-				EV_SET(events, servers[0].getConnection().getPassiveSocket(), EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+				EV_SET(events, servers[triggered]->getConnection().getPeerSocket(), EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+				EV_SET(events, servers[triggered]->getConnection().getPassiveSocket(), EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
 				kevent(kq, events, 2, NULL, 0, NULL);
 			}
-			else if (events[i].ident == servers[0].getConnection().getPassiveSocket())
+			if (servers.find(triggered) != servers.end() && servers.find(triggered)->second->getConnection().getPeerSocket() == -1)
 			{
-				servers[0].acceptConnection();
-				EV_SET(events, servers[0].getConnection().getPeerSocket(), EVFILT_READ, EV_ADD | EV_ENABLE | EV_CLEAR, 0, 0, NULL);
+				servers[triggered]->acceptConnection();
+				EV_SET(events, servers[triggered]->getConnection().getPeerSocket(), EVFILT_READ, EV_ADD | EV_ENABLE | EV_CLEAR, 0, 0, NULL);
+				// EV_SET(events, servers[triggered]->getConnection().getPeerSocket(), EVFILT_WRITE, EV_ADD | EV_ENABLE | EV_CLEAR, 0, 0, NULL);
 				kevent(kq, events, 1, NULL, 0, NULL);
+				std::cerr<<"moving on...";
 			}
-			else if (events[i].filter == EVFILT_READ)
+			if (events[i].filter == EVFILT_READ && servers.find(triggered) != servers.end() && servers.find(triggered)->second->getConnection().getPeerSocket() != -1)
 			{
-				servers[0].recieveData();
-				servers[0].sendData("HOLAA");
-				servers[0].getConnection().closeConnection();
+				std::cerr<<events[triggered].ident<<std::endl;
+				servers[triggered]->recieveData();
+				servers[triggered]->sendData("HOLAA");
+				// servers[triggered]->getConnection().closeConnection();
 			}
-			else if (events[i].filter == EVFILT_WRITE)
-			{
-				std::cout<<"***\n\nhey******\n\n";
-			}
-
 		}
 	}
-	EV_SET(events, servers[0].getConnection().getPeerSocket(), EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+	for (std::map<int, WebServer*>::iterator itr = servers.begin(); itr != servers.end(); itr++)
+		EV_SET(events, itr->second->getConnection().getPeerSocket(), EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
 	kevent(kq, events, 1, NULL, 0, NULL);
 	close(kq);
 }
@@ -68,8 +68,12 @@ int main(int argc, char **argv)
 	(void) argc;
 	(void) argv;
 	WebServer s1 = WebServer("127.0.0.1", 8080);
-	std::vector<WebServer> servers;
-	servers.push_back(s1);
+	// WebServer s2 = WebServer("127.0.0.1", 4040);
+
+	std::map<int, WebServer*> servers;
+	servers.insert(std::make_pair(s1.getConnection().getPassiveSocket(), &s1));
+	// servers.insert(std::make_pair(s2.getConnection().getPassiveSocket(), &s2));
+
 	if (argc != 2)
 	{
 		std::cout<<"Invalid Paramaters!\n";

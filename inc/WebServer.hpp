@@ -4,6 +4,7 @@
 # include	<iostream>
 # include	<string.h>
 # include   <vector>
+# include	<utility>
 # include	<string>
 # include	<sstream>
 # include	<sys/socket.h>
@@ -44,7 +45,7 @@ protected:
 	std::string root;
 	bool CGI;
 	std::string cgi_bin;
-	DirectiveBlock	_serverConfig;
+	// DirectiveBlock	_serverConfig;
 
 public:
     WebServer();
@@ -58,7 +59,6 @@ public:
 	void sendData(std::string message);
 	std::string recieveData();
 	Request receiveRequest(std::string );
-	void sendResponse(const Response &response);
 	Response handleRequest(const Request &request);
 	Response handleGet(const Request &request);
 	Response handlePost(const Request &request);
@@ -74,7 +74,6 @@ public:
 
 
 
-	Response handleCGI();
 };
 
 #endif

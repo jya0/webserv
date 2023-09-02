@@ -3,7 +3,7 @@ NAME		=	webserv
 # LIB			=	./lib/
 CC			=	c++
 RM			=	rm
-SRCS		=	srcs/main.cpp srcs/ServerSocket.cpp srcs/parser/HTTPServerParser.cpp srcs/server/WebServer.cpp
+SRCS		=	srcs/main.cpp srcs/ServerSocket.cpp srcs/ServerConfig/HTTPServerParser.cpp srcs/server/WebServer.cpp
 # srcs/cgi/
 # srcs/http/
 # srcs/parser/

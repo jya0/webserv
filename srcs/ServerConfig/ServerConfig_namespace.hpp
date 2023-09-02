@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig_namespace.hpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:48:06 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/02 13:03:21 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/02 21:49:10 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include	"DirectiveBlock.hpp"
 
 namespace	serverConfig {
-	enum class	DirectiveType {
+	enum DirectiveType {
 		INIT = -1,
 		AUTOINDEX,
 		CLIENT_MAX_BODY_SIZE,
