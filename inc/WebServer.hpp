@@ -48,7 +48,7 @@ public:
 	void sendResponse(const Response &response);
 	Response &handleRequest(const Request &request);
 
-	Response handleCGI()
+	Response handleCGI();
 
 };
 
