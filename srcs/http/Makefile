@@ -6,7 +6,7 @@
 #    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/08/13 18:39:44 by rriyas           ###   ########.fr        #
+#    Updated: 2023/09/03 12:41:50 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ NAME		:=	libhttp.a
 # LIB			=	./lib/
 CC			=	c++
 RM			=	rm
-SRCS		=	srcs/main.cpp srcs/server/server.cpp
+SRCS		=	srcs/main.cpp srcs/server/server.cpp srcs/ServerConfig/ADirective.cpp srcs/ServerConfig/DirectiveBlock.cpp srcs/ServerConfig/DirectiveSimple.cpp\
+				srcs/ServerConfig/HTTPServerParser.cpp
 # srcs/cgi/
 # srcs/http/
 # srcs/parser/

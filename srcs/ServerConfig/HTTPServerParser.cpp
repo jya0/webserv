@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/09/03 14:00:22 by jyao             ###   ########.fr       */
+=======
+/*   Updated: 2023/09/03 12:47:05 by rriyas           ###   ########.fr       */
+>>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +23,17 @@ static ADirective	*getDirective(std::vector<std::string> &tokens)
 	if (tokens.front().find_first_of(":", 0) == std::string::npos)
 		return (NULL);
 	directive = new DirectiveSimple();
+<<<<<<< HEAD
 	directive->setName(tokens.front());
 	tokens.erase(tokens.begin());
 	directive->setValues(tokens);
+=======
+	// dveValues = ;
+	directive->setValues(dveValues);
+	// dveName = ;
+	directive->setName(dveName);
+	return (directive);
+>>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
 }
 
 static int	countLeadingTabs(std::string cntline)
@@ -36,12 +48,16 @@ static int	countLeadingTabs(std::string cntline)
 
 static std::string	getReadableLine(std::ifstream &configIF)
 {
+<<<<<<< HEAD
 	std::string	tmpLine;
 
 	getline(configIF, tmpLine);
 	while (tmpLine.length() == 0)
 		getline(configIF, tmpLine);
 	return (tmpLine);
+=======
+	return ("");
+>>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
 }
 
 static void	tokenize(std::vector<std::string> &tokens, std::string line)
@@ -110,16 +126,24 @@ std::vector<WebServer> HTTPServerParser::parseConfigFile(std::string filename)
 	std::vector<WebServer>	servers;
 	DirectiveBlock			*serverBlock;
 	std::ifstream			configIF;
-
+	WebServer				*server;
 	configIF.open(filename, std::ios::in);
 	if (!configIF.is_open())
 		// exit(1);
 	while (!configIF.eof())
 	{
+<<<<<<< HEAD
 		getNextDirectiveBlock(configIF);
 		if (serverBlock == NULL)
 			//exit(1);
 		servers.push_back(WebServer(serverBlock));
+=======
+		// getNextDirectiveBlock(configIF);
+		if (serverDveBlock == NULL)
+			//exit(1);
+		server = new WebServer(*serverDveBlock);
+		servers.push_back(*server);
+>>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
 	}
 	configIF.close();
 	return (servers);

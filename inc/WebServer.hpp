@@ -50,7 +50,7 @@ protected:
 
 public:
     WebServer();
-	WebServer(DirectiveBlock const	&serverBlockREF);
+	WebServer(const DirectiveBlock &serverBlockREF);
     WebServer(std::string ip, int port);
     ~WebServer();
 
@@ -61,13 +61,13 @@ public:
 	void sendData(std::string message);
 	std::string recieveData();
 	Request receiveRequest(std::string );
-	Response handleRequest(const Request &request);
-	Response handleGet(const Request &request);
-	Response handlePost(const Request &request);
-	Response handlePut(const Request &request);
-	Response handleDelete(const Request &request);
-	Response handleHead(const Request &request);
-	Response handleCGI();
+	Response handleRequest(const Request &request) const ;
+	Response handleGet(const Request &request) const ;
+	Response handlePost(const Request &request) const ;
+	Response handlePut(const Request &request) const ;
+	Response handleDelete(const Request &request) const ;
+	Response handleHead(const Request &request) const ;
+	Response handleCGI()const ;
 
 	void startConnection();
 	void startListening();

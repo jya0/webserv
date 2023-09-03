@@ -24,7 +24,7 @@ AMessage::AMessage(void) {
 
 /**
  * @brief Construct a new AMessage object (copy constructor)
- * 
+ *
  * @param aMessageREF Message to copy
  */
 AMessage::AMessage(AMessage &aMessageREF) {
@@ -41,7 +41,7 @@ AMessage::~AMessage(void) {
 
 /**
  * @brief The copy assignment operator of the AMessage class.
- * 
+ *
  * @param aMessageREF Message to copy
  * @return AMessage& Reference to the copied message
  */
@@ -56,7 +56,7 @@ AMessage	&AMessage::operator=(AMessage &aMessageREF) {
 
 /**
  * @brief Construct a new AMessage object
- * 
+ *
  * @param startLine The first line of the message
  * @param headers The list of headers of the message
  * @param messageBody The body of the message
@@ -70,34 +70,35 @@ AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string
 
 /**
  * @brief Construct a new AMessage object
- * 
+ *
  * @param rawMessage The raw message to be parsed
  */
 AMessage::AMessage(std::string rawMessage) {
 
-    std::istringstream iss(rawMessage);
+	std::istringstream iss(rawMessage);
     std::string line;
-    while(std::getline(iss, line, '\r')) {
-        iss.ignore();
-        if (this->_startLine == "")
-            this->_startLine = line;
-        else if (line == "")
-            break ;
-        else {
-            std::string key;
-            std::string value;
-            std::istringstream iss2(line);
-            std::getline(iss2, key, ':');
-            std::getline(iss2, value, '\r');
-            this->_headers.push_back(Header(key, value));
-        }
-    }
-    this->_messageBody = iss.str().substr(iss.tellg());
+	while(std::getline(iss, line, '\r')) {
+		iss.ignore();
+		if (this->_startLine == "")
+			this->_startLine = line;
+		else if (line == "")
+			break ;
+		else {
+			std::string key;
+			std::string value;
+			std::istringstream iss2(line);
+			std::getline(iss2, key, ':');
+			std::getline(iss2, value, '\r');
+			this->_headers.push_back(Header(key, value));
+		}
+	}
+	this->_messageBody = iss.str().substr(iss.tellg());
+
 }
 
 /**
  * @brief Returns the start line of the message.
- * 
+ *
  * @return std::string The start line of the message
  */
 std::string	AMessage::getStartLine(void) {
@@ -106,7 +107,7 @@ std::string	AMessage::getStartLine(void) {
 
 /**
  * @brief Returns the headers of the message.
- * 
+ *
  * @return std::list<Header> A list containing the headers of the message
  */
 std::list<Header>	AMessage::getHeaders(void) {
@@ -115,7 +116,7 @@ std::list<Header>	AMessage::getHeaders(void) {
 
 /**
  * @brief Returns the body of the message.
- * 
+ *
  * @return std::string The body of the message
  */
 std::string	AMessage::getMessageBody(void) {
@@ -124,7 +125,7 @@ std::string	AMessage::getMessageBody(void) {
 
 /**
  * @brief Converts the message to a string.
- * 
+ *
  * @return std::string The raw message
  */
 std::string	AMessage::getRawMessage(void) const {
@@ -138,4 +139,12 @@ std::string	AMessage::getRawMessage(void) const {
 
 void AMessage::addHeader(Header header) {
     this->_headers.push_back(header);
+}
+
+void AMessage::setMessageBody(std::string messageBody) {
+    this->_messageBody = messageBody;
+}
+
+void AMessage::setStartLine(std::string startLine) {
+    this->_startLine = startLine;
 }

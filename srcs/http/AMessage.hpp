@@ -21,9 +21,10 @@
 
 namespace http {
 	class Header;
-
+	class Request;
+	class Response;
 	/**
-	 * @brief 	This class describes a TCP/HTTP message. 
+	 * @brief 	This class describes a TCP/HTTP message.
 	 * @field	_startLine		The first line of the message.
 	 * @field	_headers		The list of headers of the message.
 	 * @field	_messageBody	The body of the message.
@@ -51,7 +52,9 @@ namespace http {
 			std::string	getMessageBody(void);
 			std::string	getRawMessage(void) const;
 			void addHeader(Header header);
-			virtual bool validate(void) = 0;
+			virtual bool validate(void) const = 0;
+			void setMessageBody(std::string messageBody);
+			void setStartLine(std::string startLine);
 	};
 }
 

@@ -33,7 +33,7 @@ std::string ServerSocket::generateDefaultResponse()
 {
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
-	ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
+	ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << "\r\n\r\n"
 	   << htmlFile;
 	return ss.str();
 }
@@ -58,7 +58,7 @@ std::string ServerSocket::recieveData()
 
 	// RecieveData();
 	// close(peer_socket);
-	return ("");
+	return (std::string(buffer));
 }
 
 void ServerSocket::sendData(std::string message)
@@ -66,6 +66,7 @@ void ServerSocket::sendData(std::string message)
     long bytesSent;
     //replace write with SEND function
 	const char *s = message.c_str();
+	std::cerr<<message;
 	bytesSent = write(peer_socket, s, message.size());
 	if (bytesSent == message.size())
 		log("------ Server Response sent to client ------\n\n");
