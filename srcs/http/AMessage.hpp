@@ -51,7 +51,9 @@ namespace http {
 			std::string	getMessageBody(void);
 			std::string	getRawMessage(void) const;
 			void addHeader(Header header);
-			virtual bool validate(void) = 0;
+			virtual bool validate(void) const = 0;
+			void setMessageBody(std::string messageBody);
+			void setStartLine(std::string startLine);
 	};
 }
 

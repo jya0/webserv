@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/03 10:44:53 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 13:43:56 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,6 @@ e_httpMethod Request::methodEnum(std::string method) {
  * @return true If the headers are valid.
  * @return false If the headers are invalid.
  */
-bool	Request::validate(void) {
+bool	Request::validate(void) const {
     return (true); /// @todo: implement
 }

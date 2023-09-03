@@ -139,3 +139,11 @@ std::string	AMessage::getRawMessage(void) const {
 void AMessage::addHeader(Header header) {
     this->_headers.push_back(header);
 }
+
+void AMessage::setMessageBody(std::string messageBody) {
+    this->_messageBody = messageBody;
+}
+
+void AMessage::setStartLine(std::string startLine) {
+    this->_startLine = startLine;
+}

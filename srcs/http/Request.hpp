@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/03 10:44:20 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 13:16:03 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ namespace http {
 			std::string	getHttpMethod(void) const;
 			std::string	getHttpVersion(void) const;
 			std::string	getUri(void) const;
-			bool validate(void);
+			bool validate(void) const;
 	};
 };
 
