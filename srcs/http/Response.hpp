@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/03 13:04:04 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 13:59:57 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@ namespace http {
 			Response(const Response &responseREF);
 			~Response(void);
 			Response	&operator=(const Response &responseREF);
-			std::string	getHttpVersion(void);
-			unsigned short	getHttpStatusCode(void);
-			bool validate(void) const ;
+			std::string	getHttpVersion(void) const;
+			unsigned short	getHttpStatusCode(void) const;
+			bool validate(void) const;
+			std::string getHttpStatusString(unsigned short statusCode) const;
 	};
 };
 

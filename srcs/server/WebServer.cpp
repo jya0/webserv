@@ -6,11 +6,12 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/03 13:49:58 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 14:01:34 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/WebServer.hpp"
+#include <fstream>
 
 WebServer::WebServer()
 {
@@ -78,6 +79,9 @@ void WebServer::sendResponse(const Response &response) {
 }
 
 Response WebServer::handleRequest(const Request &request) const {
+	for (std::vector<std::pair<std::string, std::string> >::iterator it = redirections.begin(); it != redirections.end(); ++it)
+		if (it->first == request.getUri())
+			return(Response("HTTP/1.1 301 Moved Permanently\r\nLocation: " + it->second + "\r\n\r\n"));
     switch (Request::methodEnum(request.getHttpMethod())) {
         case GET:
             return (handleGet(request));
@@ -96,15 +100,18 @@ Response WebServer::handleRequest(const Request &request) const {
 
 Response WebServer::handleGet(const Request &request) const {
     Response response(200);
+	std::string filePath = root + request.getUri();
     //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
     // Flow:
-	for (std::vector<std::pair<std::string, std::string> >::const_iterator it = redirections.begin(); it != redirections.end(); ++it)
-		if (it->first == request.getUri())
-			return (Response("HTTP/1.1 301 Moved Permanently\r\nLocation: " + it->second + "\r\n\r\n"));
-    // 2. Check if the URI is a file
-    //  2.1 If it is, return the file
+    std::ifstream file(filePath.c_str());
+	if (file.good()) {
+        std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        response.setMessageBody(str);
+        file.close();
+        return (response);
+	}
     // 3. Check if the URI is a directory
     //  3.1 If it is, respond according to config
     // 4. Check if the URI is a CGI script
