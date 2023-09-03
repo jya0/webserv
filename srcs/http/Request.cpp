@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/03 10:44:53 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 13:07:02 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,19 @@ using namespace http;
 /**
  * @brief Construct a new Request object (default constructor)
  */
-Request::Request(void) {
-    return ;
+Request::Request(void) : AMessage()
+{
+	return ;
 }
 
 /**
  * @brief Construct a new Request object (copy constructor)
- * 
+ *
  * @param RequestREF Request to copy
  */
-Request::Request(Request const &RequestREF) {
-    *this = RequestREF;
+Request::Request(Request const &RequestREF) : AMessage()
+{
+	*this = RequestREF;
     return ;
 }
 
@@ -40,7 +42,7 @@ Request::~Request(void) {
 
 /**
  * @brief The copy assignment operator of the Request class.
- * 
+ *
  * @param RequestREF Request to copy
  * @return Request& Reference to the copied Request
  */
@@ -54,7 +56,7 @@ Request	&Request::operator=(Request const &RequestREF) {
 
 /**
  * @brief Construct a new Request object
- * 
+ *
  * @param httpRaw The raw HTTP request to be parsed
  */
 Request::Request(std::string httpRaw): AMessage(httpRaw) {
@@ -69,7 +71,7 @@ Request::Request(std::string httpRaw): AMessage(httpRaw) {
 
 /**
  * @brief Returns the HTTP method of the request.
- * 
+ *
  * @return std::string The HTTP method of the request.
  */
 std::string	Request::getHttpMethod(void) const {
@@ -78,7 +80,7 @@ std::string	Request::getHttpMethod(void) const {
 
 /**
  * @brief Returns the HTTP version of the request.
- * 
+ *
  * @return std::string The HTTP version of the request.
  */
 std::string	Request::getHttpVersion(void) const {
@@ -87,7 +89,7 @@ std::string	Request::getHttpVersion(void) const {
 
 /**
  * @brief Returns the URI of the request.
- * 
+ *
  * @return std::string The URI of the request.
  */
 std::string	Request::getUri(void) const {
@@ -96,7 +98,7 @@ std::string	Request::getUri(void) const {
 
 /**
  * @brief Swaps out the enum for the name of the HTTP method.
- * 
+ *
  * @param method The enum of the HTTP method.
  * @return std::string The name of the HTTP method.
  */
@@ -119,7 +121,7 @@ std::string Request::methodName(e_httpMethod method) {
 
 /**
  * @brief Swaps out the name for the enum of the HTTP method.
- * 
+ *
  * @param method The name of the HTTP method.
  * @return e_httpMethod The enum of the HTTP method.
  */
@@ -140,10 +142,10 @@ e_httpMethod Request::methodEnum(std::string method) {
 
 /**
  * @brief Validates the headers of the request.
- * 
+ *
  * @return true If the headers are valid.
  * @return false If the headers are invalid.
  */
-bool	Request::validate(void) {
+bool	Request::validate(void) const {
     return (true); /// @todo: implement
 }

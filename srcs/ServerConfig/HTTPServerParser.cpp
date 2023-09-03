@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/02 21:12:39 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/03 12:47:05 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ static ADirective	*getDirective(std::stack<std::string> &tmpStack)
 	std::vector<std::string>	dveValues;
 
 	directive = new DirectiveSimple();
-	dveValues = ;
+	// dveValues = ;
 	directive->setValues(dveValues);
-	dveName = ;
+	// dveName = ;
 	directive->setName(dveName);
+	return (directive);
 }
 
 static int	countLeadingTabs(std::string cntline)
@@ -37,6 +38,7 @@ static int	countLeadingTabs(std::string cntline)
 
 static std::string	getReadableLine(std::ifstream &configIF)
 {
+	return ("");
 }
 
 static void	pushLineToStack(std::stack<std::string> &tmpStack, std::string line)
@@ -87,16 +89,17 @@ std::vector<WebServer> HTTPServerParser::parseConfigFile(std::string filename)
 	std::vector<WebServer>	servers;
 	DirectiveBlock			*serverDveBlock;
 	std::ifstream			configIF;
-
+	WebServer				*server;
 	configIF.open(filename, std::ios::in);
 	if (!configIF.is_open())
 		// exit(1);
 	while (!configIF.eof())
 	{
-		getNextDirectiveBlock(configIF);
+		// getNextDirectiveBlock(configIF);
 		if (serverDveBlock == NULL)
 			//exit(1);
-		servers.push_back(WebServer(serverDveBlock));
+		server = new WebServer(*serverDveBlock);
+		servers.push_back(*server);
 	}
 	configIF.close();
 	return (servers);

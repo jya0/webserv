@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/02 23:09:22 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 12:23:41 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include	<string>
 # include	<vector>
-# include	"ServerConfig_namespace.hpp"
 # include	"ErrorInfo.hpp"
+# include	"ServerConfig_namespace.hpp"
 
 /**
  * @brief The abstract class inherited by DirectiveBlock and DirectiveSimple
@@ -31,7 +31,7 @@ class	ADirective {
 	protected:
 		std::string	_dveName;
 		std::vector< std::string >	_dveValues;
-		serverConfig::DirectiveType	_dveType;
+		serverConfig::DirectiveType _dveType;
 		ErrorInfo					_errorInfo;
 	public:
 		ADirective(void);
@@ -41,7 +41,7 @@ class	ADirective {
 
 		std::string	getName(void) const;
 		std::vector< std::string >	getValues(void) const;
-		// serverConfig::DirectiveType	getType(void) const;
+		serverConfig::DirectiveType	getType(void) const;
 		void	setName(std::string const	&strREF);
 		void	setValues(std::vector< std::string > const	&strsREF);
 };

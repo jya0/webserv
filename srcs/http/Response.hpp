@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/02 15:04:52 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 13:04:04 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ namespace http {
 			Response(void);
 			Response(int status);
 			Response(std::string httpRaw);
-			Response(Response &responseREF);
+			Response(const Response &responseREF);
 			~Response(void);
-			Response	&operator=(Response &responseREF);
+			Response	&operator=(const Response &responseREF);
 			std::string	getHttpVersion(void);
 			unsigned short	getHttpStatusCode(void);
-			bool validate(void);
+			bool validate(void) const ;
 	};
 };
 

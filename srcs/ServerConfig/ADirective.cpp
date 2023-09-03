@@ -3,20 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ADirective.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/02 16:06:41 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/03 12:23:30 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ServerConfig_namespace.hpp"
 #include	"ADirective.hpp"
 
 /**
  * @brief Construct a new ADirective::ADirective object
- * 
+ *
  * Only has to initialise the _dveType enum DirectiveType object
- * 
+ *
  */
 ADirective::ADirective(void): _dveType(serverConfig::DirectiveType::INIT)
 {
