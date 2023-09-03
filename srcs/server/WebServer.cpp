@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/03 13:47:21 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 13:54:08 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,12 @@ Response WebServer::handleGet(const Request &request) {
     std::ifstream file(filePath.c_str());
 	if (file.good()) {
         std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        Header length("Content-Length", std::to_string(str.length()));
+        Header type("Content-Type", "text/html");
+        Header server("Server", "webserv-kry");
+        // Header date("Date", getDate());
+        response.addHeader(length);
+        response.addHeader(type);
         response.setMessageBody(str);
         file.close();
         return (response);
