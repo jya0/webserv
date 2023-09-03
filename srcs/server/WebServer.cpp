@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/03 14:04:49 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 14:05:57 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void WebServer::sendResponse(const Response &response) {
 }
 
 Response WebServer::handleRequest(const Request &request) const {
-	for (std::vector<std::pair<std::string, std::string> >::iterator it = redirections.begin(); it != redirections.end(); ++it)
+	for (std::vector<std::pair<std::string, std::string> >::const_iterator it = redirections.begin(); it != redirections.end(); ++it)
 		if (it->first == request.getUri())
 			return(Response("HTTP/1.1 301 Moved Permanently\r\nLocation: " + it->second + "\r\n\r\n"));
     switch (Request::methodEnum(request.getHttpMethod())) {
