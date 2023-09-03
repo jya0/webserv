@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 13:58:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 14:25:56 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ Response::Response(void) : AMessage(){
 Response::Response(int status) {
     this->_httpVersion = "HTTP/1.1";
     this->_httpStatusCode = status;
+    this->_startLine = this->_httpVersion + " " + std::to_string(status) + " " + this->getHttpStatusString(status);
     return ;
 }
 /**

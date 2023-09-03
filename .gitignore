@@ -2,5 +2,5 @@
 *.a
 webserv
 .DS_Store
-
+www/
 .vscode/
