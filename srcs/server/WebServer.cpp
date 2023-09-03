@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/03 10:10:19 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 10:12:05 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ Request WebServer::receiveRequest(std::string rawRequest) {
 
 void WebServer::sendResponse(const Response &response) { 
     std::string rawResponse = response.getRawMessage();
-    // @todo: SEND HERE
+    sendData(rawResponse);
 }
 
 Response WebServer::handleRequest(const Request &request) {

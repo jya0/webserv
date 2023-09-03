@@ -65,7 +65,6 @@ void ServerSocket::sendData(std::string message)
 {
     long bytesSent;
     //replace write with SEND function
-	message = generateDefaultResponse();
 	const char *s = message.c_str();
 	bytesSent = write(peer_socket, s, message.size());
 	if (bytesSent == message.size())

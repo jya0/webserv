@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/02 23:04:36 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 10:17:00 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/WebServer.hpp"
-#include "../inc/HTTPServerParser.hpp"
+#include "ServerConfig/HTTPServerParser.hpp"
 
 
 void StartServers(std::map<int, WebServer*> &servers)
@@ -52,7 +52,7 @@ void StartServers(std::map<int, WebServer*> &servers)
 			{
 				std::cerr<<events[triggered].ident<<std::endl;
 				servers[triggered]->recieveData();
-				servers[triggered]->sendData("HOLAA");
+				servers[triggered]->sendResponse(Response(ServerSocket::generateDefaultResponse()));
 				// servers[triggered]->getConnection().closeConnection();
 			}
 		}

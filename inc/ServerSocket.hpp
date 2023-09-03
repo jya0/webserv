@@ -29,7 +29,7 @@ public:
 	ServerSocket(std::string ip_addr, int port);
 	~ServerSocket();
 
-	std::string generateDefaultResponse();
+	static std::string generateDefaultResponse();
 
 	void sendData(std::string message);
 	std::string recieveData();

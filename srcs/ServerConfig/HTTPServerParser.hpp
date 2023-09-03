@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:46:11 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/02 14:48:22 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/03 10:17:52 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_SERVER_PARSER_HPP
 # define HTTP_SERVER_PARSER_HPP
 
-# include   "WebServer.hpp"
+# include   "../../inc/WebServer.hpp"
 
 class HTTPServerParser {
 private:
