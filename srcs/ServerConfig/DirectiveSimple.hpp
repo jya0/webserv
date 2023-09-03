@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:15:28 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/02 14:16:19 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/03 13:49:38 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * class _dvesMap can point to either another DirectiveBlock or DirectiveSimple
  * 
  */
-class	DirectiveSimple : private ADirective {
+class	DirectiveSimple : public ADirective {
 	public:
 		DirectiveSimple(void);
 		DirectiveSimple(DirectiveSimple const &simpleREF);
