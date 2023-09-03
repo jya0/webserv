@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/03 10:12:05 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 10:45:56 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,20 @@ Response WebServer::handleRequest(const Request &request) {
 
 Response WebServer::handleGet(const Request &request) {
     Response response(200);
-    // @todo
+    //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
+	// request data (they shouldn't include data).
+
+    // Flow:
+	for (std::vector<std::pair<std::string, std::string> >::iterator it = redirections.begin(); it != redirections.end(); ++it)
+		if (it->first == request.getUri())
+			return(Response("HTTP/1.1 301 Moved Permanently\r\nLocation: " + it->second + "\r\n\r\n"));
+    // 2. Check if the URI is a file
+    //  2.1 If it is, return the file
+    // 3. Check if the URI is a directory
+    //  3.1 If it is, respond according to config
+    // 4. Check if the URI is a CGI script
+    //  4.1 If it is, handle CGI
+    // 5. Return 404
     return (response);
 }
 

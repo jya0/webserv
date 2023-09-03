@@ -127,12 +127,15 @@ std::string	AMessage::getMessageBody(void) {
  * 
  * @return std::string The raw message
  */
-std::string	AMessage::getRawMessage(void) {
+std::string	AMessage::getRawMessage(void) const {
     std::string rawMessage = this->_startLine;
-    for (std::list<Header>::iterator it =
-            this->_headers.begin(); it != this->_headers.end(); it++) {
+    for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++) {
         rawMessage += it->getName() + ": " + it->getValue() + "\r\n";
     }
     rawMessage += "\r\n" + this->_messageBody;
     return (rawMessage);
+}
+
+void AMessage::addHeader(Header header) {
+    this->_headers.push_back(header);
 }

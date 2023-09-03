@@ -50,6 +50,7 @@ namespace http {
 			AMessage	&operator=(AMessage &aMessageREF);
 			std::string	getMessageBody(void);
 			std::string	getRawMessage(void) const;
+			void addHeader(Header header);
 			virtual bool validate(void) = 0;
 	};
 }

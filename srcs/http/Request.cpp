@@ -6,7 +6,7 @@
 /*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/02 13:44:15 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/09/03 10:44:53 by kalmheir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ Request::Request(std::string httpRaw): AMessage(httpRaw) {
  * 
  * @return std::string The HTTP method of the request.
  */
-std::string	Request::getHttpMethod(void) {
+std::string	Request::getHttpMethod(void) const {
     return (Request::methodName(this->_httpMethod));
 }
 
@@ -81,7 +81,7 @@ std::string	Request::getHttpMethod(void) {
  * 
  * @return std::string The HTTP version of the request.
  */
-std::string	Request::getHttpVersion(void) {
+std::string	Request::getHttpVersion(void) const {
     return (this->_httpVersion);
 }
 
@@ -90,7 +90,7 @@ std::string	Request::getHttpVersion(void) {
  * 
  * @return std::string The URI of the request.
  */
-std::string	Request::getUri(void) {
+std::string	Request::getUri(void) const {
     return (this->_uri);
 }
 
