@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 18:42:49 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/05 16:31:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,12 @@ static std::string	getReadableLine(std::ifstream &configIF)
 	std::string	tmpLine;
 
 	getline(configIF, tmpLine);
-	while (tmpLine.length() == 0 && !configIF.eof())
+	while (!configIF.eof() && tmpLine.find_first_not_of("\n") == std::string::npos)
+	{
+		if (tmpLine.length() == 0)
+			break ;
 		getline(configIF, tmpLine);
+	}
 	return (tmpLine);
 }
 
@@ -72,7 +76,8 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 	int								blockTabCount;
 	std::string						cntLine;
 	std::string						nxtLine;
-	std::streampos					oldpos;
+	std::streampos					befCnt;
+	std::streampos					befNxt;
 	DirectiveBlock					*blockDve;
 	ADirective						*dveToInsert;
 
@@ -81,32 +86,31 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 	tokenize(tokens, cntLine);
 	*((ADirective *)(blockDve)) = *(getDirective(tokens));
 	blockTabCount = countLeadingTabs(cntLine);
+	befCnt = configIF.tellg();
 	cntLine = getReadableLine(configIF);
-	oldpos = configIF.tellg();
-	nxtLine = getReadableLine(configIF);
 	while (cntLine.length() > 0 && countLeadingTabs(cntLine) != blockTabCount)
 	{
+		befNxt = configIF.tellg();
+		nxtLine = getReadableLine(configIF);
 		if (countLeadingTabs(cntLine) == blockTabCount + 1 && countLeadingTabs(nxtLine) <= blockTabCount + 1)
 		{
 			tokenize(tokens, cntLine);
 			dveToInsert = getDirective(tokens);
+			befCnt = befNxt;
 			cntLine = nxtLine;
-			nxtLine = getReadableLine(configIF);
-			if (countLeadingTabs(nxtLine) == blockTabCount + 1)
-				oldpos = configIF.tellg();
 		}
 		else if (countLeadingTabs(nxtLine) > blockTabCount + 1)
 		{
-			configIF.seekg(oldpos);
+			configIF.seekg(befCnt);
 			dveToInsert = getNextDirectiveBlock(configIF);
+			befCnt = configIF.tellg();
 			cntLine = getReadableLine(configIF);
-			oldpos = configIF.tellg();
-			nxtLine = getReadableLine(configIF);
 		}
 		// if (dveToInsert == NULL)
 			// exit(1);
 		blockDve->insertMapDirective(dveToInsert);
 	}
+	configIF.seekg(befNxt);
 	return (blockDve);
 }
 
