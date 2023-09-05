@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DirectiveBlock.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 12:18:22 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 16:53:37 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,25 @@ DirectiveBlock	&DirectiveBlock::operator=(DirectiveBlock const	&blockREF)
 	return (*this);
 }
 
-std::multimap<std::string, ADirective *>	*DirectiveBlock::getDirectives(void) const
+const std::multimap<std::string, ADirective *>	*DirectiveBlock::getDirectives(void) const
 {
 	return (&(_dvesMap));
 }
 
-std::pair< std::map< std::string, ADirective * >::iterator, std::map< std::string, ADirective * >::iterator> *\
+void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
+{
+	// std::pair< std::string, ADirective * > dvePair;
+
+	// dvePair = std::make_pair(dvePTR->getName(), dvePTR);
+	// std::multimap<std::string, ADirective *>	ma;
+	std::pair<std::string, ADirective *> *p = new std::pair<std::string, ADirective *>(dvePTR->getName(), dvePTR);
+	_dvesMap.insert(*p);
+}
+
+std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \
 	DirectiveBlock::operator[](std::string &key)
 {
 	if (_dvesMap.find(key) == _dvesMap.end())
-		return (NULL);
-	return (&(_dvesMap.equal_range(key)));
+		std::cerr<<"Key not found: "<<key<<"\n";
+	return (_dvesMap.equal_range(key));
 }

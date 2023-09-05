@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/09/03 14:00:22 by jyao             ###   ########.fr       */
-=======
-/*   Updated: 2023/09/03 12:47:05 by rriyas           ###   ########.fr       */
->>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
+/*   Updated: 2023/09/03 18:42:49 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"HTTPServerParser.hpp"
-
+#include 	<utility>
 static ADirective	*getDirective(std::vector<std::string> &tokens)
 {
 	DirectiveSimple				*directive;
@@ -23,17 +19,11 @@ static ADirective	*getDirective(std::vector<std::string> &tokens)
 	if (tokens.front().find_first_of(":", 0) == std::string::npos)
 		return (NULL);
 	directive = new DirectiveSimple();
-<<<<<<< HEAD
 	directive->setName(tokens.front());
 	tokens.erase(tokens.begin());
 	directive->setValues(tokens);
-=======
-	// dveValues = ;
-	directive->setValues(dveValues);
-	// dveName = ;
-	directive->setName(dveName);
+	tokens.clear();
 	return (directive);
->>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
 }
 
 static int	countLeadingTabs(std::string cntline)
@@ -48,16 +38,12 @@ static int	countLeadingTabs(std::string cntline)
 
 static std::string	getReadableLine(std::ifstream &configIF)
 {
-<<<<<<< HEAD
 	std::string	tmpLine;
 
 	getline(configIF, tmpLine);
-	while (tmpLine.length() == 0)
+	while (tmpLine.length() == 0 && !configIF.eof())
 		getline(configIF, tmpLine);
 	return (tmpLine);
-=======
-	return ("");
->>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
 }
 
 static void	tokenize(std::vector<std::string> &tokens, std::string line)
@@ -93,61 +79,71 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 	blockDve = new DirectiveBlock();
 	cntLine = getReadableLine(configIF);
 	tokenize(tokens, cntLine);
-	(ADirective)(*blockDve) = (*getDirective(tokens));
+	*((ADirective *)(blockDve)) = *(getDirective(tokens));
 	blockTabCount = countLeadingTabs(cntLine);
 	cntLine = getReadableLine(configIF);
 	oldpos = configIF.tellg();
 	nxtLine = getReadableLine(configIF);
-	while (countLeadingTabs(cntLine) != blockTabCount)
+	while (cntLine.length() > 0 && countLeadingTabs(cntLine) != blockTabCount)
 	{
-		if (countLeadingTabs(cntLine) == blockTabCount + 1 && countLeadingTabs(nxtLine) == blockTabCount + 1)
+		if (countLeadingTabs(cntLine) == blockTabCount + 1 && countLeadingTabs(nxtLine) <= blockTabCount + 1)
 		{
 			tokenize(tokens, cntLine);
 			dveToInsert = getDirective(tokens);
+			cntLine = nxtLine;
+			nxtLine = getReadableLine(configIF);
+			if (countLeadingTabs(nxtLine) == blockTabCount + 1)
+				oldpos = configIF.tellg();
 		}
 		else if (countLeadingTabs(nxtLine) > blockTabCount + 1)
 		{
 			configIF.seekg(oldpos);
 			dveToInsert = getNextDirectiveBlock(configIF);
+			cntLine = getReadableLine(configIF);
+			oldpos = configIF.tellg();
+			nxtLine = getReadableLine(configIF);
 		}
-		if (dveToInsert == NULL)
+		// if (dveToInsert == NULL)
 			// exit(1);
-		blockDve->getDirectives()->insert(std::pair< std::string, ADirective * >(dveToInsert->getName(), dveToInsert));
-		cntLine = getReadableLine(configIF);
-		oldpos = configIF.tellg();
-		nxtLine = getReadableLine(configIF);
+		blockDve->insertMapDirective(dveToInsert);
 	}
 	return (blockDve);
 }
 
-std::vector<WebServer> HTTPServerParser::parseConfigFile(std::string filename)
+DirectiveBlock	*HTTPServerParser::parseConfigFile1(std::string filename)
+{
+	DirectiveBlock			*serverBlock;
+	std::ifstream			configIF;
+
+	serverBlock = NULL;
+	configIF.open(filename, std::ios::in);
+	if (configIF.is_open())
+		serverBlock = getNextDirectiveBlock(configIF);
+		// exit(1);
+	configIF.close();
+	return (serverBlock);
+}
+
+/* std::vector<WebServer> HTTPServerParser::parseConfigFile(std::string filename)
 {
     //code to parse webserv config file goes here
 	std::vector<WebServer>	servers;
 	DirectiveBlock			*serverBlock;
 	std::ifstream			configIF;
-	WebServer				*server;
+
 	configIF.open(filename, std::ios::in);
 	if (!configIF.is_open())
 		// exit(1);
 	while (!configIF.eof())
 	{
-<<<<<<< HEAD
-		getNextDirectiveBlock(configIF);
-		if (serverBlock == NULL)
+		serverBlock = getNextDirectiveBlock(configIF);
+		// if (serverBlock == NULL)
 			//exit(1);
-		servers.push_back(WebServer(serverBlock));
-=======
-		// getNextDirectiveBlock(configIF);
-		if (serverDveBlock == NULL)
-			//exit(1);
-		server = new WebServer(*serverDveBlock);
-		servers.push_back(*server);
->>>>>>> 28973d771451fe849b0f51c896c2493ec9e23437
+		// servers.push_back(WebServer(*serverBlock));
 	}
 	configIF.close();
 	return (servers);
-}
+} */
 
 const char *HTTPServerParser::ParseError::what() const throw()
 {

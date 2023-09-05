@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ADirective.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 12:23:41 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 16:00:09 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include	<vector>
 # include	"ErrorInfo.hpp"
 # include	"ServerConfig_namespace.hpp"
+
 
 /**
  * @brief The abstract class inherited by DirectiveBlock and DirectiveSimple
@@ -33,8 +34,8 @@ class	ADirective {
 		std::vector< std::string >	_dveValues;
 		serverConfig::DirectiveType _dveType;
 		ErrorInfo					_errorInfo;
-	public:
 		ADirective(void);
+	public:
 		ADirective(ADirective const	&dveREF);
 		virtual	~ADirective(void);
 		ADirective	&operator=(ADirective const	&dveREF);

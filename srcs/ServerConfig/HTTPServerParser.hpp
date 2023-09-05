@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:46:11 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 12:17:36 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 15:34:13 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_SERVER_PARSER_HPP
 # define HTTP_SERVER_PARSER_HPP
 
-# include   "../../inc/WebServer.hpp"
-# include "ServerConfig_namespace.hpp"
+# include   "WebServer.hpp"
 
 class HTTPServerParser {
 private:
     HTTPServerParser();
 
 public:
-    static std::vector<WebServer> parseConfigFile(std::string filename);
+    // static std::vector<WebServer>   parseConfigFile(std::string filename);
+    static DirectiveBlock	        *parseConfigFile1(std::string filename);
     ~HTTPServerParser();
 
     class ParseError : public std::exception {

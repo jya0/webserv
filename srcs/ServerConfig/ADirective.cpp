@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ADirective.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 12:23:30 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 14:35:57 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
  * Only has to initialise the _dveType enum DirectiveType object
  *
  */
-ADirective::ADirective(void): _dveType(serverConfig::DirectiveType::INIT)
+ADirective::ADirective(void): _dveType(serverConfig::INIT)
 {
 }
 
