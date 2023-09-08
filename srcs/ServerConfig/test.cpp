@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 17:10:02 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/08 10:50:42 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,7 @@ void printMap(DirectiveBlock *d1)
 
 int main(void)
 {
-	DirectiveBlock *d1 = HTTPServerParser::parseConfigFile1("../conf.d/test.conf");
-	std::string current_key = "";
-
-	if (d1 == NULL)
-		std::cerr << "NOT WORKING" << std::endl;
-	std::cout<<d1->getName()<<" "<<d1->getValues().size()<<"\n";
-	std::cout<<d1->getDirectives()->begin()->first;
-	std::cout<<d1->getDirectives()->begin()->second->getValues()[0];
+	HTTPServerParser::parseConfigFile1("../conf.d/test.conf");
 
 	return (0);
 }

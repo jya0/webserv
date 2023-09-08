@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:46:11 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 15:34:13 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/08 10:50:18 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ private:
 
 public:
     // static std::vector<WebServer>   parseConfigFile(std::string filename);
-    static DirectiveBlock	        *parseConfigFile1(std::string filename);
+    static void parseConfigFile1(std::string filename);
     ~HTTPServerParser();
 
     class ParseError : public std::exception {
