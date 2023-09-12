@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/12 10:27:10 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/12 16:08:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,20 @@
 
 static ADirective	*tokenToDirective(std::vector<std::string> &tokens)
 {
-	DirectiveSimple				*directive;
+	DirectiveSimple	*directive;
+/* 	static int		nonSpaceLineNo;
+	std::size_t		colonLoc;
 
+	++nonSpaceLineNo;
+	colonLoc = tokens.front().find_first_of(":", 0);
+	if (colonLoc == std::string::npos)
+	{
+		std::cerr << "Error ':' at " << "\"" << tokens.front() << "\"" << std::endl;
+		std::cerr << "Error at non-space line " << nonSpaceLineNo << std::endl;
+		tokens.clear();
+		return (NULL);
+	}
+	tokens.front().erase(colonLoc, 1); */
 	directive = new DirectiveSimple();
 	directive->setName(tokens.front());
 	tokens.erase(tokens.begin());
@@ -41,46 +53,34 @@ std::ifstream &configIF, std::string &lineREF)
 {
 	std::string			tmpLine;
 	std::streampos		befParesableLine;
-	int					calls;
 
-	calls = 0;
 	do {
-		calls++;
 		befParesableLine = configIF.tellg();
 	} while (getline(configIF, tmpLine) && tmpLine.find_first_not_of(SPACE_CHARSET) == std::string::npos);
 	lineREF = tmpLine;
 	return (befParesableLine);
 }
 
-static int	tokenize(std::vector<std::string> &tokens, std::string &lineREF)
+static std::vector<std::string>	tokenize(const std::string &lineREF)
 {
-	static int	nonSpaceLineNo;
-	std::size_t	start;
-	std::size_t	end;
-	std::size_t	colonLoc;
+	std::vector<std::string>	tmpTokens;
+	std::size_t					start;
+	std::size_t					end;
 
-	++nonSpaceLineNo;
 	start = 0;
 	while (start < lineREF.length())
 	{
 		end = lineREF.find_first_of(SPACE_CHARSET, start);
 		if (end == std::string::npos && start < lineREF.length())
 		{
-			tokens.push_back(lineREF.substr(start, end));
+			tmpTokens.push_back(lineREF.substr(start, end));
 			break ;
 		}
 		if (end > start)
-			tokens.push_back(lineREF.substr(start, end - start));
+			tmpTokens.push_back(lineREF.substr(start, end - start));
 		start = end + 1;
 	}
-	colonLoc = tokens.front().find_first_of(":", 0);
-	if (colonLoc == std::string::npos)
-	{
-		std::cerr << "Error ':' at " << tokens.front() << std::endl;
-		std::cerr << "Error at non-space line " << nonSpaceLineNo << ": \"" << lineREF << "\"" << std::endl;
-		return (-1);
-	}
-	return (0);
+	return (tmpTokens);
 }
 
 static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlockCountREF)
@@ -91,11 +91,8 @@ static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlock
 	ADirective						*dveBlockInfo;
 
 	getParesableLine(configIF, line);
-	if (tokenize(tokens, line))
-		return (NULL);
+	tokens = tokenize(line);
 	dveBlockInfo = tokenToDirective(tokens);
-	if (dveBlockInfo == NULL)
-		return (NULL);
 	dveBlock = new DirectiveBlock();
 	*((ADirective *)(dveBlock)) = *(dveBlockInfo);
 	delete (dveBlockInfo);
@@ -115,8 +112,6 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 	ADirective						*dveToInsert;
 
 	dveBlock = initDirectiveBlock(configIF, tabBlockCount);
-	if (dveBlock == NULL)
-		return (NULL);
 	befCnt = getParesableLine(configIF, lineCnt);
 	while (!lineCnt.empty() && countLeadingTabs(lineCnt) != tabBlockCount)
 	{
@@ -124,8 +119,8 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 		befNxt = getParesableLine(configIF, lineNxt);
 		if (countLeadingTabs(lineCnt) == tabBlockCount + 1 && countLeadingTabs(lineNxt) <= tabBlockCount + 1)
 		{
-			if (tokenize(tokens, lineCnt) == 0)
-				dveToInsert = tokenToDirective(tokens);
+			tokens = tokenize(lineCnt);
+			dveToInsert = tokenToDirective(tokens);
 			befCnt = befNxt;
 			lineCnt = lineNxt;
 		}
@@ -135,16 +130,13 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 			dveToInsert = getNextDirectiveBlock(configIF);
 			befCnt = getParesableLine(configIF, lineCnt);
 		}
-		if (dveToInsert == NULL)
-		{
-			delete (dveBlock);
-			return (NULL);
-		}
 		dveBlock->insertMapDirective(dveToInsert);
 	}
 	configIF.seekg(befNxt);
 	return (dveBlock);
 }
+
+const std::vector<std::string> HTTPServerParser::dveKeyNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
 
 // std::vector<WebServer *>	HTTPServerParser::parseConfigFile(std::string filename)
 void	HTTPServerParser::parseConfigFile(std::string filename)
@@ -186,10 +178,8 @@ const char *HTTPServerParser::ParseError::what() const throw()
 
 HTTPServerParser::HTTPServerParser()
 {
-
 }
 
 HTTPServerParser::~HTTPServerParser()
 {
-
 }

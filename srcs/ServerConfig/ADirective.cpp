@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/08 12:00:31 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/12 16:10:25 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,20 @@ void	ADirective::printDirective(void) const
 	for (std::vector< std::string >::const_iterator it = _dveValues.begin(); it != _dveValues.end(); ++it)
 		std::cout << *it << " ";
 	std::cout << std::endl;
+}
+
+int	ADirective::checkDirective(void) const
+{
+	static int					nonSpaceLineNo;
+	std::size_t					colonLoc;
+
+	++nonSpaceLineNo;
+	colonLoc = _dveName.find_first_of(":", 0);
+	if (colonLoc == std::string::npos)
+	{
+		std::cerr << "Error ':' at " << "\"" << _dveName << "\"" << std::endl;
+		std::cerr << "Error at non-space line " << nonSpaceLineNo << std::endl;
+		return (-1);
+	}
+	return (0);
 }
