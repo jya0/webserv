@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 16:23:42 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/08 11:58:04 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class	DirectiveBlock : public ADirective {
 		const std::multimap<std::string, ADirective *>	*getDirectives(void) const;
 		std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \
 			operator[](std::string &key);
+		void	printDirective(void) const;
 };
 
 #endif

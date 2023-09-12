@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 14:35:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/08 12:00:31 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ ADirective	&ADirective::operator=(ADirective const	&dveREF)
 {
 	_dveName = dveREF.getName();
 	_dveValues = dveREF.getValues();
-	_dveType = dveREF.getType();
+	// _dveType = dveREF.getType();
 	return (*this);
 }
 
@@ -63,4 +63,12 @@ void	ADirective::setName(std::string const	&strREF)
 void	ADirective::setValues(std::vector< std::string > const	&strsREF)
 {
 	_dveValues = strsREF;
+}
+
+void	ADirective::printDirective(void) const
+{
+	std::cout << std::endl << _dveName << " ";
+	for (std::vector< std::string >::const_iterator it = _dveValues.begin(); it != _dveValues.end(); ++it)
+		std::cout << *it << " ";
+	std::cout << std::endl;
 }

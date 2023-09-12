@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 16:00:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/08 12:03:42 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ class	ADirective {
 		serverConfig::DirectiveType	getType(void) const;
 		void	setName(std::string const	&strREF);
 		void	setValues(std::vector< std::string > const	&strsREF);
+		virtual void	printDirective(void) const;
 };
 
 #endif

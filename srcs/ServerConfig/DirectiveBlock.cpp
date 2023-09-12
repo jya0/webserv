@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 16:53:37 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/08 12:05:05 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF): ADirective(block
 
 DirectiveBlock::~DirectiveBlock(void)
 {
+	std::multimap< std::string, ADirective * >::const_iterator	it;
+
+	for (it = _dvesMap.begin(); it != _dvesMap.end(); ++it)
+	{
+		delete (it->second);
+	}
 }
 
 DirectiveBlock	&DirectiveBlock::operator=(DirectiveBlock const	&blockREF)
@@ -52,4 +58,15 @@ std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< 
 	if (_dvesMap.find(key) == _dvesMap.end())
 		std::cerr<<"Key not found: "<<key<<"\n";
 	return (_dvesMap.equal_range(key));
+}
+
+void	DirectiveBlock::printDirective(void) const
+{
+	std::multimap< std::string, ADirective * >::const_iterator	it;
+
+	this->ADirective::printDirective();
+	for (it = _dvesMap.begin(); it != _dvesMap.end(); ++it)
+	{
+		it->second->printDirective();
+	}
 }
