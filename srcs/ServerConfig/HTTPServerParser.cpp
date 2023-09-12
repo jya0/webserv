@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/12 10:22:53 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/12 10:27:10 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include 	<utility>
 
 
-static ADirective	*getDirective(std::vector<std::string> &tokens)
+static ADirective	*tokenToDirective(std::vector<std::string> &tokens)
 {
 	DirectiveSimple				*directive;
 
@@ -83,7 +83,7 @@ static int	tokenize(std::vector<std::string> &tokens, std::string &lineREF)
 	return (0);
 }
 
-static DirectiveBlock	*initDveBlock(std::ifstream &configIF, int &tabBlockREF)
+static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlockCountREF)
 {
 	std::string						line;
 	std::vector<std::string>		tokens;
@@ -93,19 +93,19 @@ static DirectiveBlock	*initDveBlock(std::ifstream &configIF, int &tabBlockREF)
 	getParesableLine(configIF, line);
 	if (tokenize(tokens, line))
 		return (NULL);
-	dveBlockInfo = getDirective(tokens);
+	dveBlockInfo = tokenToDirective(tokens);
 	if (dveBlockInfo == NULL)
 		return (NULL);
 	dveBlock = new DirectiveBlock();
 	*((ADirective *)(dveBlock)) = *(dveBlockInfo);
 	delete (dveBlockInfo);
-	tabBlockREF = countLeadingTabs(line);
+	tabBlockCountREF = countLeadingTabs(line);
 	return (dveBlock);
 }
 
 static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 {
-	int								tabBlock;
+	int								tabBlockCount;
 	DirectiveBlock					*dveBlock;
 	std::string						lineCnt;
 	std::string						lineNxt;
@@ -114,22 +114,22 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 	std::vector<std::string>		tokens;
 	ADirective						*dveToInsert;
 
-	dveBlock = initDveBlock(configIF, tabBlock);
+	dveBlock = initDirectiveBlock(configIF, tabBlockCount);
 	if (dveBlock == NULL)
 		return (NULL);
 	befCnt = getParesableLine(configIF, lineCnt);
-	while (!lineCnt.empty() && countLeadingTabs(lineCnt) != tabBlock)
+	while (!lineCnt.empty() && countLeadingTabs(lineCnt) != tabBlockCount)
 	{
 		dveToInsert = NULL;
 		befNxt = getParesableLine(configIF, lineNxt);
-		if (countLeadingTabs(lineCnt) == tabBlock + 1 && countLeadingTabs(lineNxt) <= tabBlock + 1)
+		if (countLeadingTabs(lineCnt) == tabBlockCount + 1 && countLeadingTabs(lineNxt) <= tabBlockCount + 1)
 		{
 			if (tokenize(tokens, lineCnt) == 0)
-				dveToInsert = getDirective(tokens);
+				dveToInsert = tokenToDirective(tokens);
 			befCnt = befNxt;
 			lineCnt = lineNxt;
 		}
-		else if (countLeadingTabs(lineNxt) > tabBlock + 1)
+		else if (countLeadingTabs(lineNxt) > tabBlockCount + 1)
 		{
 			configIF.seekg(befCnt);
 			dveToInsert = getNextDirectiveBlock(configIF);
