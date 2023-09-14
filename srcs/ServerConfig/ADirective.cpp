@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/12 16:10:25 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/14 16:35:27 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,36 @@ void	ADirective::printDirective(void) const
 	std::cout << std::endl;
 }
 
-int	ADirective::checkDirective(void) const
+int	ADirective::parseDirective(void)
 {
-	static int					nonSpaceLineNo;
-	std::size_t					colonLoc;
+	int											errorReturn;
+	static int									nonSpaceLineNo;
+	std::size_t									colonLoc;
+	std::vector< std::string >::const_iterator	dveNameITR;
 
+	errorReturn = 0;
 	++nonSpaceLineNo;
-	colonLoc = _dveName.find_first_of(":", 0);
-	if (colonLoc == std::string::npos)
+	if (!errorReturn)
 	{
-		std::cerr << "Error ':' at " << "\"" << _dveName << "\"" << std::endl;
-		std::cerr << "Error at non-space line " << nonSpaceLineNo << std::endl;
-		return (-1);
+		colonLoc = _dveName.find_first_of(":", 0);
+		if (colonLoc == std::string::npos || (colonLoc + 1) != _dveName.length())
+			std::cerr << "Error " << (errorReturn = 1) << " missing or wrong ':' at " << "\"" << _dveName << "\"" << std::endl;
 	}
-	return (0);
+	if (!errorReturn)
+	{
+		_dveName.pop_back();
+		dveNameITR = std::find(HTTPServerParser::dveNames.begin(), HTTPServerParser::dveNames.end(), _dveName);
+		if (dveNameITR == HTTPServerParser::dveNames.end())
+			std::cerr << "Error " << (errorReturn = 2) << " directive name: \"" << _dveName << "\"" << std::endl;
+	}
+	if (!errorReturn)
+	{
+		_dveType = (serverConfig::DirectiveType)(dveNameITR - HTTPServerParser::dveNames.begin());
+		if (((_dveType == serverConfig::SERVER) != _dveValues.empty())
+			|| ((_dveType >= serverConfig::AUTOINDEX && _dveType <= serverConfig::SERVER_NAME) != (dynamic_cast<DirectiveBlock *>(this) == NULL)))
+			std::cerr << "Error " << (errorReturn = 3) << " missing or extra directive values: \"" << _dveName << "\"" << std::endl;
+	}
+	if (errorReturn)
+		std::cerr << "Error at non-space line " << nonSpaceLineNo << std::endl;
+	return (errorReturn);
 }

@@ -6,30 +6,17 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/12 16:08:07 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/14 18:49:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"HTTPServerParser.hpp"
 #include 	<utility>
 
-
 static ADirective	*tokenToDirective(std::vector<std::string> &tokens)
 {
 	DirectiveSimple	*directive;
-/* 	static int		nonSpaceLineNo;
-	std::size_t		colonLoc;
 
-	++nonSpaceLineNo;
-	colonLoc = tokens.front().find_first_of(":", 0);
-	if (colonLoc == std::string::npos)
-	{
-		std::cerr << "Error ':' at " << "\"" << tokens.front() << "\"" << std::endl;
-		std::cerr << "Error at non-space line " << nonSpaceLineNo << std::endl;
-		tokens.clear();
-		return (NULL);
-	}
-	tokens.front().erase(colonLoc, 1); */
 	directive = new DirectiveSimple();
 	directive->setName(tokens.front());
 	tokens.erase(tokens.begin());
@@ -113,7 +100,7 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 
 	dveBlock = initDirectiveBlock(configIF, tabBlockCount);
 	befCnt = getParesableLine(configIF, lineCnt);
-	while (!lineCnt.empty() && countLeadingTabs(lineCnt) != tabBlockCount)
+	while (!lineCnt.empty() && countLeadingTabs(lineCnt) > tabBlockCount)
 	{
 		dveToInsert = NULL;
 		befNxt = getParesableLine(configIF, lineNxt);
@@ -124,11 +111,18 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 			befCnt = befNxt;
 			lineCnt = lineNxt;
 		}
-		else if (countLeadingTabs(lineNxt) > tabBlockCount + 1)
+		else if (countLeadingTabs(lineCnt) == tabBlockCount + 1 && countLeadingTabs(lineNxt) == tabBlockCount + 2)
 		{
 			configIF.seekg(befCnt);
 			dveToInsert = getNextDirectiveBlock(configIF);
 			befCnt = getParesableLine(configIF, lineCnt);
+			befNxt = befCnt;
+		}
+		else
+		{
+			std::cerr << "Error tab level at directive/ directive block: " << lineCnt << std::endl;
+			delete (dveBlock);
+			return (NULL);
 		}
 		dveBlock->insertMapDirective(dveToInsert);
 	}
@@ -136,7 +130,7 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 	return (dveBlock);
 }
 
-const std::vector<std::string> HTTPServerParser::dveKeyNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
+const std::vector<std::string> HTTPServerParser::dveNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
 
 // std::vector<WebServer *>	HTTPServerParser::parseConfigFile(std::string filename)
 void	HTTPServerParser::parseConfigFile(std::string filename)
@@ -163,6 +157,7 @@ void	HTTPServerParser::parseConfigFile(std::string filename)
 		else
 		{
 			serverBlock->printDirective();
+			serverBlock->parseDirective();
 			// servers.push_back(new WebServer(*serverBlock));
 			delete (serverBlock);
 		}

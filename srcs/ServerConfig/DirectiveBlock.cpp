@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/12 16:09:36 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/14 16:28:04 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,15 @@ void	DirectiveBlock::printDirective(void) const
 	}
 }
 
-int	DirectiveBlock::checkDirective(void) const
+int	DirectiveBlock::parseDirective(void)
 {
+	int															errorReturn;
 	std::multimap< std::string, ADirective * >::const_iterator	it;
 
-	this->ADirective::checkDirective();
-	for (it = _dvesMap.begin(); it != _dvesMap.end(); ++it)
+	errorReturn = this->ADirective::parseDirective();
+	for (it = _dvesMap.begin(); (it != _dvesMap.end() && !errorReturn); ++it)
 	{
-		it->second->printDirective();
+		errorReturn = it->second->parseDirective();
 	}
-	return (0);
+	return (errorReturn);
 }
