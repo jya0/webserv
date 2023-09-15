@@ -6,14 +6,14 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:15:28 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 14:34:36 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 12:02:19 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DIRECTIVE_SIMPLE_HPP
 # define DIRECTIVE_SIMPLE_HPP
 
-#include "ServerConfig_namespace.hpp"
+# include	"ADirective.hpp"
 
 /**
  * @brief Really just an empty class to extend ADirective so DirectiveBlock

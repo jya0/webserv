@@ -6,12 +6,12 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/14 16:35:27 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 12:12:35 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerConfig_namespace.hpp"
 #include	"ADirective.hpp"
+#include	"HTTPServerParser.hpp"
 
 /**
  * @brief Construct a new ADirective::ADirective object
@@ -19,7 +19,7 @@
  * Only has to initialise the _dveType enum DirectiveType object
  *
  */
-ADirective::ADirective(void): _dveType(serverConfig::INIT)
+ADirective::ADirective(void): _dveType(INIT)
 {
 }
 
@@ -50,7 +50,7 @@ std::vector< std::string >	ADirective::getValues(void) const
 	return (_dveValues);
 }
 
-serverConfig::DirectiveType	ADirective::getType(void) const
+DirectiveType	ADirective::getType(void) const
 {
 	return (_dveType);
 }
@@ -97,9 +97,9 @@ int	ADirective::parseDirective(void)
 	}
 	if (!errorReturn)
 	{
-		_dveType = (serverConfig::DirectiveType)(dveNameITR - HTTPServerParser::dveNames.begin());
-		if (((_dveType == serverConfig::SERVER) != _dveValues.empty())
-			|| ((_dveType >= serverConfig::AUTOINDEX && _dveType <= serverConfig::SERVER_NAME) != (dynamic_cast<DirectiveBlock *>(this) == NULL)))
+		_dveType = (DirectiveType)(dveNameITR - HTTPServerParser::dveNames.begin());
+		if (((_dveType == SERVER) != _dveValues.empty())
+			|| ((_dveType >= AUTOINDEX && _dveType <= SERVER_NAME) != (dynamic_cast<DirectiveBlock *>(this) == NULL)))
 			std::cerr << "Error " << (errorReturn = 3) << " missing or extra directive values: \"" << _dveName << "\"" << std::endl;
 	}
 	if (errorReturn)

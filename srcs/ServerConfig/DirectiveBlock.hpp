@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/14 15:27:22 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 12:02:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define DIRECTIVE_BLOCK_HPP
 
 # include	<map>
-# include "ServerConfig_namespace.hpp"
+# include	"ADirective.hpp"
 
 /**
  * @brief DirectiveBlock has a map which can contain more Directives
@@ -22,7 +22,7 @@
  * @field _dvesMap a multimap used to store all the directives, block or simple
  *
  */
-class	DirectiveBlock : public ADirective {
+class DirectiveBlock : public ADirective {
 	protected:
 		std::multimap<std::string, ADirective *>	_dvesMap;
 	public:

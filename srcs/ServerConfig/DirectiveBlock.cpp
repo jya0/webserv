@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/14 16:28:04 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 12:09:59 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< 
 	DirectiveBlock::operator[](std::string &key)
 {
 	if (_dvesMap.find(key) == _dvesMap.end())
-		std::cerr<<"Key not found: "<<key<<"\n";
+		std::cerr << "Key not found: " << key << "\n";
 	return (_dvesMap.equal_range(key));
 }
 

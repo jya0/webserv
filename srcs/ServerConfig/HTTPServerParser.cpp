@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/14 18:49:22 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 11:52:33 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,14 +132,13 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 
 const std::vector<std::string> HTTPServerParser::dveNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
 
-// std::vector<WebServer *>	HTTPServerParser::parseConfigFile(std::string filename)
-void	HTTPServerParser::parseConfigFile(std::string filename)
+std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string filename)
 {
-	DirectiveBlock				*serverBlock;
-	// std::vector<WebServer *>	servers;
-	std::ifstream				configIF;
+	DirectiveBlock					*dveBlock;
+	std::vector< DirectiveBlock * >	serverBlocks;
+	std::ifstream					configIF;
 
-	serverBlock = NULL;
+	dveBlock = NULL;
 	configIF.open(filename, std::ios::in);
 	if (!configIF.is_open())
 	{
@@ -148,22 +147,21 @@ void	HTTPServerParser::parseConfigFile(std::string filename)
 	}
 	while (configIF.peek() != EOF)
 	{
-		serverBlock = getNextDirectiveBlock(configIF);
-		if (serverBlock == NULL)
+		dveBlock = getNextDirectiveBlock(configIF);
+		if (dveBlock == NULL)
 		{
 			// servers.clear();
 			break ;
 		}
 		else
 		{
-			serverBlock->printDirective();
-			serverBlock->parseDirective();
-			// servers.push_back(new WebServer(*serverBlock));
-			delete (serverBlock);
+			dveBlock->printDirective();
+			dveBlock->parseDirective();
+			serverBlocks.push_back(dveBlock);
 		}
 	}
 	configIF.close();
-	// return (servers);
+	return (serverBlocks);
 }
 
 const char *HTTPServerParser::ParseError::what() const throw()
