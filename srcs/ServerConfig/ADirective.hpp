@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 12:11:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 19:34:13 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,37 @@
 # include	<string>
 # include	<vector>
 
+//ALL DIRECTIVE NAMES!
+/*SIMPLE*/
+# define	DVE_AUTO_INDEX		"auto_index"			":"
+# define	DVE_CGI_BIN			"cgi_bin"				":"
+# define	DVE_CMB_SIZE		"client_max_body_size"	":"
+# define	DVE_ERROR_PAGE		"error_page"			":"
+# define	DVE_INDEX			"index"					":"
+# define	DVE_LISTEN			"listen"				":"
+# define	DVE_RETURN			"return"				":"
+# define	DVE_ROOT			"root"					":"
+# define	DVE_SERVER_NAME		"server_name"			":"
+/*BLOCK*/
+# define	DVE_LIMIT_EXECPT	"limit_except"			":"
+# define	DVE_LOCATION		"location"				":"
+# define	DVE_SERVER			"server"				":"
+
 # define	SIMPLE_DIRECTIVES	\
-								" auto_index "				\
-								" cgi_bin "					\
-								" client_max_body_size "	\
-								" error_page "				\
-								" index "					\
-								" listen "					\
-								" return "					\
-								" root "					\
-								" server_name "				\
+								DVE_AUTO_INDEX			" "		\
+								DVE_CGI_BIN				" "		\
+								DVE_CMB_SIZE			" "		\
+								DVE_ERROR_PAGE			" "		\
+								DVE_INDEX				" "		\
+								DVE_LISTEN				" "		\
+								DVE_RETURN				" "		\
+								DVE_ROOT				" "		\
+								DVE_SERVER_NAME			" "
 
 # define	BLOCK_DIRECTIVES	\
-								" limit_except "			\
-								" location "				\
-								" server "
+								DVE_LIMIT_EXECPT		" "		\
+								DVE_LOCATION			" "		\
+								DVE_SERVER				" "
 
 typedef enum	DirectiveType {
 	INIT = -1,
