@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 11:52:33 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 12:38:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,12 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 		}
 		else
 		{
-			std::cerr << "Error tab level at directive/ directive block: " << lineCnt << std::endl;
+			std::cerr << "Error tab level at directive/ directive block: " << "\""  << lineCnt << "\"" << std::endl;
+			delete (dveBlock);
+			return (NULL);
+		}
+		if (dveToInsert == NULL)
+		{
 			delete (dveBlock);
 			return (NULL);
 		}
@@ -150,7 +155,7 @@ std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string fi
 		dveBlock = getNextDirectiveBlock(configIF);
 		if (dveBlock == NULL)
 		{
-			// servers.clear();
+			serverBlocks.clear();
 			break ;
 		}
 		else

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 12:09:59 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 12:59:46 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
 	_dvesMap.insert(*p);
 }
 
-std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \
-	DirectiveBlock::operator[](std::string &key)
+std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> 
+	DirectiveBlock::findDirective(const std::string &key)
 {
 	if (_dvesMap.find(key) == _dvesMap.end())
 		std::cerr << "Key not found: " << key << "\n";
