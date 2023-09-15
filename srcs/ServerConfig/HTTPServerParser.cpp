@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 19:50:21 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 19:55:16 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,21 +51,15 @@ std::ifstream &configIF, std::string &lineREF)
 static std::vector<std::string>	tokenize(const std::string &lineREF)
 {
 	std::vector<std::string>	tmpTokens;
-	std::size_t					start;
-	std::size_t					end;
+	std::istringstream			stringStream;
+	std::string					token;
 
-	start = 0;
-	while (start < lineREF.length())
+	stringStream.str(lineREF);
+	while (stringStream)
 	{
-		end = lineREF.find_first_of(SPACE_CHARSET, start);
-		if (end == std::string::npos && start < lineREF.length())
-		{
-			tmpTokens.push_back(lineREF.substr(start, end));
-			break ;
-		}
-		if (end > start)
-			tmpTokens.push_back(lineREF.substr(start, end - start));
-		start = end + 1;
+		stringStream >> token;
+		if (stringStream)
+			tmpTokens.push_back(token);
 	}
 	return (tmpTokens);
 }
