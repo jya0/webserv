@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 16:02:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 22:02:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,28 @@ void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
 	_dvesMap.insert(*p);
 }
 
-ADirective	*DirectiveBlock::findDirective(const std::string &dveName)
+/**
+ * @brief returns the array of values from directive (the frist instance if there's duplicate)
+ * 
+ * @param dveName 
+ * @return std::vector<std::string> 
+ */
+std::vector<std::string>	DirectiveBlock::checkDirectiveSimple(const std::string &dveName)
+{
+	std::multimap< std::string, ADirective * >::const_iterator	dveITR;
+
+	dveITR = _dvesMap.find(dveName);
+	if (dveITR == _dvesMap.end())
+	{
+		std::cerr << "Directive not found: " << dveName << "\n";
+		return (std::vector< std::string >());
+	}
+	else
+		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
+	return (dveITR->second->getValues());
+}
+
+DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName)
 {
 	std::multimap< std::string, ADirective * >::const_iterator	dveITR;
 
@@ -57,8 +78,25 @@ ADirective	*DirectiveBlock::findDirective(const std::string &dveName)
 		std::cerr << "Directive not found: " << dveName << "\n";
 		return (NULL);
 	}
-	std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
-	return (dveITR->second);
+	else
+		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
+	return (dynamic_cast< DirectiveBlock * >(dveITR->second));
+}
+
+DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, const std::string &searchValue)
+{
+	std::multimap< std::string, ADirective * >::const_iterator	loopITR;
+	std::pair< std::multimap< std::string, ADirective * >::const_iterator, std::multimap< std::string, ADirective * >::const_iterator>	dveITRS;
+
+	if (_dvesMap.count(dveName) == 0)
+		return (NULL);
+	dveITRS = _dvesMap.equal_range(dveName);
+	for (loopITR = dveITRS.first; loopITR != dveITRS.second; ++loopITR)
+	{
+		if (loopITR->second->getValues().front().compare(searchValue))
+			return (dynamic_cast< DirectiveBlock * >(loopITR->second));
+	}
+	return (NULL);
 }
 
 void	DirectiveBlock::printDirective(void) const

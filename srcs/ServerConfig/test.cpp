@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 19:56:08 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 22:07:41 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,8 @@ int main(void)
 
 	//Test Cases:
 	{
-		std::cout<<"Test 1 - server port: \n";
-		// serverBlocks.front()->findDirective(DVE_LOCATION).first->second->printDirective();
-		// serverBlocks.front()->findDirective(DVE_LISTEN).first->second->printDirective();
-		// std::cout << "    " << serverBlocks[0]->findDirective();
-
+		std::cout << "Test 1 - server port: " << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_LISTEN)[0] << std::endl;
 	}
 	return (0);
 }

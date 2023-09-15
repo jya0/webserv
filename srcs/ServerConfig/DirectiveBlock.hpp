@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 19:56:15 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/15 21:41:49 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,9 @@ class DirectiveBlock : public ADirective {
 
 		void	insertMapDirective(ADirective *dvePTR);
 		const std::multimap<std::string, ADirective *>	*getDirectives(void) const;
-		// ADirective	*findDirective(const std::string &dveName);
-/* 		DirectiveSimple	*checkSimpleDirective(const std::string &dveName);
-		DirectiveBlock	*checkBlockDirective(const std::string &dveName, const std::vector< std::string >);
-		DirectiveBlock	*checkBlockDirective(const std::string &dveName); */
+		std::vector<std::string>	checkDirectiveSimple(const std::string &dveName);
+		DirectiveBlock	*checkDirectiveBlock(const std::string &dveName, const std::string &dveValue);
+		DirectiveBlock	*checkDirectiveBlock(const std::string &dveName);
 /* 		std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \
 			operator[](const std::string &key); */
 		void	printDirective(void) const;
