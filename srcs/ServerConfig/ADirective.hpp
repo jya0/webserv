@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 12:14:42 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 12:43:26 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@
 # include	<string>
 # include	<vector>
 
-//ALL DIRECTIVE NAMES!
-/*SIMPLE*/
+/**
+ * @brief Definitions for all directive's string names separated by SIMPLE_DIRECTIVES and BLOCK_DIRECTIVES
+ * 
+ */
 # define	DVE_ALLOW			"allow"					":"
 # define	DVE_AUTO_INDEX		"auto_index"			":"
 # define	DVE_CGI_BIN			"cgi_bin"				":"
@@ -35,7 +37,7 @@
 # define	DVE_RETURN			"return"				":"
 # define	DVE_ROOT			"root"					":"
 # define	DVE_SERVER_NAME		"server_name"			":"
-/*BLOCK*/
+
 # define	DVE_LIMIT_EXECPT	"limit_except"			":"
 # define	DVE_LOCATION		"location"				":"
 # define	DVE_SERVER			"server"				":"
@@ -58,6 +60,10 @@
 								DVE_LOCATION			" "		\
 								DVE_SERVER				" "
 
+/**
+ * @brief this enum is used to save the type of the parsed directive DirectiveBlock or DirectiveSimple
+ * 
+ */
 typedef enum	DirectiveType {
 	INIT = -1,
 	ALLOW,
@@ -83,7 +89,11 @@ typedef enum	DirectiveType {
  * @field _dveValues used as the key for the map of Directive
  * @field _dveType enum DirectiveType is declared in the serverConfig namespace
  *
- * @method
+ * @method printDirective() can be called recursively and polymorphically to print
+ * the whole directive (if it's a block directive).
+ * @method parseDirective() is used recursively and polymorphically to parse the multimap 
+ * gotten from getNextDirectiveBlock(std::ifstream &configIF)
+ * 
  */
 class ADirective {
 	protected:
