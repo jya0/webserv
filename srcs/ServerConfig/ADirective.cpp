@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 14:56:42 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 12:07:28 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	ADirective::parseDirective(void)
 	{
 		_dveType = (DirectiveType)(dveNameITR - HTTPServerParser::dveNames.begin());
 		if (((_dveType == SERVER) != _dveValues.empty())
-			|| ((_dveType >= AUTOINDEX && _dveType <= SERVER_NAME) != (dynamic_cast<DirectiveBlock *>(this) == NULL)))
+			|| ((_dveType >= LIMIT_EXCEPT && _dveType <= SERVER) != (dynamic_cast< DirectiveSimple * >(this) == NULL)))
 			std::cerr << "Error " << (errorReturn = 3) << " missing or extra directive values: " << "\"" << _dveName << "\"" << std::endl;
 	}
 	if (errorReturn)

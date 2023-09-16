@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 19:34:13 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 12:14:42 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,11 @@
 
 //ALL DIRECTIVE NAMES!
 /*SIMPLE*/
+# define	DVE_ALLOW			"allow"					":"
 # define	DVE_AUTO_INDEX		"auto_index"			":"
 # define	DVE_CGI_BIN			"cgi_bin"				":"
 # define	DVE_CMB_SIZE		"client_max_body_size"	":"
+# define	DVE_DENY			"deny"					":"
 # define	DVE_ERROR_PAGE		"error_page"			":"
 # define	DVE_INDEX			"index"					":"
 # define	DVE_LISTEN			"listen"				":"
@@ -39,9 +41,11 @@
 # define	DVE_SERVER			"server"				":"
 
 # define	SIMPLE_DIRECTIVES	\
+								DVE_ALLOW				" "		\
 								DVE_AUTO_INDEX			" "		\
 								DVE_CGI_BIN				" "		\
 								DVE_CMB_SIZE			" "		\
+								DVE_DENY				" "		\
 								DVE_ERROR_PAGE			" "		\
 								DVE_INDEX				" "		\
 								DVE_LISTEN				" "		\
@@ -56,9 +60,11 @@
 
 typedef enum	DirectiveType {
 	INIT = -1,
+	ALLOW,
 	AUTOINDEX,
 	CGI_BIN,
 	CLIENT_MAX_BODY_SIZE,
+	DENY,
 	ERROR_PAGE,
 	INDEX,
 	LISTEN,

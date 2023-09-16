@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 22:02:43 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 11:21:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,13 @@ std::vector<std::string>	DirectiveBlock::checkDirectiveSimple(const std::string 
 	if (dveITR == _dvesMap.end())
 	{
 		std::cerr << "Directive not found: " << dveName << "\n";
-		return (std::vector< std::string >());
+		return (std::vector< std::string >(1, "EMPTY"));
 	}
 	else
+	{
 		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
+		std::cout << "Directive type: " << dveITR->second->getType() << std::endl;
+	}
 	return (dveITR->second->getValues());
 }
 
@@ -79,7 +82,10 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName)
 		return (NULL);
 	}
 	else
+	{
 		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
+		std::cout << "Directive type: " << dveITR->second->getType() << std::endl;
+	}
 	return (dynamic_cast< DirectiveBlock * >(dveITR->second));
 }
 
@@ -93,8 +99,12 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, 
 	dveITRS = _dvesMap.equal_range(dveName);
 	for (loopITR = dveITRS.first; loopITR != dveITRS.second; ++loopITR)
 	{
-		if (loopITR->second->getValues().front().compare(searchValue))
+		if (loopITR->second->getValues().front().compare(searchValue) == 0)
+		{
+			std::cout << "value of directive block is " << loopITR->second->getValues().front() << std::endl;
 			return (dynamic_cast< DirectiveBlock * >(loopITR->second));
+		}
+		// std::cout << loopITR->second->getValues().front() << ":" << searchValue << std::endl;
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 22:07:41 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 12:19:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,22 @@ int main(void)
 
 	//Test Cases:
 	{
-		std::cout << "Test 1 - server port: " << std::endl;
+		std::cout << "-----------Accessing simple directives-----------" << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_AUTO_INDEX)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_CGI_BIN)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_CMB_SIZE)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_ERROR_PAGE)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_INDEX)[0] << std::endl;
 		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_LISTEN)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_RETURN)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_ROOT)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_SERVER_NAME)[0] << std::endl;
+	}
+	{
+		std::cout << "-----------Accessing block directives-----------" << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveBlock(DVE_LOCATION)->getValues()[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveBlock(DVE_LOCATION, "/bin")->checkDirectiveSimple(DVE_RETURN)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveBlock(DVE_LIMIT_EXECPT)->getValues()[0] << std::endl;
 	}
 	return (0);
 }
