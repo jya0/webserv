@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 12:07:28 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 14:17:56 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,30 @@ ADirective::ADirective(void): _dveType(INIT)
 {
 }
 
+/**
+ * @brief Construct a new ADirective::ADirective object (copy constructor)
+ * 
+ * @param dveREF the reference to another ADirective object
+ */
 ADirective::ADirective(ADirective const	&dveREF)
 {
 	*this = dveREF;
 }
 
+/**
+ * @brief Destroy the ADirective::ADirective object
+ * 
+ */
 ADirective::~ADirective(void)
 {
 }
 
+/**
+ * @brief Assignment operator used to copy ADirective objects
+ * 
+ * @param dveREF the reference to another ADirective object
+ * @return ADirective& 
+ */
 ADirective	&ADirective::operator=(ADirective const	&dveREF)
 {
 	_dveName = dveREF.getName();
@@ -40,31 +55,60 @@ ADirective	&ADirective::operator=(ADirective const	&dveREF)
 	return (*this);
 }
 
+/**
+ * @brief getter for the _dveName attribute
+ * 
+ * @return std::string 
+ */
 std::string	ADirective::getName(void) const
 {
 	return (_dveName);
 }
 
+/**
+ * @brief getter for the _dveValues attribute which is a vector of strings
+ * 
+ * @return std::vector< std::string > 
+ */
 std::vector< std::string >	ADirective::getValues(void) const
 {
 	return (_dveValues);
 }
 
+/**
+ * @brief getter for the _dveType attribute
+ * 
+ * @return DirectiveType 
+ */
 DirectiveType	ADirective::getType(void) const
 {
 	return (_dveType);
 }
 
+/**
+ * @brief setter for the _dveName attribute
+ * 
+ * @param strREF 
+ */
 void	ADirective::setName(std::string const	&strREF)
 {
 	_dveName = strREF;
 }
 
+/**
+ * @brief setter for the vector of string value _dveValues attribute
+ * 
+ * @param strsREF 
+ */
 void	ADirective::setValues(std::vector< std::string > const	&strsREF)
 {
 	_dveValues = strsREF;
 }
 
+/**
+ * @brief called recursively and polymorphically to print the whole directive (if it's a block directive).
+ * 
+ */
 void	ADirective::printDirective(void) const
 {
 	std::cout << std::endl << _dveName << " ";
@@ -73,6 +117,14 @@ void	ADirective::printDirective(void) const
 	std::cout << std::endl;
 }
 
+/**
+ * @brief called recursively and polymorphically to parse the whole directive (if it's a block directive).
+ * 
+ * has basic checks for the structure of each directive but doesn't check the actual contents
+ * 
+ * the actual contents will be error checked with the following function call to scanDirective(void)
+ * 
+ */
 int	ADirective::parseDirective(void)
 {
 	int											errorReturn;
