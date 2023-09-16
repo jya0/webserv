@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 21:41:49 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 14:29:26 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,20 @@
  *
  * @field _dvesMap a multimap used to store all the directives, block or simple
  *
+ * @method checkDirectiveSimple(const std::string &dveNam)
+ * should only be used to get the string values of simple directives
+ * 
+ * @method checkDirectiveBlock(const std::string &dveName, const std::string &searchValue)
+ * is the 1 overload used to find a block directive with the specific searchValue
+ * 
+ * @method checkDirectiveBlock(const std::string &dveName)
+ * is the 2 overload used to find the first instance of a block directive (if there are multiple)
+ * 
+ * @method parseDirective(void) is a polymorphic override of the version from ADirective
+ * this override allows block directives to recursively parse directives stored in its own _dvesMap
+ * 
+ * @method printDirective(void) is a polymorphic override of the version from ADirective
+ * this override allows block directives to recursively print directives stored in its own _dvesMap
  */
 class DirectiveBlock : public ADirective {
 	protected:
@@ -34,10 +48,8 @@ class DirectiveBlock : public ADirective {
 		void	insertMapDirective(ADirective *dvePTR);
 		const std::multimap<std::string, ADirective *>	*getDirectives(void) const;
 		std::vector<std::string>	checkDirectiveSimple(const std::string &dveName);
-		DirectiveBlock	*checkDirectiveBlock(const std::string &dveName, const std::string &dveValue);
+		DirectiveBlock	*checkDirectiveBlock(const std::string &dveName, const std::string &searchValue);
 		DirectiveBlock	*checkDirectiveBlock(const std::string &dveName);
-/* 		std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \
-			operator[](const std::string &key); */
 		void	printDirective(void) const;
 		int		parseDirective(void);
 };
