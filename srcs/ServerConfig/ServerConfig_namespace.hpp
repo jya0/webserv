@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig_namespace.hpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:48:06 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 12:31:26 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/03 13:41:39 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_CONFIG_NAMESPACE_HPP
 # define SERVER_CONFIG_NAMESPACE_HPP
+
+# include	"ADirective.hpp"
+# include	"DirectiveSimple.hpp"
+# include	"DirectiveBlock.hpp"
+
+# define	SPACE_CHARSET	" \n\t\v\f\r"
 
 namespace	serverConfig {
 	enum DirectiveType {

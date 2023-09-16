@@ -25,6 +25,10 @@ WebServer::WebServer(std::string ip, int port) : connection(ip, port)
 {
 }
 
+WebServer::WebServer(DirectiveBlock const	&serverBlockREF): _serverConfig(serverBlockREF)
+{
+}
+
 WebServer::~WebServer() {
 }
 

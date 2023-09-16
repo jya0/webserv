@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/09/02 14:37:23 by jyao             ###   ########.fr        #
+#    Updated: 2023/09/03 14:22:55 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ NAME		:=	libconfparser.a
 # LIB			=	./lib/
 CC			=	c++
 RM			=	rm
-SRCS		=	srcs/main.cpp srcs/server/server.cpp
+FILES		=	ADirective	DirectiveBlock	DirectiveSimple	HTTPServerParser
+SRCS		=	$(addsuffix .cpp, $(FILES))
 # srcs/cgi/
 # srcs/http/
 # srcs/parser/

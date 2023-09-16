@@ -45,7 +45,7 @@ protected:
 	std::string root;
 	bool CGI;
 	std::string cgi_bin;
-	// DirectiveBlock	_serverConfig;
+	DirectiveBlock	_serverConfig;
 
 public:
     WebServer();
