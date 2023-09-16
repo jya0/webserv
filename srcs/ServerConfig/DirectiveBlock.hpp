@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 14:29:26 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 14:39:33 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@
  *
  * @field _dvesMap a multimap used to store all the directives, block or simple
  *
- * @method checkDirectiveSimple(const std::string &dveNam)
+ * @method insertMapDirective(ADirective *dvePTR)
+ * takes any object inheriting ADirective which is mem alloc'd and adds it to the calling
+ * block directive's _dvesMap
+ * 
+ * @method checkDirectiveSimple(const std::string &dveName)
  * should only be used to get the string values of simple directives
  * 
  * @method checkDirectiveBlock(const std::string &dveName, const std::string &searchValue)

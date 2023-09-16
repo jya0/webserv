@@ -6,37 +6,67 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 11:21:01 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 14:49:18 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"DirectiveBlock.hpp"
 
+/**
+ * @brief Construct a new Directive Block:: Directive Block object
+ * 
+ */
 DirectiveBlock::DirectiveBlock(void)
 {
 }
 
+/**
+ * @brief Construct a new Directive Block:: Directive Block object
+ * 
+ * @param blockREF the reference to another DirectiveBlock object
+ */
 DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF): ADirective(blockREF)
 {
 	*this = blockREF;
 }
 
+/**
+ * @brief Destroy the Directive Block:: Directive Block object
+ * 
+ */
 DirectiveBlock::~DirectiveBlock(void)
 {
 	_dvesMap.clear();
 }
 
+/**
+ * @brief Assignment operator used to copy DirectiveBlock objects 
+ * 
+ * @param blockREF the reference to another DirectiveBlock object
+ * @return DirectiveBlock& 
+ */
 DirectiveBlock	&DirectiveBlock::operator=(DirectiveBlock const	&blockREF)
 {
 	_dvesMap = *(blockREF.getDirectives());
 	return (*this);
 }
 
+/**
+ * @brief getter for the map of directives _dvesMap
+ * 
+ * @return const std::multimap<std::string, ADirective *>* 
+ */
 const std::multimap<std::string, ADirective *>	*DirectiveBlock::getDirectives(void) const
 {
 	return (&(_dvesMap));
 }
 
+/**
+ * @brief takes any object inheriting ADirective which is mem alloc'd and adds it to the calling
+ * block directive's _dvesMap
+ * 
+ * @param dvePTR a pointer to an object inheriting ADirective, it has to be mem alloc'd
+ */
 void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
 {
 	// std::pair< std::string, ADirective * > dvePair;
@@ -50,7 +80,7 @@ void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
 /**
  * @brief returns the array of values from directive (the frist instance if there's duplicate)
  * 
- * @param dveName 
+ * @param dveName the name of the directive you want to get values for
  * @return std::vector<std::string> 
  */
 std::vector<std::string>	DirectiveBlock::checkDirectiveSimple(const std::string &dveName)
@@ -71,6 +101,12 @@ std::vector<std::string>	DirectiveBlock::checkDirectiveSimple(const std::string 
 	return (dveITR->second->getValues());
 }
 
+/**
+ * @brief returns the DirectiveBlock pointer (the frist instance if there's duplicate block directives)
+ * 
+ * @param dveName the name of the directive you want to get the DirectiveBlock pointer for
+ * @return DirectiveBlock* 
+ */
 DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName)
 {
 	std::multimap< std::string, ADirective * >::const_iterator	dveITR;
@@ -89,6 +125,15 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName)
 	return (dynamic_cast< DirectiveBlock * >(dveITR->second));
 }
 
+/**
+ * @brief returns the DirectiveBlock pointer (the frist instance if there's duplicate block directives with the same searchValue)
+ * 
+ * @param dveName the name of the directive you want to get the DirectiveBlock pointer for
+ * @param searchValue the searchValue is used to find the directive block with the ADirective::_dveValues.front() equal to it
+ * note: since ADirective::_dveValues is a vector of strings, in this function the searchValue is only compared to the first string of the vector
+ * 
+ * @return DirectiveBlock* 
+ */
 DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, const std::string &searchValue)
 {
 	std::multimap< std::string, ADirective * >::const_iterator	loopITR;
@@ -109,6 +154,11 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, 
 	return (NULL);
 }
 
+/**
+ * @brief this override of ADirective::printDirective(void) 
+ * allows block directives to recursively print directives stored in its own _dvesMap
+ * 
+ */
 void	DirectiveBlock::printDirective(void) const
 {
 	std::multimap< std::string, ADirective * >::const_iterator	it;
@@ -120,6 +170,14 @@ void	DirectiveBlock::printDirective(void) const
 	}
 }
 
+/**
+ * @brief this override of ADirective::parseDirective(void) 
+ * allows block directives to recursively parse directives stored in its own _dvesMap
+ * 
+ * it will stop its parsing loop of its directive in its _dvesMap the moment an errorReturn occurs
+ * 
+ * @return int 
+ */
 int	DirectiveBlock::parseDirective(void)
 {
 	int															errorReturn;
