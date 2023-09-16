@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 12:43:26 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 15:14:06 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 # include	<vector>
 
 /**
- * @brief Definitions for all directive's string names separated by SIMPLE_DIRECTIVES and BLOCK_DIRECTIVES
+ * @brief Definitions for all directive's string names separated by 
+ * SIMPLE_DIRECTIVES and BLOCK_DIRECTIVES
  * 
  */
 # define	DVE_ALLOW			"allow"					":"
@@ -61,7 +62,8 @@
 								DVE_SERVER				" "
 
 /**
- * @brief this enum is used to save the type of the parsed directive DirectiveBlock or DirectiveSimple
+ * @brief this enum is used to save the type of the parsed directive 
+ * DirectiveBlock or DirectiveSimple
  * 
  */
 typedef enum	DirectiveType {
@@ -91,7 +93,8 @@ typedef enum	DirectiveType {
  *
  * @method printDirective() can be called recursively and polymorphically to print
  * the whole directive (if it's a block directive).
- * @method parseDirective() is used recursively and polymorphically to parse the multimap 
+ * @method parseDirective() is used recursively and 
+ * polymorphically to parse the multimap 
  * gotten from getNextDirectiveBlock(std::ifstream &configIF)
  * 
  */

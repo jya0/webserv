@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 14:39:33 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 15:17:15 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
  * @field _dvesMap a multimap used to store all the directives, block or simple
  *
  * @method insertMapDirective(ADirective *dvePTR)
- * takes any object inheriting ADirective which is mem alloc'd and adds it to the calling
+ * takes any object inheriting ADirective which is mem alloc'd 
+ * and adds it to the calling
  * block directive's _dvesMap
  * 
  * @method checkDirectiveSimple(const std::string &dveName)
@@ -32,13 +33,18 @@
  * is the 1 overload used to find a block directive with the specific searchValue
  * 
  * @method checkDirectiveBlock(const std::string &dveName)
- * is the 2 overload used to find the first instance of a block directive (if there are multiple)
+ * is the 2 overload used to find the first instance 
+ * of a block directive (if there are multiple)
  * 
- * @method parseDirective(void) is a polymorphic override of the version from ADirective
- * this override allows block directives to recursively parse directives stored in its own _dvesMap
+ * @method parseDirective(void) is a polymorphic override of 
+ * the version from ADirective
+ * this override allows block directives to recursively parse directives
+ *  stored in its own _dvesMap
  * 
- * @method printDirective(void) is a polymorphic override of the version from ADirective
- * this override allows block directives to recursively print directives stored in its own _dvesMap
+ * @method printDirective(void) is a polymorphic override 
+ * of the version from ADirective
+ * this override allows block directives to recursively print
+ *  directives stored in its own _dvesMap
  */
 class DirectiveBlock : public ADirective {
 	protected:

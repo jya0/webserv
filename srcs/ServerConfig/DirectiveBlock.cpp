@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 14:49:18 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 15:19:04 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,12 @@ const std::multimap<std::string, ADirective *>	*DirectiveBlock::getDirectives(vo
 }
 
 /**
- * @brief takes any object inheriting ADirective which is mem alloc'd and adds it to the calling
+ * @brief takes any object inheriting ADirective which is mem alloc'd 
+ * and adds it to the calling
  * block directive's _dvesMap
  * 
- * @param dvePTR a pointer to an object inheriting ADirective, it has to be mem alloc'd
+ * @param dvePTR a pointer to an object inheriting ADirective, 
+ * it has to be mem alloc'd
  */
 void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
 {
@@ -73,12 +75,14 @@ void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
 
 	// dvePair = std::make_pair(dvePTR->getName(), dvePTR);
 	// std::multimap<std::string, ADirective *>	ma;
-	std::pair<std::string, ADirective *> *p = new std::pair<std::string, ADirective *>(dvePTR->getName(), dvePTR);
+	std::pair<std::string, ADirective *> *p = 
+		new std::pair<std::string, ADirective *>(dvePTR->getName(), dvePTR);
 	_dvesMap.insert(*p);
 }
 
 /**
- * @brief returns the array of values from directive (the frist instance if there's duplicate)
+ * @brief returns the array of values from 
+ * directive (the frist instance if there's duplicate)
  * 
  * @param dveName the name of the directive you want to get values for
  * @return std::vector<std::string> 
@@ -95,16 +99,20 @@ std::vector<std::string>	DirectiveBlock::checkDirectiveSimple(const std::string 
 	}
 	else
 	{
-		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
-		std::cout << "Directive type: " << dveITR->second->getType() << std::endl;
+		std::cout << "Found " << _dvesMap.count(dveName) << 
+			" " << dveName << std::endl;
+		std::cout << "Directive type: " << 
+			dveITR->second->getType() << std::endl;
 	}
 	return (dveITR->second->getValues());
 }
 
 /**
- * @brief returns the DirectiveBlock pointer (the frist instance if there's duplicate block directives)
+ * @brief returns the DirectiveBlock pointer 
+ * (the frist instance if there's duplicate block directives)
  * 
- * @param dveName the name of the directive you want to get the DirectiveBlock pointer for
+ * @param dveName the name of the directive you want to 
+ * get the DirectiveBlock pointer for
  * @return DirectiveBlock* 
  */
 DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName)
@@ -119,18 +127,23 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName)
 	}
 	else
 	{
-		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
-		std::cout << "Directive type: " << dveITR->second->getType() << std::endl;
+		std::cout << "Found " << _dvesMap.count(dveName) << 
+			" " << dveName << std::endl;
+		std::cout << "Directive type: " << 
+			dveITR->second->getType() << std::endl;
 	}
 	return (dynamic_cast< DirectiveBlock * >(dveITR->second));
 }
 
 /**
- * @brief returns the DirectiveBlock pointer (the frist instance if there's duplicate block directives with the same searchValue)
+ * @brief returns the DirectiveBlock pointer 
+ * (the frist instance if there's duplicate block directives with the same searchValue)
  * 
  * @param dveName the name of the directive you want to get the DirectiveBlock pointer for
- * @param searchValue the searchValue is used to find the directive block with the ADirective::_dveValues.front() equal to it
- * note: since ADirective::_dveValues is a vector of strings, in this function the searchValue is only compared to the first string of the vector
+ * @param searchValue the searchValue is used to find the 
+ * directive block with the ADirective::_dveValues.front() equal to it
+ * note: since ADirective::_dveValues is a vector of strings, in this 
+ * function the searchValue is only compared to the first string of the vector
  * 
  * @return DirectiveBlock* 
  */
@@ -146,7 +159,8 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, 
 	{
 		if (loopITR->second->getValues().front().compare(searchValue) == 0)
 		{
-			std::cout << "value of directive block is " << loopITR->second->getValues().front() << std::endl;
+			std::cout << "value of directive block is " 
+				<< loopITR->second->getValues().front() << std::endl;
 			return (dynamic_cast< DirectiveBlock * >(loopITR->second));
 		}
 		// std::cout << loopITR->second->getValues().front() << ":" << searchValue << std::endl;
@@ -156,7 +170,8 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, 
 
 /**
  * @brief this override of ADirective::printDirective(void) 
- * allows block directives to recursively print directives stored in its own _dvesMap
+ * allows block directives to recursively print 
+ * directives stored in its own _dvesMap
  * 
  */
 void	DirectiveBlock::printDirective(void) const
@@ -172,9 +187,11 @@ void	DirectiveBlock::printDirective(void) const
 
 /**
  * @brief this override of ADirective::parseDirective(void) 
- * allows block directives to recursively parse directives stored in its own _dvesMap
+ * allows block directives to recursively parse directives 
+ * stored in its own _dvesMap
  * 
- * it will stop its parsing loop of its directive in its _dvesMap the moment an errorReturn occurs
+ * it will stop its parsing loop of its directive in its _dvesMap
+ * the moment an errorReturn occurs
  * 
  * @return int 
  */

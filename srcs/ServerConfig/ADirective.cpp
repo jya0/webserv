@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 14:17:56 by jyao             ###   ########.fr       */
+/*   Updated: 2023/09/16 15:16:18 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,23 +106,29 @@ void	ADirective::setValues(std::vector< std::string > const	&strsREF)
 }
 
 /**
- * @brief called recursively and polymorphically to print the whole directive (if it's a block directive).
+ * @brief called recursively and polymorphically to print the 
+ * whole directive (if it's a block directive).
  * 
  */
 void	ADirective::printDirective(void) const
 {
+	std::vector< std::string >::const_iterator it;
+
 	std::cout << std::endl << _dveName << " ";
-	for (std::vector< std::string >::const_iterator it = _dveValues.begin(); it != _dveValues.end(); ++it)
+	for (it = _dveValues.begin(); it != _dveValues.end(); ++it)
 		std::cout << *it << " ";
 	std::cout << std::endl;
 }
 
 /**
- * @brief called recursively and polymorphically to parse the whole directive (if it's a block directive).
+ * @brief called recursively and polymorphically to parse the 
+ * whole directive (if it's a block directive).
  * 
- * has basic checks for the structure of each directive but doesn't check the actual contents
+ * has basic checks for the structure of each directive but 
+ * doesn't check the actual contents
  * 
- * the actual contents will be error checked with the following function call to scanDirective(void)
+ * the actual contents will be error checked with the following 
+ * function call to scanDirective(void)
  * 
  */
 int	ADirective::parseDirective(void)
@@ -138,20 +144,26 @@ int	ADirective::parseDirective(void)
 	{
 		colonLoc = _dveName.find_first_of(":", 0);
 		if (colonLoc == std::string::npos || (colonLoc + 1) != _dveName.length())
-			std::cerr << "Error " << (errorReturn = 1) << " missing or wrong ':' at " << "\"" << _dveName << "\"" << std::endl;
+			std::cerr << "Error " << (errorReturn = 1) << 
+				" missing or wrong ':' at " << "\"" << _dveName << "\"" << std::endl;
 	}
 	if (!errorReturn)
 	{
-		dveNameITR = std::find(HTTPServerParser::dveNames.begin(), HTTPServerParser::dveNames.end(), _dveName);
+		dveNameITR = std::find(HTTPServerParser::dveNames.begin(), 
+			HTTPServerParser::dveNames.end(), _dveName);
 		if (dveNameITR == HTTPServerParser::dveNames.end())
-			std::cerr << "Error " << (errorReturn = 2) << " directive name: " << "\"" << _dveName << "\"" << std::endl;
+			std::cerr << "Error " << (errorReturn = 2) << 
+				" directive name: " << "\"" << _dveName << "\"" << std::endl;
 	}
 	if (!errorReturn)
 	{
 		_dveType = (DirectiveType)(dveNameITR - HTTPServerParser::dveNames.begin());
 		if (((_dveType == SERVER) != _dveValues.empty())
-			|| ((_dveType >= LIMIT_EXCEPT && _dveType <= SERVER) != (dynamic_cast< DirectiveSimple * >(this) == NULL)))
-			std::cerr << "Error " << (errorReturn = 3) << " missing or extra directive values: " << "\"" << _dveName << "\"" << std::endl;
+			|| ((_dveType >= LIMIT_EXCEPT && _dveType <= SERVER) 
+				!= (dynamic_cast< DirectiveSimple * >(this) == NULL)))
+			std::cerr << "Error " << (errorReturn = 3) << 
+				" missing or extra directive values: " << 
+					"\"" << _dveName << "\"" << std::endl;
 	}
 	if (errorReturn)
 		std::cerr << "Error at non-space line " << nonSpaceLineNo << std::endl;
