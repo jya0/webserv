@@ -78,7 +78,7 @@ void ServerSocket::startConnection()
 {
 	passive_socket = socket(AF_INET, SOCK_STREAM, 0);
 	const int enable = 1;
-	// setsockopt(passive_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+	setsockopt(passive_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
 	// setsockopt(passive_socket, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
 
 	if (passive_socket < 0)
@@ -122,7 +122,7 @@ void ServerSocket::acceptConnection()
 		log(ss.str());
 	}
 	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
-	// std::cout<<"Connection accepted!\n";
+	std::cout<<"Connection accepted!\n";
 }
 
 void ServerSocket::closeConnection()

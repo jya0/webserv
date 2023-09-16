@@ -3,6 +3,7 @@
 
 # include	<iostream>
 # include	<string.h>
+#include <map>
 # include   <vector>
 # include	<utility>
 # include	<string>
@@ -16,15 +17,13 @@
 # include	<cstddef>
 # include	<netinet/in.h>
 # include	<sys/socket.h>
-# include	<sys/event.h>
 # include	"../srcs/http/Http_namespace.hpp"
-# include	"../srcs/ServerConfig/ServerConfig_namespace.hpp"
+// # include	"../srcs/ServerConfig/ServerConfig_namespace.hpp"
 # include	"cgi.hpp"
 # include	"ServerSocket.hpp"
 # include <cstddef>
 #include <netinet/in.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/event.h>
 #include <sys/ioctl.h>
 # include "../srcs/http/Http_namespace.hpp"
@@ -50,7 +49,7 @@ protected:
 
 public:
     WebServer();
-	WebServer(const DirectiveBlock &serverBlockREF);
+	// WebServer(const DirectiveBlock &serverBlockREF);
     WebServer(std::string ip, int port);
     ~WebServer();
 

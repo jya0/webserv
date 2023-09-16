@@ -6,12 +6,12 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 12:47:05 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/16 12:29:40 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"HTTPServerParser.hpp"
-
+#include	<stack>
 static ADirective	*getDirective(std::stack<std::string> &tmpStack)
 {
 	DirectiveSimple				*directive;

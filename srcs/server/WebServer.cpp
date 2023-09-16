@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/03 14:05:57 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/09/16 12:55:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 WebServer::WebServer()
 {
 }
-WebServer::WebServer(const DirectiveBlock &serverBlockREF)
-{
+// WebServer::WebServer(const DirectiveBlock &serverBlockREF)
+// {
 
-}
+// }
 
 WebServer::WebServer(std::string ip, int port) : connection(ip, port)
 {
