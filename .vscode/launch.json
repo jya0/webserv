@@ -12,7 +12,7 @@
 			"program": "${workspaceFolder}/webserv",
 			"args": ["1"],
 			"environment": [],
-			"cwd": "${workspaceFolder}",
+			"cwd": "${fileDirname}",
 			"MIMode": "lldb",
 			"logging": {
 				"engineLogging": true,

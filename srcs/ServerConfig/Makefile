@@ -6,38 +6,40 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/09/03 14:22:55 by jyao             ###   ########.fr        #
+#    Updated: 2023/09/15 14:40:20 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile -*-
 
-NAME		:=	libconfparser.a
+# NAME		:=	libconfparser.a
+NAME		:=	parserTEST
+HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	HTTPServerParser.hpp
+INCLUDES	=	-I.
 
-# LIB			=	./lib/
 CC			=	c++
 RM			=	rm
-FILES		=	ADirective	DirectiveBlock	DirectiveSimple	HTTPServerParser
+FILES		=	ADirective	DirectiveBlock	DirectiveSimple	HTTPServerParser	test
 SRCS		=	$(addsuffix .cpp, $(FILES))
-# srcs/cgi/
-# srcs/http/
-# srcs/parser/
-# srcs/socket/
 
 OBJS		=	${SRCS:.cpp=.o}
 CFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 
-all:	$(NAME)
+all: $(NAME)
 
-$(NAME):	$(OBJS)
-		$(CC) $(CFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# $(LIB):
-# 		#make -C ./lib/
+$(NAME): $(HEADERS) $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
+#	ar -rcs $@ $^
+
 clean:
-		${RM} -rf $(OBJS)
+	${RM} -rf $(OBJS)
+
 fclean:	clean
-		${RM} -rf ${NAME}
+	${RM} -rf ${NAME}
+
 re:		fclean all
 
 .PHONY: all clean fclean re
