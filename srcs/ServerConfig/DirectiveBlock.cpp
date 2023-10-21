@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/10/21 15:11:13 by jyao             ###   ########.fr       */
+/*   Updated: 2023/10/21 16:45:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF): ADirective(block
 	*this = blockREF;
 }
 
-DirectiveBlock::~DirectiveBlock(void)
+void	DirectiveBlock::clearDvesMap(void)
 {
-	std::multimap<std::string, ADirective *>::const_iterator	iter;
+	std::multimap<std::string, ADirective *>::const_iterator iter;
 
-	for (iter = _dvesMap.begin(); iter != _dvesMap.end(); iter++)
+	for (iter = _dvesMap.begin(); iter != _dvesMap.end(); ++iter)
 	{
 		delete (iter->second);
 	}
@@ -33,13 +33,19 @@ DirectiveBlock::~DirectiveBlock(void)
 	// delete (_dvesMap.begin()->second);
 }
 
+DirectiveBlock::~DirectiveBlock(void)
+{
+	clearDvesMap();
+}
+
 DirectiveBlock	&DirectiveBlock::operator=(DirectiveBlock const	&blockREF)
 {
-	_dvesMap = *(blockREF.getDirectives());
+	clearDvesMap();
+	_dvesMap = *(blockREF.getDvesMap());
 	return (*this);
 }
 
-const std::multimap<std::string, ADirective *>	*DirectiveBlock::getDirectives(void) const
+const std::multimap<std::string, ADirective *>	*DirectiveBlock::getDvesMap(void) const
 {
 	return (&(_dvesMap));
 }
