@@ -42,6 +42,7 @@ protected:
 	std::vector<std::pair<std::string, std::string> > redirections;
 	// std::byte methods;
 	bool autoindex;
+	
 	std::string index;
 	std::string root;
 	bool CGI;

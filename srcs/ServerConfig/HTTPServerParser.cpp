@@ -3,15 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 16:49:24 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/10/21 16:27:35 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"HTTPServerParser.hpp"
 #include 	<utility>
+#include	<fstream>
+#include	<sstream>
+#include	<cstdlib>
 
 static ADirective	*tokenToDirective(std::vector<std::string> &tokens)
 {
@@ -138,7 +141,7 @@ std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string fi
 	std::ifstream					configIF;
 
 	dveBlock = NULL;
-	configIF.open(filename, std::ios::in);
+	configIF.open(filename.c_str(), std::ios::in);
 	if (!configIF.is_open())
 	{
 		std::cerr << "Could not open file" << std::endl;
@@ -157,6 +160,7 @@ std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string fi
 			dveBlock->printDirective();
 			dveBlock->parseDirective();
 			serverBlocks.push_back(dveBlock);
+			break ;
 		}
 	}
 	configIF.close();

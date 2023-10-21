@@ -6,12 +6,13 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 14:56:42 by jyao             ###   ########.fr       */
+/*   Updated: 2023/10/21 14:55:41 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"ADirective.hpp"
 #include	"HTTPServerParser.hpp"
+#include	<algorithm>
 
 /**
  * @brief Construct a new ADirective::ADirective object

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/16 16:59:46 by jyao             ###   ########.fr       */
+/*   Updated: 2023/10/21 16:29:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,12 @@ int main(void)
 	{
 		std::cout << "-----------Accessing block directives-----------" << std::endl;
 		std::cout << serverBlocks[0]->checkDirectiveBlock(DVE_LOCATION)->getValues()[0] << std::endl;
-		std::cout << serverBlocks[0]->checkDirectiveBlock(DVE_LOCATION, "/bin")->checkDirectiveSimple(DVE_RETURN)[0] << std::endl;
+		// std::cout << serverBlocks[0]->checkDirectiveBlock(DVE_LOCATION, "/bin")->checkDirectiveSimple(DVE_RETURN) << std::endl;
 		std::cout << serverBlocks[0]->checkDirectiveBlock(DVE_LIMIT_EXECPT)->getValues()[0] << std::endl;
+	}
+	for (std::vector< DirectiveBlock * >::const_iterator iter = serverBlocks.begin(); iter != serverBlocks.end(); ++iter)
+	{
+		delete (*iter);
 	}
 	return (0);
 }

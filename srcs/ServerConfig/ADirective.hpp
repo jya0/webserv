@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 19:34:13 by jyao             ###   ########.fr       */
+/*   Updated: 2023/10/21 13:28:51 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 # define DIRECTIVE_HPP
 
 # include	<iostream>
-# include	<utility>
-# include	<string>
-# include	<sstream>
-# include	<fstream>
-# include	<istream>
-# include	<string>
 # include	<vector>
 
 //ALL DIRECTIVE NAMES!

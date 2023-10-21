@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 22:02:43 by jyao             ###   ########.fr       */
+/*   Updated: 2023/10/21 15:11:13 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,14 @@ DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF): ADirective(block
 
 DirectiveBlock::~DirectiveBlock(void)
 {
-	_dvesMap.clear();
+	std::multimap<std::string, ADirective *>::const_iterator	iter;
+
+	for (iter = _dvesMap.begin(); iter != _dvesMap.end(); iter++)
+	{
+		delete (iter->second);
+	}
+	// _dvesMap.clear();
+	// delete (_dvesMap.begin()->second);
 }
 
 DirectiveBlock	&DirectiveBlock::operator=(DirectiveBlock const	&blockREF)
@@ -39,12 +46,14 @@ const std::multimap<std::string, ADirective *>	*DirectiveBlock::getDirectives(vo
 
 void	DirectiveBlock::insertMapDirective(ADirective *dvePTR)
 {
-	// std::pair< std::string, ADirective * > dvePair;
+	std::pair< std::string, ADirective * > dvePair;
 
-	// dvePair = std::make_pair(dvePTR->getName(), dvePTR);
+	if (dvePTR == NULL)
+		return ;
+	dvePair = std::make_pair(dvePTR->getName(), dvePTR);
 	// std::multimap<std::string, ADirective *>	ma;
-	std::pair<std::string, ADirective *> *p = new std::pair<std::string, ADirective *>(dvePTR->getName(), dvePTR);
-	_dvesMap.insert(*p);
+	// std::pair<std::string, ADirective *> *p = new std::pair<std::string, ADirective *>(dvePTR->getName(), dvePTR);
+	_dvesMap.insert(dvePair);
 }
 
 /**
