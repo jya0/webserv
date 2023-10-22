@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/10/22 16:48:21 by jyao             ###   ########.fr       */
+/*   Updated: 2023/10/22 16:54:31 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ class	ServerConfig {
 
 class	ServerConfig::Location: public ServerConfig {
 	private:
-	protected:
-	public:
 		class	LimitExcept {
 			private:
 			protected:
@@ -76,6 +74,8 @@ class	ServerConfig::Location: public ServerConfig {
 				LimitExcept(const LimitExcept &limitExceptREF);
 				LimitExcept &operator=(const LimitExcept &limitExceptREF);
 		};
+	protected:
+	public:
 		LimitExcept	limitExcept;
 
 		Location(void);
