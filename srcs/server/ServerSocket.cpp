@@ -1,4 +1,4 @@
-#include "../inc/ServerSocket.hpp"
+#include "../../inc/ServerSocket.hpp"
 
 static void log(std::string mesg)
 {
@@ -10,12 +10,12 @@ ServerSocket::ServerSocket()
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
-	peer_socket = -1;
+	// peer_socket = -1;
 	startConnection();
 }
 
 ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
-													  passive_socket(), peer_socket(-1), socket_address(),
+													  passive_socket(), socket_address(),
 													  socket_address_len(sizeof(socket_address))
 {
 	socket_address.sin_family = AF_INET;
@@ -31,6 +31,7 @@ ServerSocket::~ServerSocket()
 
 std::string ServerSocket::generateDefaultResponse()
 {
+	std::cout<<"YO\n\n";
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
 	ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << "\r\n\r\n"
@@ -38,7 +39,7 @@ std::string ServerSocket::generateDefaultResponse()
 	return ss.str();
 }
 
-std::string ServerSocket::recieveData()
+std::string ServerSocket::recieveData(int peer_socket)
 {
 	long bytesRecieved;
     char buffer[BUFFER_SIZE] = {0};
@@ -61,7 +62,7 @@ std::string ServerSocket::recieveData()
 	return (std::string(buffer));
 }
 
-void ServerSocket::sendData(std::string message)
+void ServerSocket::sendData(int peer_socket, std::string message)
 {
     long bytesSent;
     //replace write with SEND function
@@ -77,8 +78,8 @@ void ServerSocket::sendData(std::string message)
 void ServerSocket::startConnection()
 {
 	passive_socket = socket(AF_INET, SOCK_STREAM, 0);
-	const int enable = 1;
-	setsockopt(passive_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+	// const int enable = 1;
+	// setsockopt(passive_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
 	// setsockopt(passive_socket, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
 
 	if (passive_socket < 0)
@@ -109,9 +110,9 @@ void ServerSocket::startListening()
 	log(ss.str());
 }
 
-void ServerSocket::acceptConnection()
+int ServerSocket::acceptConnection()
 {
-    peer_socket = accept(passive_socket, (sockaddr *)&socket_address,
+    int peer_socket = accept(passive_socket, (sockaddr *)&socket_address,
 						&socket_address_len);
 	if (peer_socket < 0)
 	{
@@ -123,19 +124,14 @@ void ServerSocket::acceptConnection()
 	}
 	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	std::cout<<"Connection accepted!\n";
+	return (peer_socket);
 }
 
 void ServerSocket::closeConnection()
 {
-	close(peer_socket);
-	peer_socket = -1;
-	// close(passive_socket);
-}
-
-
-const int &ServerSocket::getPeerSocket()
-{
-	return (peer_socket);
+	// close(peer_socket);
+	// peer_socket = -1;
+	close(passive_socket);
 }
 
 const int &ServerSocket::getPassiveSocket()

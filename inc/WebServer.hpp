@@ -27,6 +27,7 @@
 #include <sys/event.h>
 #include <sys/ioctl.h>
 # include "../srcs/http/Http_namespace.hpp"
+#include <poll.h>
 # define SERVERS_UP 2
 
 using namespace http;
@@ -36,6 +37,7 @@ class WebServer {
 protected:
 	/* add stuff*/
 	ServerSocket connection;
+	std::vector<int> clients;
 	std::vector<std::string> server_names;
 	std::string defaultErrorPagePath;
 	size_t max_body_size;
@@ -47,6 +49,7 @@ protected:
 	bool CGI;
 	std::string cgi_bin;
 	DirectiveBlock	*_serverConfig;
+	std::map<int, Response*> responses;
 
 public:
     WebServer();
@@ -56,11 +59,11 @@ public:
 
 	ServerSocket &getConnection();
 	Request &recieveRequest();
-	void sendResponse(const Response &response);
-
-	void sendData(std::string message);
-	std::string recieveData();
-	Request receiveRequest(std::string );
+	void sendResponse(int client, const Response &response);
+	void prepareResponse(int client);
+	void sendData(int client, std::string message);
+	std::string recieveData(int client);
+	Request receiveRequest(int client, std::string );
 	Response handleRequest(const Request &request) const ;
 	Response handleGet(const Request &request) const ;
 	Response handlePost(const Request &request) const ;
@@ -69,12 +72,14 @@ public:
 	Response handleHead(const Request &request) const ;
 	Response handleCGI()const ;
 
+	void startServer();
 	void startConnection();
 	void startListening();
-	void acceptConnection();
-	void closeConnection();
-
-
+	int acceptConnection();
+	void closeServerConnection();
+	void closeClientConnection(int client);
+	bool connectedClient(int client) const ;
+	bool responseReady(int client);
 
 };
 

@@ -6,11 +6,13 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/09/16 12:55:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/10/29 06:38:58 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/WebServer.hpp"
+#include "../../inc/PollManager.hpp"
+
 #include <fstream>
 
 WebServer::WebServer()
@@ -25,9 +27,9 @@ WebServer::WebServer(std::string ip, int port) : connection(ip, port)
 {
 }
 
-WebServer::WebServer(DirectiveBlock const	&serverBlockREF): _serverConfig(&serverBlockREF)
-{
-}
+// WebServer::WebServer(DirectiveBlock const	&serverBlockREF): _serverConfig(&serverBlockREF)
+// {
+// }
 
 WebServer::~WebServer() {
 }
@@ -42,25 +44,34 @@ void WebServer::startListening()
 	connection.startListening();
 }
 
-void WebServer::acceptConnection()
+int WebServer::acceptConnection()
 {
-	connection.acceptConnection();
+	int client;
+
+	client = connection.acceptConnection();
+	clients.push_back(client);
+	return (client);
 }
 
-void WebServer::closeConnection()
+void WebServer::closeServerConnection()
 {
 	connection.closeConnection();
-	close(connection.getPassiveSocket());
 }
 
-void WebServer::sendData(std::string message)
+void WebServer::closeClientConnection(int client)
 {
-	connection.sendData(message);
+	close(client);
 }
 
-std::string WebServer::recieveData()
+
+void WebServer::sendData(int client, std::string message)
 {
-	return (connection.recieveData());
+	connection.sendData(client, message);
+}
+
+std::string WebServer::recieveData(int client)
+{
+	return (connection.recieveData(client));
 }
 
 
@@ -69,17 +80,22 @@ ServerSocket &WebServer::getConnection()
 	return (connection);
 }
 
-Request WebServer::receiveRequest(std::string rawRequest) {
+Request WebServer::receiveRequest(int client, std::string rawRequest) {
     Request request(rawRequest);
     if (!request.validate()) {
-        sendResponse(Response(400));
+        sendResponse(client, Response(400));
     }
     return (request);
 }
 
-void WebServer::sendResponse(const Response &response) {
+void WebServer::sendResponse(int client, const Response &response) {
 	std::string rawResponse = response.getRawMessage();
-    sendData(rawResponse);
+    sendData(client, rawResponse);
+}
+
+void WebServer::prepareResponse(int client) {
+	responses[client] = new Response(ServerSocket::generateDefaultResponse());
+	responses[client]->setResponseStatus(true);
 }
 
 Response WebServer::handleRequest(const Request &request) const {
@@ -152,4 +168,54 @@ Response WebServer::handleHead(const Request &request) const {
     Response response(200);
     // @todo
     return (response);
+}
+
+bool WebServer::connectedClient(int client) const{
+	write(1, "Hi\n", 3);
+	return (std::find(clients.begin(), clients.end(), client) != clients.end());
+}
+
+bool WebServer::responseReady(int client){
+	return (responses[client]->responseReady());
+}
+
+void WebServer::startServer() {
+	PollManager sockets(1);
+	int i = 0;
+	sockets.addFd(this->getConnection().getPassiveSocket(), POLLIN);
+	startListening();
+
+	int rc;
+	int triggered;
+	int client;
+	while (2) {
+		rc = sockets.callPoll();
+		if (rc < 0) {
+			perror("poll() failed");
+			break;
+		}
+
+		for (i = 0; i < sockets.getNfds(); i++) {
+			triggered = sockets[i].fd;
+
+			if (sockets[i].revents & POLLIN) {
+				if (triggered == this->getConnection().getPassiveSocket()) {
+					client = acceptConnection();
+					if (client != -1)
+						sockets.addFd(client, POLLIN | POLLOUT);
+				}
+				else {
+					std::cout << "Triggered = " << triggered;
+					recieveData(triggered);
+					prepareResponse(triggered);
+				}
+			}
+			else if ((sockets[i].revents & POLLOUT) && responseReady(triggered)) {
+				sendResponse(triggered, *responses[triggered]);
+				responses[triggered]->setResponseStatus(false);
+				closeClientConnection(triggered);
+				sockets.removeFd(triggered);
+			}
+		}
+	}
 }
