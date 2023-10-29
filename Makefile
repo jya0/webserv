@@ -1,9 +1,9 @@
 NAME		=	webserv
 
 # LIB			=	./lib/
-CC			=	c++
+CXX			=	c++
 RM			=	rm
-SRCS		=	srcs/main.cpp srcs/ServerSocket.cpp\
+SRCS		=	srcs/main.cpp srcs/server/PollManager.cpp srcs/server/ServerSocket.cpp\
 				srcs/server/WebServer.cpp\
 				srcs/http/AMessage.cpp srcs/http/Header.cpp srcs/http/Request.cpp srcs/http/Response.cpp
 # srcs/cgi/
@@ -13,15 +13,15 @@ SRCS		=	srcs/main.cpp srcs/ServerSocket.cpp\
 # srcs/ServerConfig/HTTPServerParser.cpp
 
 OBJS		=	${SRCS:.cpp=.o}
-CFLAGS		=	-g3 -Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS		=	-g3 #-Wall -Wextra -Werror -g3 -std=c++98
 
 all:	$(NAME)
 
 .cpp: .o
-	$(CC) $(CFLAGS) -I ../inc/webserv.h  -g3 -cpp $< -o ${<:.cpp=.o}
+	$(CXX) $(CXXFLAGS) -I ../inc/webserv.h  -g3 -cpp $< -o ${<:.cpp=.o}
 
 $(NAME):	$(OBJS)
-		$(CC) $(CFLAGS) -I ../inc/webserv.h  -g3 $(OBJS) -o $(NAME)
+		$(CXX) $(CXXFLAGS) -I ../inc/webserv.h  -g3 $(OBJS) -o $(NAME)
 
 # $(LIB):
 # 		#make -C ./lib/
