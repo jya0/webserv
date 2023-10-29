@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/10/29 06:38:58 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/10/29 07:11:34 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,8 @@ bool WebServer::connectedClient(int client) const{
 }
 
 bool WebServer::responseReady(int client){
+	if (responses.count(client) == 0)
+		return (false);
 	return (responses[client]->responseReady());
 }
 
@@ -198,23 +200,26 @@ void WebServer::startServer() {
 		for (i = 0; i < sockets.getNfds(); i++) {
 			triggered = sockets[i].fd;
 
-			if (sockets[i].revents & POLLIN) {
-				if (triggered == this->getConnection().getPassiveSocket()) {
-					client = acceptConnection();
-					if (client != -1)
-						sockets.addFd(client, POLLIN | POLLOUT);
-				}
-				else {
-					std::cout << "Triggered = " << triggered;
-					recieveData(triggered);
-					prepareResponse(triggered);
-				}
-			}
-			else if ((sockets[i].revents & POLLOUT) && responseReady(triggered)) {
+			if ((sockets[i].revents & POLLOUT) && responseReady(triggered)) {
 				sendResponse(triggered, *responses[triggered]);
 				responses[triggered]->setResponseStatus(false);
 				closeClientConnection(triggered);
 				sockets.removeFd(triggered);
+			}
+			else if (sockets[i].revents & POLLIN)
+			{
+				if (triggered == this->getConnection().getPassiveSocket())
+				{
+					client = acceptConnection();
+					if (client != -1)
+						sockets.addFd(client, POLLIN | POLLOUT);
+				}
+				else
+				{
+					std::cout << "Triggered = " << triggered;
+					recieveData(triggered);
+					prepareResponse(triggered);
+				}
 			}
 		}
 	}
