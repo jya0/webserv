@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/03 14:25:56 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/10/29 06:23:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ using namespace http;
  * @brief Construct a new Response object (default constructor)
  */
 Response::Response(void) : AMessage(){
-    return ;
+    _ready = false;
+	return ;
 }
 
 /**
@@ -30,7 +31,8 @@ Response::Response(int status) {
     this->_httpVersion = "HTTP/1.1";
     this->_httpStatusCode = status;
     this->_startLine = this->_httpVersion + " " + std::to_string(status) + " " + this->getHttpStatusString(status);
-    return ;
+    _ready = true;
+	return ;
 }
 /**
  * @brief Construct a new Response object (copy constructor)
@@ -59,6 +61,7 @@ Response	&Response::operator=(const Response &responseREF) {
     if (this != &responseREF) {
         this->_httpVersion = responseREF._httpVersion;
         this->_httpStatusCode = responseREF._httpStatusCode;
+		this->_ready = responseREF._ready;
     }
     return (*this);
 }
@@ -74,6 +77,7 @@ Response::Response(std::string httpRaw): AMessage(httpRaw) {
     this->_httpStatusCode = std::stoi(this->_startLine.substr(this->_startLine.find(' ') + 1,
                 this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
                 this->_startLine.find(' ') - 1));
+	_ready = true;
 }
 
 /**
@@ -93,6 +97,16 @@ std::string	Response::getHttpVersion(void) const {
 unsigned short	Response::getHttpStatusCode(void) const {
     return (this->_httpStatusCode);
 }
+
+
+bool Response::responseReady() const {
+	return (_ready);
+}
+
+void Response::setResponseStatus(bool status) {
+	_ready = status;
+}
+
 
 /**
  * @brief Retrieve the HTTP status string from the status code.

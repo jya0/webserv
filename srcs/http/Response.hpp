@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/16 16:38:09 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/10/29 06:24:53 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 namespace http {
 	/**
 	 * @brief This class describes an HTTP Response.
-	 * 
+	 *
 	 * @field _httpVersion			The HTTP version of the response.
 	 * @field _httpStatusCode		The HTTP status code of the response.
 	 * @method getHttpVersion		Returns the HTTP version of the response.
@@ -32,6 +32,7 @@ namespace http {
 		private:
 			std::string		_httpVersion;
 			unsigned short	_httpStatusCode;
+			bool			_ready;
 		protected:
 		public:
 			Response(void);
@@ -44,6 +45,8 @@ namespace http {
 			unsigned short	getHttpStatusCode(void) const;
 			bool validate(void) const;
 			std::string getHttpStatusString(unsigned short statusCode) const;
+			bool responseReady() const;
+			void setResponseStatus(bool status);
 	};
 };
 
