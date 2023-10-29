@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 19:34:13 by jyao             ###   ########.fr       */
+/*   Updated: 2023/10/22 10:33:36 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,23 @@
 # define DIRECTIVE_HPP
 
 # include	<iostream>
-# include	<utility>
-# include	<string>
-# include	<sstream>
-# include	<fstream>
-# include	<istream>
-# include	<string>
 # include	<vector>
 
 //ALL DIRECTIVE NAMES!
 /*SIMPLE*/
-# define	DVE_AUTO_INDEX		"auto_index"			":"
-# define	DVE_CGI_BIN			"cgi_bin"				":"
-# define	DVE_CMB_SIZE		"client_max_body_size"	":"
-# define	DVE_ERROR_PAGE		"error_page"			":"
-# define	DVE_INDEX			"index"					":"
-# define	DVE_LISTEN			"listen"				":"
-# define	DVE_RETURN			"return"				":"
-# define	DVE_ROOT			"root"					":"
-# define	DVE_SERVER_NAME		"server_name"			":"
+# define	DVE_AUTO_INDEX		"auto_index"			":"	//bool
+# define	DVE_CGI_BIN			"cgi_bin"				":"	//std::string
+# define	DVE_CMB_SIZE		"client_max_body_size"	":"	//std::size_t
+# define	DVE_ERROR_PAGE		"error_page"			":"	//std::string
+# define	DVE_INDEX			"index"					":"	//std::string
+# define	DVE_LISTEN			"listen"				":"	//std::string
+# define	DVE_RETURN			"return"				":"	//struct Return {int, std::string}
+# define	DVE_ROOT			"root"					":"	//std::string
+# define	DVE_SERVER_NAME		"server_name"			":"	//std::string
 /*BLOCK*/
-# define	DVE_LIMIT_EXECPT	"limit_except"			":"
-# define	DVE_LOCATION		"location"				":"
-# define	DVE_SERVER			"server"				":"
+# define	DVE_LIMIT_EXECPT	"limit_except"			":"	//struct LimitExcept {enum HttpMethods}
+# define	DVE_LOCATION		"location"				":"	//struct Location {}
+# define	DVE_SERVER			"server"				":"	//class ServerConfig {}
 
 # define	SIMPLE_DIRECTIVES	\
 								DVE_AUTO_INDEX			" "		\
