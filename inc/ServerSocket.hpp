@@ -20,7 +20,6 @@ protected:
 	std::string ip_address;
 	int port;
 	int passive_socket;
-	int peer_socket;
 	struct sockaddr_in socket_address;
 	unsigned int socket_address_len;
 
@@ -31,17 +30,16 @@ public:
 
 	static std::string generateDefaultResponse();
 
-	void sendData(std::string message);
-	std::string recieveData();
+	void sendData(int peer_socket, std::string message);
+	std::string recieveData(int peer_socket);
 
 
 	void startConnection();
 	void startListening();
-	void acceptConnection();
+	int acceptConnection();
 	void closeConnection();
 
 
-	const int &getPeerSocket();
 	const int &getPassiveSocket();
 
 
