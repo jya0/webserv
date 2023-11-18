@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:46:11 by jyao              #+#    #+#             */
-/*   Updated: 2023/09/15 12:13:34 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/18 19:37:39 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,17 @@ public:
 	static const std::vector< std::string >	dveNames;
     ~HTTPServerParser();
 
-    class ParseError : public std::exception {
-    public:
-        virtual const char *what() const throw();
+    class ParseErrorException: public std::exception {
+		private:
+			std::string	_errorMsg;
+    	public:
+			ParseErrorException(const std::string &errorMsg) {
+				_errorMsg = errorMsg;
+			};
+			virtual const char *what() const throw()
+			{
+				return (_errorMsg.c_str());
+			};
     };
 };
 

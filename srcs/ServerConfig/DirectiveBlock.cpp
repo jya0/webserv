@@ -6,11 +6,12 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/10/21 16:45:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/18 18:38:56 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"DirectiveBlock.hpp"
+#include	"HTTPServerParser.hpp"
 
 DirectiveBlock::DirectiveBlock(void)
 {
@@ -75,8 +76,7 @@ std::vector<std::string>	DirectiveBlock::checkDirectiveSimple(const std::string 
 	dveITR = _dvesMap.find(dveName);
 	if (dveITR == _dvesMap.end())
 	{
-		std::cerr << "Directive not found: " << dveName << "\n";
-		return (std::vector< std::string >());
+		throw (HTTPServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!"));
 	}
 	else
 		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
@@ -100,16 +100,16 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName)
 
 DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, const std::string &searchValue)
 {
-	std::multimap< std::string, ADirective * >::const_iterator	loopITR;
 	std::pair< std::multimap< std::string, ADirective * >::const_iterator, std::multimap< std::string, ADirective * >::const_iterator>	dveITRS;
 
 	if (_dvesMap.count(dveName) == 0)
 		return (NULL);
 	dveITRS = _dvesMap.equal_range(dveName);
-	for (loopITR = dveITRS.first; loopITR != dveITRS.second; ++loopITR)
+	while (dveITRS.first != dveITRS.second)
 	{
-		if (loopITR->second->getValues().front().compare(searchValue))
+		if (dveITRS.first->second->getValues().front().compare(searchValue))
 			return (dynamic_cast< DirectiveBlock * >(loopITR->second));
+		dveITRS.first++;
 	}
 	return (NULL);
 }
