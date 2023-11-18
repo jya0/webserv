@@ -28,6 +28,7 @@
 #include <sys/ioctl.h>
 # include "../srcs/http/Http_namespace.hpp"
 #include <poll.h>
+#include "PollManager.hpp"
 # define SERVERS_UP 2
 
 using namespace http;
@@ -35,26 +36,25 @@ using namespace http;
 class	DirectiveBlock;
 class WebServer {
 protected:
-	/* add stuff*/
 	ServerSocket connection;
 	std::vector<int> clients;
-	std::vector<std::string> server_names;
+
+	//ServerConfig	config
 	std::string defaultErrorPagePath;
 	size_t max_body_size;
 	std::vector<std::pair<std::string, std::string> > redirections;
 	// std::byte methods;
 	bool autoindex;
-	
+
 	std::string index;
 	std::string root;
 	bool CGI;
 	std::string cgi_bin;
-	DirectiveBlock	*_serverConfig;
-	std::map<int, Response*> responses;
+	DirectiveBlock *_serverConfig;
 
 public:
-    WebServer();
-	// WebServer(const DirectiveBlock &serverBlockREF);
+	std::map<int, Response *> responses;
+	WebServer();
     WebServer(std::string ip, int port);
     ~WebServer();
 
@@ -63,7 +63,7 @@ public:
 	void sendResponse(int client, const Response &response);
 	void prepareResponse(int client);
 	void sendData(int client, std::string message);
-	std::string recieveData(int client);
+	std::string recieveData(int *client);
 	Request receiveRequest(int client, std::string );
 	Response handleRequest(const Request &request) const ;
 	Response handleGet(const Request &request) const ;
