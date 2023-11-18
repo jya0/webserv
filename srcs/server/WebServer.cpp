@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/10/29 07:11:34 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/11/18 20:04:13 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,13 @@ void WebServer::closeServerConnection()
 
 void WebServer::closeClientConnection(int client)
 {
-	close(client);
+	if (clients.size() == 0)
+		return ;
+	if (std::find(clients.begin(), clients.end(), client) != clients.end())
+	{
+		close(client);
+		clients.erase(std::find(clients.begin(), clients.end(), client));
+	}
 }
 
 
@@ -69,9 +75,10 @@ void WebServer::sendData(int client, std::string message)
 	connection.sendData(client, message);
 }
 
-std::string WebServer::recieveData(int client)
+std::string WebServer::recieveData(int *client)
 {
-	return (connection.recieveData(client));
+	std::string ret = connection.recieveData(client);
+	return (ret);
 }
 
 
@@ -120,7 +127,7 @@ Response WebServer::handleRequest(const Request &request) const {
 
 Response WebServer::handleGet(const Request &request) const {
     Response response(200);
-	std::string filePath = root + request.getUri();
+	std::string filePath = "." + request.getUri();
     //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
@@ -171,7 +178,6 @@ Response WebServer::handleHead(const Request &request) const {
 }
 
 bool WebServer::connectedClient(int client) const{
-	write(1, "Hi\n", 3);
 	return (std::find(clients.begin(), clients.end(), client) != clients.end());
 }
 
@@ -182,45 +188,53 @@ bool WebServer::responseReady(int client){
 }
 
 void WebServer::startServer() {
-	PollManager sockets(1);
-	int i = 0;
-	sockets.addFd(this->getConnection().getPassiveSocket(), POLLIN);
-	startListening();
+	// int i = 0;
+	// sockets.addFd(this->getConnection().getPassiveSocket(), POLLIN);
+	// startListening();
 
-	int rc;
-	int triggered;
-	int client;
-	while (2) {
-		rc = sockets.callPoll();
-		if (rc < 0) {
-			perror("poll() failed");
-			break;
-		}
+	// int rc;
+	// int triggered;
+	// int client;
+	// while (2) {
+	// 	rc = sockets.callPoll();
+	// 	if (rc < 0) {
+	// 		perror("poll() failed");
+	// 		break;
+	// 	}
 
-		for (i = 0; i < sockets.getNfds(); i++) {
-			triggered = sockets[i].fd;
+	// 	for (i = 0; i < sockets.getNfds(); i++) {
+	// 		triggered = sockets[i].fd;
+	// 		if(sockets[i].revents == 0)
+    //     		continue;
+	// 		else if ((sockets[i].revents & POLLHUP) || (sockets[i].revents & POLLERR))
+	// 		{
+	// 			closeClientConnection(triggered);
+	// 			sockets.removeFd(triggered);
+	// 		}
+	// 		else if (sockets[i].revents & POLLIN)
+	// 		{
+	// 			if (triggered == this->getConnection().getPassiveSocket())
+	// 			{
+	// 				client = acceptConnection();
+	// 				if (client != -1)
+	// 					sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
+	// 			}
+	// 			else
+	// 			{
+	// 				std::cout << "Triggered = " << triggered;
+	// 				recieveData(triggered);
+	// 				if (triggered != -1)
+	// 					prepareResponse(triggered);
+	// 				else
+	// 					continue;;
+	// 			}
+	// 		}
+	// 		else if ((sockets[i].revents & POLLOUT) && responseReady(triggered))
+	// 		{
+	// 			sendResponse(triggered, *responses[triggered]);
+	// 			responses[triggered]->setResponseStatus(false);
+	// 		}
 
-			if ((sockets[i].revents & POLLOUT) && responseReady(triggered)) {
-				sendResponse(triggered, *responses[triggered]);
-				responses[triggered]->setResponseStatus(false);
-				closeClientConnection(triggered);
-				sockets.removeFd(triggered);
-			}
-			else if (sockets[i].revents & POLLIN)
-			{
-				if (triggered == this->getConnection().getPassiveSocket())
-				{
-					client = acceptConnection();
-					if (client != -1)
-						sockets.addFd(client, POLLIN | POLLOUT);
-				}
-				else
-				{
-					std::cout << "Triggered = " << triggered;
-					recieveData(triggered);
-					prepareResponse(triggered);
-				}
-			}
-		}
-	}
+	// 	}
+	// }
 }

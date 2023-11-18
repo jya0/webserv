@@ -4,7 +4,7 @@ NAME		=	webserv
 CXX			=	c++
 RM			=	rm
 SRCS		=	srcs/main.cpp srcs/server/PollManager.cpp srcs/server/ServerSocket.cpp\
-				srcs/server/WebServer.cpp\
+				srcs/server/WebServer.cpp srcs/server/ServerMonitor.cpp\
 				srcs/http/AMessage.cpp srcs/http/Header.cpp srcs/http/Request.cpp srcs/http/Response.cpp
 # srcs/cgi/
 # srcs/http/

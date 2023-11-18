@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/webserv",
-			"args": ["1"],
+			"args": ["8090"],
 			"environment": [],
 			"cwd": "${fileDirname}",
 			"MIMode": "lldb",
