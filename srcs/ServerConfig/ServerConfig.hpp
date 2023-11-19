@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/19 13:22:28 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/19 13:50:46 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define	DEFAULT_RETURN_URI				""	//not defined by NGINX
 # define	DEFAULT_ROOT					""	//current working directory
 # define	DEFAULT_SERVER_NAMES			""
-# define	DEFAULT_LIMIT_EXCEPT_METHODS	-1ul
+# define	DEFAULT_LIMIT_EXCEPT_METHODS	0xffffff
 # define	DEFAULT_LOCATION_URI			"" //not defined by NGINX
 
 class	ServerConfig {

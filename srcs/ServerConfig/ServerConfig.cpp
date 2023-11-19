@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/19 13:32:38 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/19 13:51:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static std::pair< std::string, int >	parseListenDirective(std::string listenDve)
 	int					port;
 
 	{
-		if (std::count(listenDve.begin(), listenDve.end(), ":") > 1)
+		if (std::count(listenDve.begin(), listenDve.end(), ':') > 1)
 			std::cout << "DO YOU REMEMBER?" << std::endl;
 	}
 	ssListen.str(listenDve);
@@ -75,7 +75,6 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve)
 		} catch (std::exception &e) {};
 		try {
 			std::pair< std::multimap< std::string, ADirective * >::const_iterator, std::multimap< std::string, ADirective * >::const_iterator>	dveITRS;
-			DirectiveBlock	*dveBlock;
 
 			dveITRS = serverDve->getDvesMap()->equal_range(DVE_LOCATION);
 			while (dveITRS.first != dveITRS.second)
@@ -215,7 +214,7 @@ ServerConfig::Location::LimitExcept::LimitExcept(ADirective *limitExceptDve)
 		methodStrs = limitExceptDve->getValues();
 		for (std::vector< std::string >::const_iterator itr = methodStrs.begin(); itr != methodStrs.end(); ++itr)
 		{
-			acceptedMethods |= Request::methodEnum(*itr);
+			acceptedMethods |= http::Request::methodEnum(*itr);
 		}
 	};
 };

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
+#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/09/03 12:41:50 by rriyas           ###   ########.fr        #
+#    Updated: 2023/11/19 14:14:23 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,10 +15,13 @@
 NAME		:=	libhttp.a
 
 # LIB			=	./lib/
+HEADERS		:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
+				Request.hpp		Response.hpp
+INCLUDES	:=	-I../inc/
 CC			=	c++
-RM			=	rm
-SRCS		=	srcs/main.cpp srcs/server/server.cpp srcs/ServerConfig/ADirective.cpp srcs/ServerConfig/DirectiveBlock.cpp srcs/ServerConfig/DirectiveSimple.cpp\
-				srcs/ServerConfig/HTTPServerParser.cpp
+FILES		:=	AMessage	Header	Request	Response
+SRCS		=	$(addsuffix .cpp, $(FILES))
+
 # srcs/cgi/
 # srcs/http/
 # srcs/parser/
@@ -27,17 +30,24 @@ SRCS		=	srcs/main.cpp srcs/server/server.cpp srcs/ServerConfig/ADirective.cpp sr
 OBJS		=	${SRCS:.cpp=.o}
 CFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 
-all:	$(NAME)
+all: $(NAME)
 
-$(NAME):	$(OBJS)
-		$(CC) $(CFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
+$(NAME): $(HEADERS) $(OBJS)
+		ar -rcs $@ $^
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+
+# $(CC) $(CFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
 
 # $(LIB):
 # 		#make -C ./lib/
+
 clean:
-		${RM} -rf $(OBJS)
-fclean:	clean
-		${RM} -rf ${NAME}
-re:		fclean all
+		rm -rf $(OBJS)
+fclean: clean
+		rm -rf ${NAME}
+
+re: fclean all
 
 .PHONY: all clean fclean re

@@ -12,7 +12,7 @@
 # include	<fstream>
 # include	<unistd.h>
 # include <fcntl.h>
-#define BUFFER_SIZE 1
+#define BUFFER_SIZE 1000000000
 
 class ServerSocket
 {
