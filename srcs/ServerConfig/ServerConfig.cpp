@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/18 19:51:37 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/19 13:32:38 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,36 @@ ServerConfig::~ServerConfig(void) {};
 
 static std::pair< std::string, int >	parseListenDirective(std::string listenDve)
 {
-	std::stringstream	tmpSstream;
+	std::stringstream	ssListen;
+	std::string			ipStr;
+	std::string			portStr;
+	int					port;
 
-	tmpSstream.str(listenDve);
-	std::replace(listenDve.begin(), listenDve.end(), )
+	{
+		if (std::count(listenDve.begin(), listenDve.end(), ":") > 1)
+			std::cout << "DO YOU REMEMBER?" << std::endl;
+	}
+	ssListen.str(listenDve);
+	std::getline(ssListen, ipStr, ':');
+	ssListen >> portStr;
+	ipStr = (ipStr.empty()) ? DEFAULT_LISTEN_IP : ipStr;
+	port = (portStr.empty()) ? DEFAULT_LISTEN_PORT : std::atoi(portStr.c_str());
+	return (std::make_pair(ipStr, port));
+};
+
+static std::pair< int, std::string >	parseReturnDirective(std::string returnDve)
+{
+	std::stringstream	ssReturn;
+	std::string			returnCodeStr;
+	int					returnCode;
+	std::string			returnUriStr;
+
+	ssReturn.str(returnDve);
+	ssReturn >> returnCodeStr;
+	ssReturn >> returnUriStr;
+	returnCode = (returnCodeStr.empty()) ? DEFAULT_RETURN_CODE : std::atoi(returnCodeStr.c_str());
+	returnUriStr = (returnUriStr.empty()) ? DEFAULT_RETURN_URI : returnUriStr;
+	return (std::make_pair(returnCode, returnUriStr));
 };
 
 ServerConfig::ServerConfig(DirectiveBlock *serverDve)
@@ -39,19 +65,17 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve)
 	if (serverDve != NULL)
 	{
 		try {
-			_index = serverDve->checkDirectiveSimple(DVE_INDEX);
-		} catch (std::exception &e) {};
-		try {
 			_cgiBin	= serverDve->checkDirectiveSimple(DVE_CGI_BIN).front();
 		} catch (std::exception &e) {};
 		try {
-			_listen.first = serverDve->checkDirectiveSimple(DVE_LISTEN).front();
+			_listen = parseListenDirective(serverDve->checkDirectiveSimple(DVE_LISTEN).front());
 		} catch (std::exception &e) {};
 		try {
 			_serverNames = serverDve->checkDirectiveSimple(DVE_SERVER_NAME);
 		} catch (std::exception &e) {};
 		try {
 			std::pair< std::multimap< std::string, ADirective * >::const_iterator, std::multimap< std::string, ADirective * >::const_iterator>	dveITRS;
+			DirectiveBlock	*dveBlock;
 
 			dveITRS = serverDve->getDvesMap()->equal_range(DVE_LOCATION);
 			while (dveITRS.first != dveITRS.second)
@@ -61,8 +85,23 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve)
 			}
 		} catch (std::exception &e) {};
 		try {
-			_autoIndex = serverDve->checkDirectiveSimple(DVE_AUTO_INDEX).front();
-		}
+			_autoIndex = serverDve->checkDirectiveSimple(DVE_AUTO_INDEX).front().compare("on") ? false : true;
+		} catch (std::exception &e) {};
+		try {
+			_sizeCMB = std::atof(serverDve->checkDirectiveSimple(DVE_CMB_SIZE).front().c_str());
+		} catch (std::exception &e) {};
+		try {
+			_errorPage = serverDve->checkDirectiveSimple(DVE_ERROR_PAGE).front();
+		} catch (std::exception &e) {};
+		try {
+			_index = serverDve->checkDirectiveSimple(DVE_INDEX);
+		} catch (std::exception &e) {};
+		try {
+			_return = parseReturnDirective(serverDve->checkDirectiveSimple(DVE_RETURN).front());
+		} catch (std::exception &e) {};
+		try {
+			_root = serverDve->checkDirectiveSimple(DVE_ROOT).front();
+		} catch (std::exception &e) {};
 	};
 };
 
@@ -129,38 +168,19 @@ std::string	ServerConfig::getRoot(void) const {
 	return (_root);
 };
 
-/* class ServerConfig::Return */
-ServerConfig::Return::Return(void) {};
-
-ServerConfig::Return::~Return(void) {};
-
-ServerConfig::Return::Return(const Return &returnREF)
-{
-	this->ServerConfig::Return::operator=(returnREF);
-};
-
-ServerConfig::Return &ServerConfig::Return::operator=(const Return &returnREF)
-{
-	if (this != &returnREF)
-	{
-		statusCode = returnREF.statusCode;
-		uri = returnREF.uri;
-	}
-	return (*this);
-};
-
 /* class ServerConfig::Location */
 ServerConfig::Location::Location(void): ServerConfig() {};
 
-
-
-ServerConfig::Location::Location(DirectiveBlock *locationDve): ServerConfig(locationDve)
+ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_cast<DirectiveBlock *>(locationDve))
 {
+	DirectiveBlock	*dveBlockPTR;
+
 	if (locationDve != NULL)
 	{
 		locationUri	= locationDve->getValues().front();
 		try {
-			limitExcept = LimitExcept(locationDve->checkDirectiveBlock(DVE_LIMIT_EXECPT));
+			dveBlockPTR = dynamic_cast<DirectiveBlock *>(locationDve);
+			limitExcept = (dveBlockPTR == NULL) ? LimitExcept() : LimitExcept(dveBlockPTR->checkDirectiveBlock(DVE_LIMIT_EXECPT));
 		} catch (std::exception &e) {};
 	};
 };
@@ -183,12 +203,13 @@ ServerConfig::Location &ServerConfig::Location::operator=(const Location &locati
 };
 
 /* class ServerConfig::Location::LimitExcept */
-ServerConfig::Location::LimitExcept::LimitExcept(void) {};
+ServerConfig::Location::LimitExcept::LimitExcept(void): acceptedMethods(DEFAULT_LIMIT_EXCEPT_METHODS) {};
 
-ServerConfig::Location::LimitExcept::LimitExcept(DirectiveBlock *limitExceptDve)
+ServerConfig::Location::LimitExcept::LimitExcept(ADirective *limitExceptDve)
 {
 	std::vector< std::string >	methodStrs;
 
+	*this = LimitExcept();
 	if (limitExceptDve != NULL)
 	{
 		methodStrs = limitExceptDve->getValues();

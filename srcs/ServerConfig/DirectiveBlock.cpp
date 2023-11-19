@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/18 18:38:56 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/19 12:43:50 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ DirectiveBlock	*DirectiveBlock::checkDirectiveBlock(const std::string &dveName, 
 	while (dveITRS.first != dveITRS.second)
 	{
 		if (dveITRS.first->second->getValues().front().compare(searchValue))
-			return (dynamic_cast< DirectiveBlock * >(loopITR->second));
+			return (dynamic_cast< DirectiveBlock * >(dveITRS.first->second));
 		dveITRS.first++;
 	}
 	return (NULL);

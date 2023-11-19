@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/18 18:16:08 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/19 13:22:28 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ class	ServerConfig::Location: public ServerConfig {
 
 				LimitExcept(void);
 				~LimitExcept(void);
+				LimitExcept(ADirective *locationDveBlock);
 				LimitExcept(const LimitExcept &limitExceptREF);
 				LimitExcept &operator=(const LimitExcept &limitExceptREF);
 		};
@@ -86,7 +87,7 @@ class	ServerConfig::Location: public ServerConfig {
 		LimitExcept	limitExcept;
 
 		Location(void);
-		Location(DirectiveBlock *locationDveBlock);
+		Location(ADirective *locationDveBlock);
 		~Location(void);
 		Location(const Location &locationREF);
 		Location &operator=(const Location &locationREF);

@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/10/22 16:35:38 by jyao             ###   ########.fr        #
+#    Updated: 2023/11/19 12:41:57 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 # NAME		:=	libconfparser.a
 NAME		:=	parserTEST
 HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
-				HTTPServerParser.hpp
+				HTTPServerParser.hpp				ServerConfig.hpp
 
 HTTP_DIR	:=	../http/
 
