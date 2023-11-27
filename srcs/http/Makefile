@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/11/19 14:14:23 by jyao             ###   ########.fr        #
+#    Updated: 2023/11/27 14:52:30 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ CFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-		ar -rcs $@ $^
+		ar rvs $@ $(OBJS)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
@@ -46,7 +46,7 @@ $(NAME): $(HEADERS) $(OBJS)
 clean:
 		rm -rf $(OBJS)
 fclean: clean
-		rm -rf ${NAME}
+		rm -rf $(NAME)
 
 re: fclean all
 
