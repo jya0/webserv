@@ -5,49 +5,46 @@
 #                                                     +:+ +:+         +:+      #
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/11/27 15:11:06 by jyao             ###   ########.fr        #
+#    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
+#    Updated: 2023/11/27 17:01:16 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# -*- Makefile -*-
+# -*- Makefile CGI -*-
 
-NAME		:=	libhttp.a
+# NAME		:=	libcgi.a
+NAME		:=	cgiTest
 
-# LIB			=	./lib/
-HEADERS		:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
-				Request.hpp		Response.hpp
-INCLUDES	:=	-I../inc/
-CXX			=	c++
-FILES		:=	AMessage	Header	Request	Response
+HEADERS		:=	CGI_namespace.hpp
+
+FILES		:=	CGI	test
+
+CXX			:=	c++
+RM			:=	rm
+
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
-# srcs/cgi/
-# srcs/http/
-# srcs/parser/
-# srcs/socket/
-
-OBJS		=	${SRCS:.cpp=.o}
-CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
+OBJS		=	$(SRCS:.cpp=.o)
+CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
 
 all: $(NAME)
 
-$(NAME): $(HEADERS) $(OBJS)
-		ar -rvs $@ $(OBJS)
+$(NAME): $(LIBS) $(HEADERS) $(OBJS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
+#	ar -rvs $@ $^
+
+$(LIBS):
+	make -C $(HTTP_DIR)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
-# $(CXX) $(CXXFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
-
-# $(LIB):
-# 		#make -C ./lib/
-
 clean:
-		rm -rf $(OBJS)
-fclean: clean
-		rm -rf $(NAME)
+	$(RM) -rf $(OBJS)
 
-re: fclean all
+fclean:	clean
+	$(RM) -rf $(NAME)
+
+re:		fclean all
 
 .PHONY: all clean fclean re

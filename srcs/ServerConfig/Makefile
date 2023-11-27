@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/11/27 14:48:17 by jyao             ###   ########.fr        #
+#    Updated: 2023/11/27 15:00:29 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
 
 INCLUDES	:=	-I.	-I$(HTTP_DIR)
 
-CC			:=	c++
+CXX			:=	c++
 RM			:=	rm
 FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
 				HTTPServerParser			ServerConfig	\
@@ -30,27 +30,27 @@ FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
 
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
-OBJS		=	${SRCS:.cpp=.o}
-CFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
+OBJS		=	$(SRCS:.cpp=.o)
+CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 
 all: $(NAME)
 
 
 $(NAME): $(LIBS) $(HEADERS) $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 #	ar -rcs $@ $^
 
 $(LIBS):
 	make -C $(HTTP_DIR)
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
-	${RM} -rf $(OBJS)
+	$(RM) -rf $(OBJS)
 
 fclean:	clean
-	${RM} -rf ${NAME}
+	$(RM) -rf $(NAME)
 
 re:		fclean all
 
