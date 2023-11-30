@@ -5,28 +5,30 @@
 #                                                     +:+ +:+         +:+      #
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/11/30 11:00:57 by jyao             ###   ########.fr        #
+#    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
+#    Updated: 2023/11/30 10:59:17 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# -*- Makefile -*-
+# -*- Makefile CGI -*-
 
-NAME		:=	libconfparser.a
-# NAME		:=	parserTEST
-HTTP_DIR	:=	../http/
+# NAME		:=	libcgi.a
+NAME		:=	cgiTest
+
+HTTP_DIR	:=	../
 HTTP_LIB	=	$(HTTP_DIR)libhttp.a
-LIBS		=	$(HTTP_LIB)
-HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
-				HTTPServerParser.hpp				ServerConfig.hpp
+CONFIG_DIR	:=	../../ServerConfig/
+CONFIG_LIB	=	$(CONFIG_DIR)libconfparser.a
+LIBS		=	$(HTTP_LIB) $(CONFIG_LIB)
 
-INCLUDES	:=	-I.	-I$(HTTP_DIR)
+INCLUDES	:=	-I.	-I$(HTTP_DIR) -I../../ServerConfig/
+
+HEADERS		:=	CGIhandler.hpp
+
+FILES		:=	CGIhandler	test
 
 CXX			:=	c++
 RM			:=	rm
-FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
-				HTTPServerParser			ServerConfig	\
-				test						$(HTTP_DIR)Request
 
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
@@ -35,14 +37,13 @@ CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
 
 all: $(NAME)
 
-# $(NAME): $(LIBS) $(HEADERS) $(OBJS)
-# 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
-
 $(NAME): $(LIBS) $(HEADERS) $(OBJS)
-	ar -rvs $@ $(OBJS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
+#	ar -rvs $@ $^
 
 $(LIBS):
 	make -C $(HTTP_DIR)
+	make -C $(CONFIG_DIR)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<

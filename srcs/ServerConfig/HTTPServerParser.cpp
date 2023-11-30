@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/10/21 16:54:11 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/19 12:44:19 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,10 +166,6 @@ std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string fi
 	return (serverBlocks);
 }
 
-const char *HTTPServerParser::ParseError::what() const throw()
-{
-    return ("Error while parsing file!\n");
-}
 
 HTTPServerParser::HTTPServerParser()
 {

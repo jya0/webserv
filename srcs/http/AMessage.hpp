@@ -1,6 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
+/*   AMessage.hpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
+/*   Updated: 2023/11/29 14:47:05 by jyao             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
 /*   Messge.class.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
@@ -17,12 +29,9 @@
 # include	<string>
 # include	<list>
 # include	<utility>
-# include	"Http_namespace.hpp"
+# include	"Header.hpp"
 
 namespace http {
-	class Header;
-	class Request;
-	class Response;
 	/**
 	 * @brief 	This class describes a TCP/HTTP message.
 	 * @field	_startLine		The first line of the message.
@@ -35,6 +44,7 @@ namespace http {
 	 * @method	validate		Validates the message.
 	 */
 	class	AMessage {
+		private:
 		protected:
 			std::string			_startLine;
 			std::list<Header>	_headers;
@@ -46,10 +56,11 @@ namespace http {
 				std::string messageBody);
 			AMessage(std::string rawMessage);
 			std::string	getStartLine(void);
-			std::list<Header>	getHeaders(void);
+			std::list<Header>	getHeaders(void) const;
+			std::string			getHeaderValue(const std::string &headerKey) const;
 			virtual		~AMessage(void);
 			AMessage	&operator=(AMessage &aMessageREF);
-			std::string	getMessageBody(void);
+			std::string	getMessageBody(void) const;
 			std::string	getRawMessage(void) const;
 			void addHeader(Header header);
 			virtual bool validate(void) const = 0;

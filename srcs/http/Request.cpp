@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/03 13:55:30 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/11/28 21:08:52 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Http_namespace.hpp"
+#include	"Request.hpp"
 
 using namespace http;
 
@@ -105,15 +105,15 @@ std::string	Request::getUri(void) const {
 std::string Request::methodName(e_httpMethod method) {
     switch (method) {
         case GET:
-            return ("GET");
+            return (GET_METHOD);
         case POST:
-            return ("POST");
+            return (POST_METHOD);
         case HEAD:
-            return ("HEAD");
+            return (HEAD_METHOD);
         case PUT:
-            return ("PUT");
+            return (PUT_METHOD);
         case DELETE:
-            return ("DELETE");
+            return (DELETE_METHOD);
         default:
             return ("");
     }
@@ -126,15 +126,15 @@ std::string Request::methodName(e_httpMethod method) {
  * @return e_httpMethod The enum of the HTTP method.
  */
 e_httpMethod Request::methodEnum(std::string method) {
-    if (method == "GET")
+    if (method == GET_METHOD)
         return (GET);
-    else if (method == "POST")
+    else if (method == POST_METHOD)
         return (POST);
-    else if (method == "HEAD")
+    else if (method == HEAD_METHOD)
         return (HEAD);
-    else if (method == "PUT")
+    else if (method == PUT_METHOD)
         return (PUT);
-    else if (method == "DELETE")
+    else if (method == DELETE_METHOD)
         return (DELETE);
     else
         return (GET);

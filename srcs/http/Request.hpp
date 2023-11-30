@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/03 13:56:12 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/11/28 21:09:02 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,23 @@
 
 # include	<iostream>
 # include	<string>
-# include	"Http_namespace.hpp"
+# include	"AMessage.hpp"
+
+# define	GET_METHOD		"GET"
+# define	POST_METHOD		"POST"
+# define	HEAD_METHOD		"HEAD"
+# define	PUT_METHOD		"PUT"
+# define	DELETE_METHOD	"DELETE"
 
 /**
  * @brief An enum for the HTTP methods supported by the server.
  */
 enum e_httpMethod {
-	GET,
-	POST,
-	HEAD,
-	PUT,
-	DELETE
+	GET = 1,
+	POST = GET << 1,
+	HEAD = POST << 1,
+	PUT = HEAD << 1,
+	DELETE = PUT << 1
 };
 
 namespace http {
@@ -41,7 +47,7 @@ namespace http {
 	 * @method methodName		Returns the name of an HTTP method enum.
 	 * @method methodEnum		Returns the enum of an HTTP method name.
 	 */
-	class	Request: private AMessage {
+	class	Request: public AMessage {
 		private:
 			e_httpMethod	_httpMethod;
 			std::string		_httpVersion;
