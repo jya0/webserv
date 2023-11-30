@@ -6,17 +6,17 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/11/27 15:00:29 by jyao             ###   ########.fr        #
+#    Updated: 2023/11/30 11:00:57 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile -*-
 
-# NAME		:=	libconfparser.a
+NAME		:=	libconfparser.a
+# NAME		:=	parserTEST
 HTTP_DIR	:=	../http/
 HTTP_LIB	=	$(HTTP_DIR)libhttp.a
 LIBS		=	$(HTTP_LIB)
-NAME		:=	parserTEST
 HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
 				HTTPServerParser.hpp				ServerConfig.hpp
 
@@ -31,14 +31,15 @@ FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
 OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
 
 all: $(NAME)
 
+# $(NAME): $(LIBS) $(HEADERS) $(OBJS)
+# 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
 $(NAME): $(LIBS) $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
-#	ar -rcs $@ $^
+	ar -rvs $@ $(OBJS)
 
 $(LIBS):
 	make -C $(HTTP_DIR)

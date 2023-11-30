@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/18 15:43:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/28 17:21:27 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(void)
 	{
 		std::cout << "-----------Accessing simple directives-----------" << std::endl;
 		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_AUTO_INDEX)[0] << std::endl;
-		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_CGI_BIN)[0] << std::endl;
+		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_CGI_PATH_INFO)[0] << std::endl;
 		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_CMB_SIZE)[0] << std::endl;
 		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_ERROR_PAGE)[0] << std::endl;
 		std::cout << serverBlocks[0]->checkDirectiveSimple(DVE_INDEX)[0] << std::endl;

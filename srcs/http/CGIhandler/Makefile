@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
-#    Updated: 2023/11/27 17:01:16 by jyao             ###   ########.fr        #
+#    Updated: 2023/11/30 10:59:17 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,17 @@
 # NAME		:=	libcgi.a
 NAME		:=	cgiTest
 
-HEADERS		:=	CGI_namespace.hpp
+HTTP_DIR	:=	../
+HTTP_LIB	=	$(HTTP_DIR)libhttp.a
+CONFIG_DIR	:=	../../ServerConfig/
+CONFIG_LIB	=	$(CONFIG_DIR)libconfparser.a
+LIBS		=	$(HTTP_LIB) $(CONFIG_LIB)
 
-FILES		:=	CGI	test
+INCLUDES	:=	-I.	-I$(HTTP_DIR) -I../../ServerConfig/
+
+HEADERS		:=	CGIhandler.hpp
+
+FILES		:=	CGIhandler	test
 
 CXX			:=	c++
 RM			:=	rm
@@ -35,6 +43,7 @@ $(NAME): $(LIBS) $(HEADERS) $(OBJS)
 
 $(LIBS):
 	make -C $(HTTP_DIR)
+	make -C $(CONFIG_DIR)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<

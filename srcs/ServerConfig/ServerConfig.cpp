@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/19 13:51:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/29 16:39:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include	"ServerConfig.hpp"
 
 /* class ServerConfig */
-ServerConfig::ServerConfig(void):	_cgiBin(DEFAULT_CGI_BIN), 
+ServerConfig::ServerConfig(void):	_cgiPathInfo(DEFAULT_CGI_BIN), 
 									_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
 									_autoIndex(DEFAULT_AUTO_INDEX), 
 									_sizeCMB(DEFAULT_CMB_SIZE), 
@@ -65,7 +65,7 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve)
 	if (serverDve != NULL)
 	{
 		try {
-			_cgiBin	= serverDve->checkDirectiveSimple(DVE_CGI_BIN).front();
+			_cgiPathInfo	= serverDve->checkDirectiveSimple(DVE_CGI_PATH_INFO).front();
 		} catch (std::exception &e) {};
 		try {
 			_listen = parseListenDirective(serverDve->checkDirectiveSimple(DVE_LISTEN).front());
@@ -113,7 +113,7 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF)
 {
 	if (this != &serverConfigREF)
 	{
-		_cgiBin			= serverConfigREF.getCgiBin();
+		_cgiPathInfo			= serverConfigREF.getCgiPathInfo();
 		_listen			= serverConfigREF.getListen();
 		_serverNames	= serverConfigREF.getServerNames();
 		_locations		= serverConfigREF.getLocations();
@@ -127,8 +127,8 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF)
 	return (*this);
 };
 
-std::string	ServerConfig::getCgiBin(void) const {
-	return (_cgiBin);
+std::string	ServerConfig::getCgiPathInfo(void) const {
+	return (_cgiPathInfo);
 };
 
 std::vector< std::string >	ServerConfig::getIndex(void) const {

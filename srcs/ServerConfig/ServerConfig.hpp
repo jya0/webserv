@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/19 13:50:46 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/29 16:39:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,12 @@
 # define	DEFAULT_LOCATION_URI			"" //not defined by NGINX
 
 class	ServerConfig {
+	public:
+		class	Location;
 	private:
-		std::string							_cgiBin;
+		std::string							_cgiPathInfo;
 		std::pair< std::string, int >		_listen;
 		std::vector< std::string >			_serverNames;
-		class	Location;
 		std::vector< Location >				_locations;
 	protected:
 		bool								_autoIndex;
@@ -55,7 +56,7 @@ class	ServerConfig {
 		ServerConfig(const ServerConfig &serverConfigREF);
 		ServerConfig &operator=(const ServerConfig &serverConfigREF);
 
-		std::string						getCgiBin(void) const;
+		std::string						getCgiPathInfo(void) const;
 		std::vector< std::string >		getIndex(void) const;
 		std::pair< std::string, int >	getListen(void) const;
 		std::vector< std::string >		getServerNames(void) const;

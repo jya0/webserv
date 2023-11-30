@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/10/22 10:33:36 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/28 17:22:05 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 //ALL DIRECTIVE NAMES!
 /*SIMPLE*/
 # define	DVE_AUTO_INDEX		"auto_index"			":"	//bool
-# define	DVE_CGI_BIN			"cgi_bin"				":"	//std::string
+# define	DVE_CGI_PATH_INFO	"cgi_path_info"			":"	//std::string
 # define	DVE_CMB_SIZE		"client_max_body_size"	":"	//std::size_t
 # define	DVE_ERROR_PAGE		"error_page"			":"	//std::string
 # define	DVE_INDEX			"index"					":"	//std::string
@@ -34,7 +34,7 @@
 
 # define	SIMPLE_DIRECTIVES	\
 								DVE_AUTO_INDEX			" "		\
-								DVE_CGI_BIN				" "		\
+								DVE_CGI_PATH_INFO		" "		\
 								DVE_CMB_SIZE			" "		\
 								DVE_ERROR_PAGE			" "		\
 								DVE_INDEX				" "		\

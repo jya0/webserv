@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kalmheir <kalmheir@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:19:21 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/09/02 13:04:55 by kalmheir         ###   ########.fr       */
+/*   Updated: 2023/11/29 14:46:06 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 # define HEADER_HPP
 
 # include <string>
-# include "Http_namespace.hpp"
+
+# define	HEADER_KEY_AUTH			"Authorization"
+# define	HEADER_KEY_CONTENT_TYPE	"Content-Type"
 
 namespace http {
     class Header {
+		private:
         protected:
             std::string _name;
             std::string _value;
@@ -30,7 +33,20 @@ namespace http {
             std::string toString(void) const;
             std::string getName(void) const;
             std::string getValue(void) const;
+
+			class	IsHeaderKeyUnary;
     };
 }
+class	http::Header::IsHeaderKeyUnary {
+	private:
+		std::string	_headerKeyToFind;
+	protected:
+	public:
+		IsHeaderKeyUnary(const std::string &headerKeyToFind): _headerKeyToFind(headerKeyToFind) {};
+		bool	operator()(const Header &headerREF)
+		{
+			return (headerREF.getName() == _headerKeyToFind);
+		};
+};
 
 #endif

@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"Http_namespace.hpp"
 #include    <sstream>
+#include	<algorithm>
+#include	"AMessage.hpp"
 
 using namespace http;
 
@@ -110,16 +111,30 @@ std::string	AMessage::getStartLine(void) {
  *
  * @return std::list<Header> A list containing the headers of the message
  */
-std::list<Header>	AMessage::getHeaders(void) {
+std::list<Header>	AMessage::getHeaders(void) const {
     return (this->_headers);
 }
+
+/**
+ * @brief Returns the value of a given header key
+ * 
+ * @return std::string the header value if it finds anything
+ */
+std::string	AMessage::getHeaderValue(const std::string &headerKey) const {
+	std::list<Header>::const_iterator	itc;
+
+	itc = std::find_if(_headers.begin(), _headers.end(), Header::IsHeaderKeyUnary(headerKey));
+	if (itc == _headers.end())
+		return ("");
+	return (itc->getValue());
+};
 
 /**
  * @brief Returns the body of the message.
  *
  * @return std::string The body of the message
  */
-std::string	AMessage::getMessageBody(void) {
+std::string	AMessage::getMessageBody(void) const {
     return (this->_messageBody);
 }
 

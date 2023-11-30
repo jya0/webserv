@@ -6,8 +6,13 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/27 17:01:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 10:51:17 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"CGI_namespace.hpp"
+#include	"CGIhandler.hpp"
+
+int	main(void)
+{
+	return (0);
+};
