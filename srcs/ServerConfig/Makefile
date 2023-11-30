@@ -6,11 +6,13 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/11/30 11:00:57 by jyao             ###   ########.fr        #
+#    Updated: 2023/11/30 14:54:05 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile -*-
+
+# REMEMBER TO REMOVE REMOVE REMOVE REMOVE REMOVE TEST FILES.CPP FROM LIBS!!!!!
 
 NAME		:=	libconfparser.a
 # NAME		:=	parserTEST
@@ -26,7 +28,7 @@ CXX			:=	c++
 RM			:=	rm
 FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
 				HTTPServerParser			ServerConfig	\
-				test						$(HTTP_DIR)Request
+				test
 
 SRCS		=	$(addsuffix .cpp, $(FILES))
 

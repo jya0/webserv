@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/18 20:12:56 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 #include "../inc/PollManager.hpp"
 #include "../inc/ServerMonitor.hpp"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	(void) argc;
 	(void) argv;
 	WebServer s1 = WebServer("127.0.0.1", atoi(argv[1]));

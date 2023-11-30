@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/28 21:08:52 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ using namespace http;
 /**
  * @brief Construct a new Request object (default constructor)
  */
-Request::Request(void) : AMessage()
-{
+Request::Request(void) : AMessage() {
 	return ;
 }
 
@@ -27,8 +26,7 @@ Request::Request(void) : AMessage()
  *
  * @param RequestREF Request to copy
  */
-Request::Request(Request const &RequestREF) : AMessage()
-{
+Request::Request(Request const &RequestREF) : AMessage() {
 	*this = RequestREF;
     return ;
 }

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/19 18:40:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,14 @@
 
 #include <fstream>
 
-WebServer::WebServer()
-{
+WebServer::WebServer() {
 }
 // WebServer::WebServer(const DirectiveBlock &serverBlockREF)
 // {
 
 // }
 
-WebServer::WebServer(std::string ip, int port) : connection(ip, port)
-{
+WebServer::WebServer(std::string ip, int port) : connection(ip, port) {
 }
 
 // WebServer::WebServer(DirectiveBlock const	&serverBlockREF): _serverConfig(&serverBlockREF)
@@ -34,18 +32,15 @@ WebServer::WebServer(std::string ip, int port) : connection(ip, port)
 WebServer::~WebServer() {
 }
 
-void WebServer::startConnection()
-{
+void WebServer::startConnection() {
 	connection.startConnection();
 }
 
-void WebServer::startListening()
-{
+void WebServer::startListening() {
 	connection.startListening();
 }
 
-int WebServer::acceptConnection()
-{
+int WebServer::acceptConnection() {
 	int client;
 
 	client = connection.acceptConnection();
@@ -53,13 +48,11 @@ int WebServer::acceptConnection()
 	return (client);
 }
 
-void WebServer::closeServerConnection()
-{
+void WebServer::closeServerConnection() {
 	connection.closeConnection();
 }
 
-void WebServer::closeClientConnection(int client)
-{
+void WebServer::closeClientConnection(int client) {
 	if (clients.size() == 0)
 		return ;
 	if (std::find(clients.begin(), clients.end(), client) != clients.end())
@@ -70,20 +63,17 @@ void WebServer::closeClientConnection(int client)
 }
 
 
-void WebServer::sendData(int client, std::string message)
-{
+void WebServer::sendData(int client, std::string message) {
 	connection.sendData(client, message);
 }
 
-std::string WebServer::recieveData(int *client)
-{
+std::string WebServer::recieveData(int *client) {
 	std::string ret = connection.recieveData(client);
 	return (ret);
 }
 
 
-ServerSocket &WebServer::getConnection()
-{
+ServerSocket &WebServer::getConnection() {
 	return (connection);
 }
 
@@ -125,8 +115,7 @@ Response WebServer::handleRequest(const Request &request) const {
     }
 }
 
-static void	header_GetHead(Response &response, const std::string &fileStr)
-{
+static void	header_GetHead(Response &response, const std::string &fileStr) {
 	Header length("Content-Length", std::to_string(fileStr.length()));
 	Header type("Content-Type", "text/html");
 	Header server("Server", "webserv-kry");

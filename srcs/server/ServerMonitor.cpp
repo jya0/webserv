@@ -3,23 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/18 20:24:36 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/ServerMonitor.hpp"
 
-ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : servers(servers), sockets(servers.size())
-{
+ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : servers(servers), sockets(servers.size()) {
 }
-ServerMonitor::~ServerMonitor()
-{
+ServerMonitor::~ServerMonitor() {
 }
-int ServerMonitor::retrieveClientHandlerSocket(int triggered)
-{
+int ServerMonitor::retrieveClientHandlerSocket(int triggered) {
 	for (std::map<int, WebServer *>::iterator itr = servers.begin(); itr != servers.end(); itr++)
 	{
 		if (itr->second->connectedClient(triggered))
@@ -28,8 +25,7 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 	return (-1);
 }
 
-void ServerMonitor::startServers()
-{
+void ServerMonitor::startServers() {
 
 	int i = 0;
 	for (std::map<int, WebServer *>::iterator itr = servers.begin(); itr != servers.end(); itr++)

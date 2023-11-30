@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/29 16:39:43 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:59:29 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include	<limits>
 # include	<utility>
 # include	"DirectiveBlock.hpp"
-# include	"Request.hpp"
+# include	"Response.hpp"
 
 # define	DEFAULT_AUTO_INDEX				false
 # define	DEFAULT_CGI_BIN					"CGI/"
@@ -56,16 +56,17 @@ class	ServerConfig {
 		ServerConfig(const ServerConfig &serverConfigREF);
 		ServerConfig &operator=(const ServerConfig &serverConfigREF);
 
-		std::string						getCgiPathInfo(void) const;
-		std::vector< std::string >		getIndex(void) const;
-		std::pair< std::string, int >	getListen(void) const;
-		std::vector< std::string >		getServerNames(void) const;
-		std::vector< Location >			getLocations(void) const;
-		bool							getAutoIndex(void) const;
-		std::size_t						getSizeCMB(void) const;
-		std::string						getErrorPage(void) const;
-		std::pair< int, std::string >	getReturn(void) const;
-		std::string						getRoot(void) const;
+		const std::string					&getCgiPathInfo(void) const;
+		const std::vector< std::string >	&getIndex(void) const;
+		const std::pair< std::string, int >	&getListen(void) const;
+		const std::vector< std::string >	&getServerNames(void) const;
+		const std::vector< Location >		&getLocations(void) const;
+		const Location						&getLocation(const std::string &uriREF) const throw (std::exception);
+		const bool							&getAutoIndex(void) const;
+		const std::size_t					&getSizeCMB(void) const;
+		const std::string					&getErrorPage(void) const;
+		const std::pair< int, std::string >	&getReturn(void) const;
+		const std::string					&getRoot(void) const;
 };
 
 class	ServerConfig::Location: public ServerConfig {
@@ -92,6 +93,20 @@ class	ServerConfig::Location: public ServerConfig {
 		~Location(void);
 		Location(const Location &locationREF);
 		Location &operator=(const Location &locationREF);
+
+		class	IsLocationUnary;
+};
+
+class	ServerConfig::Location::IsLocationUnary {
+	private:
+		std::string	_locationToFind;
+	protected:
+	public:
+		IsLocationUnary(const std::string &locationToFind): _locationToFind(locationToFind) {};
+		bool	operator()(const Location &locationREF)
+		{
+			return (locationREF.locationUri == _locationToFind);
+		};
 };
 
 #endif

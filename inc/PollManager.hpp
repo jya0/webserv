@@ -5,8 +5,7 @@
 #include <iostream>
 #include <sys/poll.h>
 
-class PollManager
-{
+class PollManager {
 private:
 	size_t				nfds;
 	std::vector<pollfd> sockets;

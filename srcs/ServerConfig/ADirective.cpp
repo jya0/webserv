@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/10/21 14:55:41 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,62 +20,51 @@
  * Only has to initialise the _dveType enum DirectiveType object
  *
  */
-ADirective::ADirective(void): _dveType(INIT)
-{
+ADirective::ADirective(void): _dveType(INIT) {
 }
 
-ADirective::ADirective(ADirective const	&dveREF)
-{
+ADirective::ADirective(ADirective const	&dveREF) {
 	*this = dveREF;
 }
 
-ADirective::~ADirective(void)
-{
+ADirective::~ADirective(void) {
 }
 
-ADirective	&ADirective::operator=(ADirective const	&dveREF)
-{
+ADirective	&ADirective::operator=(ADirective const	&dveREF) {
 	_dveName = dveREF.getName();
 	_dveValues = dveREF.getValues();
 	// _dveType = dveREF.getType();
 	return (*this);
 }
 
-std::string	ADirective::getName(void) const
-{
+std::string	ADirective::getName(void) const {
 	return (_dveName);
 }
 
-std::vector< std::string >	ADirective::getValues(void) const
-{
+std::vector< std::string >	ADirective::getValues(void) const {
 	return (_dveValues);
 }
 
-DirectiveType	ADirective::getType(void) const
-{
+DirectiveType	ADirective::getType(void) const {
 	return (_dveType);
 }
 
-void	ADirective::setName(std::string const	&strREF)
-{
+void	ADirective::setName(std::string const	&strREF) {
 	_dveName = strREF;
 }
 
-void	ADirective::setValues(std::vector< std::string > const	&strsREF)
-{
+void	ADirective::setValues(std::vector< std::string > const	&strsREF) {
 	_dveValues = strsREF;
 }
 
-void	ADirective::printDirective(void) const
-{
+void	ADirective::printDirective(void) const {
 	std::cout << std::endl << _dveName << " ";
 	for (std::vector< std::string >::const_iterator it = _dveValues.begin(); it != _dveValues.end(); ++it)
 		std::cout << *it << " ";
 	std::cout << std::endl;
 }
 
-int	ADirective::parseDirective(void)
-{
+int	ADirective::parseDirective(void) {
 	int											errorReturn;
 	static int									nonSpaceLineNo;
 	std::size_t									colonLoc;

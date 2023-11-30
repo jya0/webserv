@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/28 21:06:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:58:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,3 +287,17 @@ std::string Response::getHttpStatusString(unsigned short statusCode) const {
 bool    Response::validate(void) const {
     return (true);
 }
+
+/**
+ * @brief calls the right httpMethod and things to generate the proper response
+ * 
+ * @param requestREF 
+ * @param serverConfigREF 
+ */
+void	Response::callHttpMethod(const Request &requestREF, const ServerConfig &serverConfigREF) {
+	ServerConfig::Location	location;
+
+	(void)requestREF;
+	(void)serverConfigREF;
+	// serverConfigREF.getLocations(requestREF.getUri());
+};

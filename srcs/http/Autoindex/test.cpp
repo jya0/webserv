@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/27 16:54:20 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 
 #define		TEST_HTML	"test.html"
 
-int main(void)
-{
+int main(void) {
 	std::ofstream		ofile;
 	// std::stringstream	ss;
 	std::string			page;
@@ -27,7 +26,7 @@ int main(void)
 	int			testPort = 5500;
 	std::string	testHost = "127.0.0.1";
 
-	page = Autoindex::genPage("../..", testHost, testPort);
+	page = http::Autoindex::genPage("../..", testHost, testPort);
 	// ss.str(page);
 	// std::cout << page;
 	ofile.open(TEST_HTML, std::fstream::out);
