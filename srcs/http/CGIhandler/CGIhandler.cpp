@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 10:49:54 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:18:26 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,14 @@ this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 this->_env["SERVER_SOFTWARE"] = "Weebserv/1.0";
 */
 
-CGIhandler::CGIhandler(void) 
+CGIhandler::CGIhandler(void)
 {
 	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
 	_cgiEnv["SERVER_PROTOCOL"]		= SERVER_PROTOCOL;
 	_cgiEnv["SERVER_SOFTWARE"]		= SERVER_SOFTWARE;
 };
 
-CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF) 
+CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF)
 {
 	*this = CGIhandler();
 	_cgiRequest = requestREF;
@@ -70,14 +70,14 @@ CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Loca
 	// _cgiEnv["SERVER_PORT"]			= requestREF.getHeaderValue();
 };
 
-CGIhandler::CGIhandler(const CGIhandler &cgiREF) 
+CGIhandler::CGIhandler(const CGIhandler &cgiREF)
 {
 	this->operator=(cgiREF);
 };
 
 CGIhandler::~CGIhandler(void) {};
 
-CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF) 
+CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF)
 {
 	if (this != &cgiREF)
 	{
@@ -87,12 +87,12 @@ CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF)
 	return (*this);
 };
 
-const std::map< std::string, std::string >	&CGIhandler::getCgiEnv(void) const 
+const std::map< std::string, std::string >	&CGIhandler::getCgiEnv(void) const
 {
 	return (_cgiEnv);
 };
 
-const http::Request							&CGIhandler::getCgiRequest(void) const 
+const http::Request							&CGIhandler::getCgiRequest(void) const
 {
 	return (_cgiRequest);
 };
@@ -155,9 +155,21 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
 	{
 		dup2(inFileFd, STDIN_FILENO);
 		dup2(outFileFd, STDOUT_FILENO);
-		execve(scriptName.c_str(), NULL, cgiEnv);
+		(void)inFileFd;
+		(void)outFileFd;
+		// int x = execl(scriptName.c_str(), scriptName.c_str());
+		char **av = new char*[2];
+		av[0] = new char[2 + scriptName.size() + 1];
+		av[1] = new char[1];
+		// av[0] = scriptName.c_str();
+		std::string src = "./" + scriptName;
+		const char *csrc = src.c_str();
+		memcpy(av[0], csrc, src.size());
+		av[0][src.size()] = 0;
+		av[1] = 0;
+		execve(scriptName.c_str(), av, NULL);
 	}
-	deleteEnvArr(cgiEnv);
+	// deleteEnvArr(cgiEnv);
 }
 
 static void	CGIparent(const int &outFileFd, std::string &cgiResult)
@@ -177,11 +189,11 @@ static void	CGIparent(const int &outFileFd, std::string &cgiResult)
 	do {
 		std::memset(readBuf, 0, READ_BUF_SIZE);
 		readReturn = read(outFileFd, readBuf, READ_BUF_SIZE);
-		cgiResult += readReturn;
+		cgiResult += readBuf;
 	} while (readReturn > 0);
 }
 
-std::string	CGIhandler::executeCGI(const std::string &scriptName)
+std::string	CGIhandler::executeCGI(const std::string &scriptName )
 {
 	pid_t		pid;
 	int			cinSave;
@@ -200,12 +212,14 @@ std::string	CGIhandler::executeCGI(const std::string &scriptName)
 	pid = fork();
 	if (pid < 0)
 		throw (CGIexception("CGI failed to create fork!"));
-	if (pid != 0) {
+	if (pid == 0) {
 		CGIchild(inFileFd, outFileFd, mapToArr(_cgiEnv), scriptName);
 	}
 	else {
-		if (waitpid(pid, NULL, 0) > 0)
-			throw (CGIexception("CGI failed to run!"));
+		int status = 0;
+		waitpid(pid, &status, 0);
+		if (status == -1 || status == 1)
+			throw(CGIexception("CGI failed to run!"));
 		CGIparent(outFileFd, cgiResult);
 	}
 	dup2(cinSave, STDIN_FILENO);
@@ -216,7 +230,7 @@ std::string	CGIhandler::executeCGI(const std::string &scriptName)
 	close(outFileFd);
 	fclose(inFile);
 	fclose(outFile);
-	if (pid != 0)
+	if (pid == 0)
 		exit(EXIT_FAILURE);
 	return (cgiResult);
 };
