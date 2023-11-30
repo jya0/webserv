@@ -13,7 +13,7 @@ SRCS		=	srcs/main.cpp srcs/server/PollManager.cpp srcs/server/ServerSocket.cpp\
 # srcs/ServerConfig/HTTPServerParser.cpp
 
 OBJS		=	${SRCS:.cpp=.o}
-CXXFLAGS		=	-g3 #-Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS		=	-g3 -fsanitize=address #-Wall -Wextra -Werror -g3 -std=c++98
 
 all:	$(NAME)
 

@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/18 20:04:13 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/11/30 12:27:26 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void WebServer::sendData(int client, std::string message)
 	connection.sendData(client, message);
 }
 
-std::string WebServer::recieveData(int *client)
+std::string WebServer::recieveData(int &client)
 {
 	std::string ret = connection.recieveData(client);
 	return (ret);
@@ -185,56 +185,4 @@ bool WebServer::responseReady(int client){
 	if (responses.count(client) == 0)
 		return (false);
 	return (responses[client]->responseReady());
-}
-
-void WebServer::startServer() {
-	// int i = 0;
-	// sockets.addFd(this->getConnection().getPassiveSocket(), POLLIN);
-	// startListening();
-
-	// int rc;
-	// int triggered;
-	// int client;
-	// while (2) {
-	// 	rc = sockets.callPoll();
-	// 	if (rc < 0) {
-	// 		perror("poll() failed");
-	// 		break;
-	// 	}
-
-	// 	for (i = 0; i < sockets.getNfds(); i++) {
-	// 		triggered = sockets[i].fd;
-	// 		if(sockets[i].revents == 0)
-    //     		continue;
-	// 		else if ((sockets[i].revents & POLLHUP) || (sockets[i].revents & POLLERR))
-	// 		{
-	// 			closeClientConnection(triggered);
-	// 			sockets.removeFd(triggered);
-	// 		}
-	// 		else if (sockets[i].revents & POLLIN)
-	// 		{
-	// 			if (triggered == this->getConnection().getPassiveSocket())
-	// 			{
-	// 				client = acceptConnection();
-	// 				if (client != -1)
-	// 					sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
-	// 			}
-	// 			else
-	// 			{
-	// 				std::cout << "Triggered = " << triggered;
-	// 				recieveData(triggered);
-	// 				if (triggered != -1)
-	// 					prepareResponse(triggered);
-	// 				else
-	// 					continue;;
-	// 			}
-	// 		}
-	// 		else if ((sockets[i].revents & POLLOUT) && responseReady(triggered))
-	// 		{
-	// 			sendResponse(triggered, *responses[triggered]);
-	// 			responses[triggered]->setResponseStatus(false);
-	// 		}
-
-	// 	}
-	// }
 }

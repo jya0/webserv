@@ -42,17 +42,16 @@ std::string ServerSocket::generateDefaultResponse()
 	return ss.str();
 }
 
-std::string ServerSocket::recieveData(int *peer_socket)
+std::string ServerSocket::recieveData(int &peer_socket)
 {
 	long bytesRecieved;
-    char *buffer = new char[BUFFER_SIZE + 1];
-
+    // char buffer[BUFFER_SIZE + 1] = {0};
+	char *buffer = new char[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
-
-	bytesRecieved = recv(*peer_socket, buffer, BUFFER_SIZE, 0);
+	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
 	if (bytesRecieved == 0)
 	{
-		*peer_socket = -1;
+		peer_socket = -1;
 		delete []buffer;
 		return (std::string(""));
 	}
@@ -62,14 +61,9 @@ std::string ServerSocket::recieveData(int *peer_socket)
 		delete []buffer;
 		exit(0);
 	}
-
-	std::ostringstream ss;
-	ss << "------ Received Request from client ------\n\n";
+	std::cout << "------ Received Request from client ------\n\n";
 	std::cout<<std::string(buffer)<<"\n";
-	log(ss.str());
-	ss.clear(); // clear any bits set
-	ss.str(std::string());
-	std::string ret = std::string(buffer);
+	std::string ret(buffer);
 	delete []buffer;
 	return (ret);
 }
@@ -109,12 +103,10 @@ void ServerSocket::startListening()
 	{
 		log("Socket listen failed\n");
 	}
-	std::ostringstream ss;
-	ss << "\n*** Listening on ADDRESS: "
+	std::cout << "\n*** Listening on ADDRESS: "
 	   << inet_ntoa(socket_address.sin_addr)
 	   << " PORT: " << ntohs(socket_address.sin_port)
 	   << " ***\n\n";
-	log(ss.str());
 }
 
 int ServerSocket::acceptConnection()
@@ -123,11 +115,9 @@ int ServerSocket::acceptConnection()
 						&socket_address_len);
 	if (peer_socket < 0)
 	{
-		std::ostringstream ss;
-		ss << "Server failed to accept incoming connection from ADDRESS: "
+		std::cout << "Server failed to accept incoming connection from ADDRESS: "
 		   << inet_ntoa(socket_address.sin_addr) << "; PORT: "
 		   << ntohs(socket_address.sin_port);
-		log(ss.str());
 	}
 	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	std::cout<<"Connection accepted!\n";

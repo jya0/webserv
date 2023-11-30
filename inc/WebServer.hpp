@@ -63,7 +63,7 @@ public:
 	void sendResponse(int client, const Response &response);
 	void prepareResponse(int client);
 	void sendData(int client, std::string message);
-	std::string recieveData(int *client);
+	std::string recieveData(int &client);
 	Request receiveRequest(int client, std::string );
 	Response handleRequest(const Request &request) const ;
 	Response handleGet(const Request &request) const ;
