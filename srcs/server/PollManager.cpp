@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 05:03:53 by rriyas            #+#    #+#             */
-/*   Updated: 2023/10/29 06:29:35 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/11/30 11:48:12 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,28 @@ int PollManager::getNfds() {
 
 
 void PollManager::addFd(int fd, short events) {
-	pollfd socket;
-
-	socket.fd = fd;
-	socket.events = events;
-	socket.revents = 0;
-	sockets.push_back(socket);
+	sockets[nfds].fd = fd;
+	sockets[nfds].events = events;
+	sockets[nfds].revents = 0;
 	nfds++;
 }
 
 void PollManager::removeFd(int fd) {
-	for (std::vector<pollfd>::iterator itr = sockets.begin(); itr != sockets.end(); itr++) {
-		if (itr->fd == fd) {
-			sockets.erase(itr);
-			nfds--;
-			return ;
-		}
+	//1. find index of fd to remove
+	int i = 0;
+	for (i = 0; i < nfds; i++)
+		if (sockets[i].fd == fd)
+			break ;
+	//2. skip element and copy bacwards until the end
+	if (i == nfds)
+		return ;
+	i++;
+	while (i < nfds) {
+		sockets[i] = sockets[i+1];
+		i++;
 	}
+	sockets[i].fd = 0;
+	sockets[i].events = 0;
+	sockets[i].revents = 0;
+	nfds--;
 }

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 15:06:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void ServerMonitor::startServers() {
 	int i = 0;
 	for (std::map<int, WebServer *>::iterator itr = servers.begin(); itr != servers.end(); itr++)
 	{
-		sockets.addFd(itr->second->getConnection().getPassiveSocket(), POLLIN);
+		sockets.addFd(itr->second->getConnection().getPassiveSocket(), POLLIN | POLLOUT);
 		itr->second->startListening();
 	}
 	int rc;
@@ -61,7 +61,7 @@ void ServerMonitor::startServers() {
 			}
 			else if (sockets[i].revents & POLLIN)
 			{
-				if (servers.find(triggered) != servers.end() && servers.find(triggered)->second->getConnection().getPassiveSocket() == triggered)
+				if (servers.find(triggered) != servers.end())
 				{
 					client = servers.find(triggered)->second->acceptConnection();
 					if (client != -1)
@@ -69,15 +69,18 @@ void ServerMonitor::startServers() {
 				}
 				else
 				{
-					std::cout << "Triggered = " << triggered;
-					servers.at(server)->recieveData(&triggered);
+					std::cout << "Triggered = " << triggered<<std::endl;
+					servers.at(server)->recieveData(triggered);
+					// build request (data)
+					// if request complete -> build response
+
 					if (triggered != -1)
 						servers.at(server)->prepareResponse(triggered);
 					else
 						continue;
 				}
 			}
-			else if ((sockets[i].revents & POLLOUT) && server != -1 && servers.at(server)->responseReady(triggered))
+			else if (server != -1 && (sockets[i].revents & POLLOUT) && servers.at(server)->responseReady(triggered))
 			{
 				servers.at(server)->sendResponse(triggered, *(servers.at(server)->responses[triggered]));
 				std::map<int, Response *>::iterator itr = servers.at(server)->responses.find(triggered);

@@ -12,7 +12,7 @@
 # include	<fstream>
 # include	<unistd.h>
 # include <fcntl.h>
-#define BUFFER_SIZE 1000000000
+#define BUFFER_SIZE 10
 
 class ServerSocket {
 protected:
@@ -30,7 +30,7 @@ public:
 	static std::string generateDefaultResponse();
 
 	void sendData(int peer_socket, std::string message);
-	std::string recieveData(int *peer_socket);
+	std::string recieveData(int &peer_socket);
 
 
 	void startConnection();
