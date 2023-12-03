@@ -147,11 +147,13 @@ std::string	AMessage::getRawMessage(void) const {
 	std::string rawMessage = this->_startLine;
     for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++) {
 		if (rawMessage.size() == 0)
-			rawMessage = it->getName() + ": " + it->getValue() + "\r\n";
+			rawMessage = it->getName() + ": " + it->getValue() + CR_LF;
 		else
-			rawMessage += it->getName() + ": " + it->getValue() + "\r\n";
+			rawMessage += it->getName() + ": " + it->getValue() + CR_LF;
     }
-    rawMessage += "\r\n" + this->_messageBody;
+    rawMessage += CR_LF + this->_messageBody;
+	if (_messageBody.find(CR_LF CR_LF) == std::string::npos)
+		rawMessage += CR_LF CR_LF;
     return (rawMessage);
 }
 

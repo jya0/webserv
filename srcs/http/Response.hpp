@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/28 21:09:12 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 21:43:50 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,12 @@
 
 # include	<iostream>
 # include	<string>
+# include	<exception>
+# include	"ServerConfig.hpp"
 # include   "AMessage.hpp"
+# include	"Request.hpp"
+
+class	ServerConfig;
 
 namespace http {
 	/**
@@ -36,18 +41,37 @@ namespace http {
 		protected:
 		public:
 			Response(void);
-			Response(int status);
-			Response(std::string httpRaw);
 			Response(const Response &responseREF);
 			~Response(void);
 			Response	&operator=(const Response &responseREF);
-			std::string	getHttpVersion(void) const;
+			Response(int status);
+			Response(int status, const std::string &responseBody);
+			Response(std::string httpRaw);
+
+			std::string		getHttpVersion(void) const;
 			unsigned short	getHttpStatusCode(void) const;
-			bool validate(void) const;
-			std::string getHttpStatusString(unsigned short statusCode) const;
-			bool responseReady() const;
-			void setResponseStatus(bool status);
+			std::string		getHttpStatusString(unsigned short statusCode) const;
+			Response		buildResponse(const Request &requestREFREF, const ServerConfig &servConfREF);
+			bool			validate(void) const;
+			bool			responseReady() const;
+			void			setResponseStatus(bool status);
+
+			class	ResponseException;
 	};
+};
+
+class	http::Response::ResponseException: public std::exception {
+		private:
+			std::string	_errorMsg;
+    	public:
+			virtual ~ResponseException() throw () {};
+			ResponseException(const std::string &errorMsg) {
+				_errorMsg = errorMsg;
+			};
+			virtual const char *what() const throw()
+			{
+				return (_errorMsg.c_str());
+			};
 };
 
 #endif

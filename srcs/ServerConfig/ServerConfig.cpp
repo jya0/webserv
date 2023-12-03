@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/29 16:39:43 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 22:17:29 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ ServerConfig::ServerConfig(void):	_cgiPathInfo(DEFAULT_CGI_BIN),
 
 ServerConfig::~ServerConfig(void) {};
 
-static std::pair< std::string, int >	parseListenDirective(std::string listenDve)
-{
+static std::pair< std::string, int >	parseListenDirective(std::string listenDve) {
 	std::stringstream	ssListen;
 	std::string			ipStr;
 	std::string			portStr;
@@ -44,8 +43,7 @@ static std::pair< std::string, int >	parseListenDirective(std::string listenDve)
 	return (std::make_pair(ipStr, port));
 };
 
-static std::pair< int, std::string >	parseReturnDirective(std::string returnDve)
-{
+static std::pair< int, std::string >	parseReturnDirective(std::string returnDve) {
 	std::stringstream	ssReturn;
 	std::string			returnCodeStr;
 	int					returnCode;
@@ -59,8 +57,7 @@ static std::pair< int, std::string >	parseReturnDirective(std::string returnDve)
 	return (std::make_pair(returnCode, returnUriStr));
 };
 
-ServerConfig::ServerConfig(DirectiveBlock *serverDve)
-{
+ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 	*this = ServerConfig();
 	if (serverDve != NULL)
 	{
@@ -104,16 +101,14 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve)
 	};
 };
 
-ServerConfig::ServerConfig(const ServerConfig &serverConfigREF)
-{
+ServerConfig::ServerConfig(const ServerConfig &serverConfigREF) {
 	this->ServerConfig::operator=(serverConfigREF);
 };
 
-ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF)
-{
+ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
 	if (this != &serverConfigREF)
 	{
-		_cgiPathInfo			= serverConfigREF.getCgiPathInfo();
+		_cgiPathInfo	= serverConfigREF.getCgiPathInfo();
 		_listen			= serverConfigREF.getListen();
 		_serverNames	= serverConfigREF.getServerNames();
 		_locations		= serverConfigREF.getLocations();
@@ -127,51 +122,57 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF)
 	return (*this);
 };
 
-std::string	ServerConfig::getCgiPathInfo(void) const {
+const std::string										&ServerConfig::getCgiPathInfo(void) const {
 	return (_cgiPathInfo);
 };
 
-std::vector< std::string >	ServerConfig::getIndex(void) const {
+const std::vector< std::string >						&ServerConfig::getIndex(void) const {
 	return (_index);
 };
 
-std::pair< std::string, int >	ServerConfig::getListen(void) const {
+const std::pair< std::string, int >						&ServerConfig::getListen(void) const {
 	return (_listen);
 };
 
-std::vector< std::string >	ServerConfig::getServerNames(void) const {
+const std::vector< std::string >						&ServerConfig::getServerNames(void) const {
 	return (_serverNames);
 };
 
-std::vector< ServerConfig::Location >		ServerConfig::getLocations(void) const {
+const std::vector< ServerConfig::Location >				&ServerConfig::getLocations(void) const {
 	return (_locations);
 };
 
-bool	ServerConfig::getAutoIndex(void) const {
+std::vector< ServerConfig::Location >::const_iterator	ServerConfig::getLocation(const std::string &uriREF) const throw (std::exception) {
+	std::vector< Location >::const_iterator	itc;
+
+	itc = std::find_if(_locations.begin(), _locations.end(), Location::IsLocationUnary(uriREF));
+	return (itc);
+};
+
+const bool												&ServerConfig::getAutoIndex(void) const {
 	return (_autoIndex);
 };
 
-std::size_t	ServerConfig::getSizeCMB(void) const {
+const std::size_t										&ServerConfig::getSizeCMB(void) const {
 	return (_sizeCMB);
 };
 
-std::string	ServerConfig::getErrorPage(void) const {
+const std::string										&ServerConfig::getErrorPage(void) const {
 	return (_errorPage);
 };
 
-std::pair< int, std::string >	ServerConfig::getReturn(void) const {
+const std::pair< int, std::string >						&ServerConfig::getReturn(void) const {
 	return (_return);
 };
 
-std::string	ServerConfig::getRoot(void) const {
+const std::string										&ServerConfig::getRoot(void) const {
 	return (_root);
 };
 
 /* class ServerConfig::Location */
 ServerConfig::Location::Location(void): ServerConfig() {};
 
-ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_cast<DirectiveBlock *>(locationDve))
-{
+ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_cast<DirectiveBlock *>(locationDve)) {
 	DirectiveBlock	*dveBlockPTR;
 
 	if (locationDve != NULL)
@@ -186,13 +187,11 @@ ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_
 
 ServerConfig::Location::~Location(void) {};
 
-ServerConfig::Location::Location(const Location &locationREF): ServerConfig(locationREF)
-{
+ServerConfig::Location::Location(const Location &locationREF): ServerConfig(locationREF) {
 	this->ServerConfig::Location::operator=(locationREF);
 };
 
-ServerConfig::Location &ServerConfig::Location::operator=(const Location &locationREF)
-{
+ServerConfig::Location &ServerConfig::Location::operator=(const Location &locationREF) {
 	if (this != &locationREF)
 	{
 		locationUri = locationREF.locationUri;
@@ -204,8 +203,7 @@ ServerConfig::Location &ServerConfig::Location::operator=(const Location &locati
 /* class ServerConfig::Location::LimitExcept */
 ServerConfig::Location::LimitExcept::LimitExcept(void): acceptedMethods(DEFAULT_LIMIT_EXCEPT_METHODS) {};
 
-ServerConfig::Location::LimitExcept::LimitExcept(ADirective *limitExceptDve)
-{
+ServerConfig::Location::LimitExcept::LimitExcept(ADirective *limitExceptDve) {
 	std::vector< std::string >	methodStrs;
 
 	*this = LimitExcept();

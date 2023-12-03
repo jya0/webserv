@@ -3,7 +3,7 @@
 
 # include	<iostream>
 # include	<string.h>
-#include <map>
+# include 	<map>
 # include   <vector>
 # include	<utility>
 # include	<string>
@@ -17,19 +17,19 @@
 # include	<cstddef>
 # include	<netinet/in.h>
 # include	<sys/socket.h>
-# include	"../srcs/http/Http_namespace.hpp"
+# include	<cstddef>
+# include	<netinet/in.h>
+# include	<sys/types.h>
+# include	<sys/event.h>
+# include	<sys/ioctl.h>
+# include	<poll.h>
+# include	"ServerConfig.hpp"
+# include	"Http_namespace.hpp"
 // # include	"../srcs/ServerConfig/ServerConfig_namespace.hpp"
-# include	"cgi.hpp"
 # include	"ServerSocket.hpp"
-# include <cstddef>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/event.h>
-#include <sys/ioctl.h>
-# include "../srcs/http/Http_namespace.hpp"
-#include <poll.h>
-#include "PollManager.hpp"
-# define SERVERS_UP 2
+# include	"PollManager.hpp"
+
+# define	SERVERS_UP 2
 
 using namespace http;
 
@@ -67,13 +67,13 @@ public:
 	void sendData(int client, std::string message);
 	int recieveData(int &client);
 	Request receiveRequest(int client, std::string );
-	Response handleRequest(const Request &request) const ;
-	Response handleGet(const Request &request) const ;
-	Response handlePost(const Request &request) const ;
-	Response handlePut(const Request &request) const ;
-	Response handleDelete(const Request &request) const ;
-	Response handleHead(const Request &request) const ;
-	Response handleCGI()const ;
+	// Response handleRequest(const Request &requestREF) const ;
+	// Response handleGet(const Request &requestREF) const ;
+	// Response handlePost(const Request &requestREF) const ;
+	// Response handlePut(const Request &requestREF) const ;
+	// Response handleDelete(const Request &requestREF) const ;
+	// Response handleHead(const Request &requestREF) const ;
+	// Response handleCGI()const ;
 
 	void startServer();
 	void startConnection();

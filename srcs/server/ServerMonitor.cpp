@@ -6,21 +6,18 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 14:51:36 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 15:02:54 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/ServerMonitor.hpp"
+#include "ServerMonitor.hpp"
 
-ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : servers(servers), sockets(servers.size())
-{
-}
-ServerMonitor::~ServerMonitor()
-{
-}
-int ServerMonitor::retrieveClientHandlerSocket(int triggered)
-{
-	for (std::map<int, WebServer *>::iterator itr = servers.begin(); itr != servers.end(); itr++)
+ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers): _servers(servers), _sockets(_servers.size()) {};
+
+ServerMonitor::~ServerMonitor() {};
+
+int ServerMonitor::retrieveClientHandlerSocket(int triggered) {
+	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
 	{
 		if (itr->second->connectedClient(triggered))
 			return (itr->second->getConnection().getPassiveSocket());
@@ -28,16 +25,13 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 	return (-1);
 }
 
-
-
-
 void ServerMonitor::startServers()
 {
 
 	int i = 0;
-	for (std::map<int, WebServer *>::iterator itr = servers.begin(); itr != servers.end(); itr++)
+	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
 	{
-		sockets.addFd(itr->second->getConnection().getPassiveSocket(), POLLIN | POLLOUT);
+		_sockets.addFd(itr->second->getConnection().getPassiveSocket(), POLLIN | POLLOUT);
 		itr->second->startListening();
 	}
 	int rc;
@@ -47,36 +41,36 @@ void ServerMonitor::startServers()
 	i = 0;
 	while (2)
 	{
-		rc = sockets.callPoll();
+		rc = _sockets.callPoll();
 		if (rc < 0)
 		{
 			perror("poll() failed");
 			break;
 		}
 
-		for (i = 0; i < sockets.getNfds(); i++)
+		for (i = 0; i < _sockets.getNfds(); i++)
 		{
-			triggered = sockets[i].fd;
+			triggered = _sockets[i].fd;
 			server = retrieveClientHandlerSocket(triggered);
-			if (sockets[i].revents == 0)
+			if (_sockets[i].revents == 0)
 				continue;
-			else if ( server != -1 && ((sockets[i].revents & POLLHUP) || (sockets[i].revents & POLLERR)))
+			else if ( server != -1 && ((_sockets[i].revents & POLLHUP) || (_sockets[i].revents & POLLERR)))
 			{
-				servers.at(server)->closeClientConnection(triggered);
-				sockets.removeFd(triggered);
+				_servers.at(server)->closeClientConnection(triggered);
+				_sockets.removeFd(triggered);
 			}
-			else if (sockets[i].revents & POLLIN)
+			else if (_sockets[i].revents & POLLIN)
 			{
-				if (servers.find(triggered) != servers.end())
+				if (_servers.find(triggered) != _servers.end())
 				{
-					client = servers.find(triggered)->second->acceptConnection();
+					client = _servers.find(triggered)->second->acceptConnection();
 					if (client != -1)
-						sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
+						_sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
 				}
 				else
 				{
 					std::cout << "Triggered = " << triggered<<std::endl;
-					int status = servers.at(server)->recieveData(triggered);
+					int status = _servers.at(server)->recieveData(triggered);
 					if (triggered == -1)
 						continue;
 					if(status == 0)
@@ -85,21 +79,21 @@ void ServerMonitor::startServers()
 						std::cout<<"done reading\n";
 					}
 					else {
-						// servers.at(server)->buildRequest(triggered);
-						if (servers.at(server)->requestReady(triggered))
+						// _servers.at(server)->buildRequest(triggered);
+						if (_servers.at(server)->requestReady(triggered))
 						{
-							servers.at(server)->buildResponse(triggered);
-							std::map<int, Request*>::iterator itr = servers.at(server)->requests.find(triggered);
-							servers.at(server)->requests.erase(itr);
+							_servers.at(server)->buildResponse(triggered);
+							std::map<int, Request*>::iterator itr = _servers.at(server)->requests.find(triggered);
+							_servers.at(server)->requests.erase(itr);
 						}
 					}
 				}
 			}
-			else if (server != -1 && (sockets[i].revents & POLLOUT) && servers.at(server)->responseReady(triggered))
+			else if (server != -1 && (_sockets[i].revents & POLLOUT) && _servers.at(server)->responseReady(triggered))
 			{
-				servers.at(server)->sendResponse(triggered, *(servers.at(server)->responses[triggered]));
-				std::map<int, Response *>::iterator itr = servers.at(server)->responses.find(triggered);
-				servers.at(server)->responses.erase(itr);
+				_servers.at(server)->sendResponse(triggered, *(_servers.at(server)->responses[triggered]));
+				std::map<int, Response *>::iterator itr = _servers.at(server)->responses.find(triggered);
+				_servers.at(server)->responses.erase(itr);
 			}
 		}
 	}

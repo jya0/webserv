@@ -6,14 +6,13 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/28 17:21:27 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HTTPServerParser.hpp"
 
-int main(void)
-{
+int main(void) {
 	std::vector< DirectiveBlock * >	serverBlocks;
 
 	std::cout << SIMPLE_DIRECTIVES BLOCK_DIRECTIVES << std::endl;

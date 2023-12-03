@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:19:21 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/29 14:46:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 18:27:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define HEADER_HPP
 
 # include <string>
+
+# define	CR_LF					"\r\n"
 
 # define	HEADER_KEY_AUTH			"Authorization"
 # define	HEADER_KEY_CONTENT_TYPE	"Content-Type"

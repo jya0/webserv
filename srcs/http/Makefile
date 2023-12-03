@@ -6,21 +6,24 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/11/27 15:11:06 by jyao             ###   ########.fr        #
+#    Updated: 2023/11/30 15:01:58 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile -*-
 
-NAME		:=	libhttp.a
+NAME			:=	libhttp.a
 
 # LIB			=	./lib/
-HEADERS		:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
+HEADERS			:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
 				Request.hpp		Response.hpp
-INCLUDES	:=	-I../inc/
-CXX			=	c++
-FILES		:=	AMessage	Header	Request	Response
-SRCS		=	$(addsuffix .cpp, $(FILES))
+CGI_DIR			:=	./CGIhandler/
+CONFIG_DIR		:=	../ServerConfig/
+AUTOINDEX_DIR	:=	./Autoindex/
+INCLUDES		:=	-I. -I../inc/	-I$(CONFIG_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR)
+CXX				=	c++
+FILES			:=	AMessage	Header	Request	Response
+SRCS			=	$(addsuffix .cpp, $(FILES))
 
 # srcs/cgi/
 # srcs/http/

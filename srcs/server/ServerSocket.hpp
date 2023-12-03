@@ -14,8 +14,9 @@
 # include <fcntl.h>
 #define BUFFER_SIZE 1
 
-class ServerSocket
-{
+# define	BUFFER_SIZE 10
+
+class ServerSocket {
 protected:
 	std::string ip_address;
 	int port;

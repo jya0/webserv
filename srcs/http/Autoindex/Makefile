@@ -6,18 +6,18 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/11/27 17:00:37 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/03 14:05:16 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Autoindex -*-
 
-# NAME		:=	libautoindex.a
-NAME		:=	autoIndexTest
+NAME		:=	libautoindex.a
+# NAME		:=	autoIndexTest
 
 HEADERS		:=	Autoindex_namespace.hpp
 
-FILES		:=	Autoindex	test
+FILES		:=	Autoindex
 
 CXX			:=	c++
 RM			:=	rm
@@ -30,8 +30,8 @@ CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
 all: $(NAME)
 
 $(NAME): $(LIBS) $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
-#	ar -rvs $@ $^
+	ar -rvs $@ $(OBJS)
+#$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
 $(LIBS):
 	make -C $(HTTP_DIR)

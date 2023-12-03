@@ -3,20 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/30 12:16:50 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 14:38:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "ServerConfig/HTTPServerParser.hpp"
-#include "../inc/WebServer.hpp"
-#include "../inc/PollManager.hpp"
-#include "../inc/ServerMonitor.hpp"
+#include "WebServer.hpp"
+#include "PollManager.hpp"
+#include "ServerMonitor.hpp"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	(void) argc;
 	(void) argv;
 	WebServer s1 = WebServer("127.0.0.1", atoi(argv[1]));

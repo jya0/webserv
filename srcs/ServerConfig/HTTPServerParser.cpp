@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/19 12:44:19 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 #include	<sstream>
 #include	<cstdlib>
 
-static ADirective	*tokenToDirective(std::vector<std::string> &tokens)
-{
+static ADirective	*tokenToDirective(std::vector<std::string> &tokens) {
 	DirectiveSimple	*directive;
 
 	directive = new DirectiveSimple();
@@ -28,8 +27,7 @@ static ADirective	*tokenToDirective(std::vector<std::string> &tokens)
 	return (directive);
 }
 
-static int	countLeadingTabs(std::string lineCnt)
-{
+static int	countLeadingTabs(std::string lineCnt) {
 	std::size_t	tabCount;
 
 	tabCount = lineCnt.find_first_not_of('\t');
@@ -39,8 +37,7 @@ static int	countLeadingTabs(std::string lineCnt)
 }
 
 static std::streampos	getParesableLine(\
-std::ifstream &configIF, std::string &lineREF)
-{
+std::ifstream &configIF, std::string &lineREF) {
 	std::string			tmpLine;
 	std::streampos		befParesableLine;
 
@@ -51,8 +48,7 @@ std::ifstream &configIF, std::string &lineREF)
 	return (befParesableLine);
 }
 
-static std::vector<std::string>	tokenize(const std::string &lineREF)
-{
+static std::vector<std::string>	tokenize(const std::string &lineREF) {
 	std::vector<std::string>	tmpTokens;
 	std::istringstream			stringStream;
 	std::string					token;
@@ -67,8 +63,7 @@ static std::vector<std::string>	tokenize(const std::string &lineREF)
 	return (tmpTokens);
 }
 
-static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlockCountREF)
-{
+static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlockCountREF) {
 	std::string						line;
 	std::vector<std::string>		tokens;
 	DirectiveBlock					*dveBlock;
@@ -84,8 +79,7 @@ static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlock
 	return (dveBlock);
 }
 
-static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
-{
+static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF) {
 	int								tabBlockCount;
 	DirectiveBlock					*dveBlock;
 	std::string						lineCnt;
@@ -134,8 +128,7 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF)
 
 const std::vector<std::string> HTTPServerParser::dveNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
 
-std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string filename)
-{
+std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string filename) {
 	DirectiveBlock					*dveBlock;
 	std::vector< DirectiveBlock * >	serverBlocks;
 	std::ifstream					configIF;
@@ -167,10 +160,8 @@ std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string fi
 }
 
 
-HTTPServerParser::HTTPServerParser()
-{
+HTTPServerParser::HTTPServerParser() {
 }
 
-HTTPServerParser::~HTTPServerParser()
-{
+HTTPServerParser::~HTTPServerParser() {
 }

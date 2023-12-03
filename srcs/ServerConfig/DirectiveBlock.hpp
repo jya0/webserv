@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/18 15:43:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 11:07:27 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define DIRECTIVE_BLOCK_HPP
 
 # include	<map>
+# include	<exception>
 # include	"ADirective.hpp"
 
 /**
@@ -34,7 +35,7 @@ class DirectiveBlock : public ADirective {
 		void	clearDvesMap(void);
 		void	insertMapDirective(ADirective *dvePTR);
 		const std::multimap<std::string, ADirective *>	*getDvesMap(void) const;
-		std::vector<std::string>	checkDirectiveSimple(const std::string &dveName);
+		std::vector<std::string>	checkDirectiveSimple(const std::string &dveName) throw (std::exception);
 		DirectiveBlock	*checkDirectiveBlock(const std::string &dveName, const std::string &dveValue);
 		DirectiveBlock	*checkDirectiveBlock(const std::string &dveName);
 /* 		std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \

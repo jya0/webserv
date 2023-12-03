@@ -1,34 +1,75 @@
-NAME		=	webserv
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
+#    Updated: 2023/12/03 14:40:11 by jyao             ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-# LIB			=	./lib/
-CXX			=	c++
-RM			=	rm
-SRCS		=	srcs/main.cpp srcs/server/PollManager.cpp srcs/server/ServerSocket.cpp\
-				srcs/server/WebServer.cpp srcs/server/ServerMonitor.cpp\
-				srcs/http/AMessage.cpp srcs/http/Header.cpp srcs/http/Request.cpp srcs/http/Response.cpp
-# srcs/cgi/
-# srcs/http/
-# srcs/parser/
-# srcs/socket/
-# srcs/ServerConfig/HTTPServerParser.cpp
+NAME			=	webserv
 
-OBJS		=	${SRCS:.cpp=.o}
-CXXFLAGS		=	-g3 -fsanitize=address #-Wall -Wextra -Werror -g3 -std=c++98
+SRCS_DIR		:=	./srcs/
+HTTP_DIR		=	$(SRCS_DIR)http/
+HTTP_LIB		=	$(HTTP_DIR)libhttp.a
+CGI_DIR			=	$(HTTP_DIR)CGIhandler/
+CGI_LIB			=	$(CGI_DIR)libcgi.a
+AUTOINDEX_DIR	=	$(HTTP_DIR)Autoindex/
+AUTOINDEX_LIB	=	$(AUTOINDEX_DIR)libautoindex.a
+CONFIG_DIR		=	$(SRCS_DIR)ServerConfig/
+CONFIG_LIB		=	$(CONFIG_DIR)libconfparser.a
+SERVER_DIR		=	$(SRCS_DIR)server/
+SERVER_LIB		=	$(SERVER_DIR)libserver.a
+
+LIBS			=	$(HTTP_LIB) $(CGI_LIB) $(AUTOINDEX_LIB) $(CONFIG_LIB) $(SERVER_LIB)
+
+INCLUDES		:=	-I. -I$(HTTP_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(CONFIG_DIR) -I$(SERVER_DIR)
+
+CXX				=	c++
+RM				=	rm
+
+FILES			=	main
+
+SRCS			=	$(addsuffix .cpp, $(addprefix $(SRCS_DIR), $(FILES)))
+
+OBJS			=	$(SRCS:.cpp=.o)
+
+CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98
 
 all:	$(NAME)
 
-.cpp: .o
-	$(CXX) $(CXXFLAGS) -I ../inc/webserv.h  -g3 -cpp $< -o ${<:.cpp=.o}
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
-$(NAME):	$(OBJS)
-		$(CXX) $(CXXFLAGS) -I ../inc/webserv.h  -g3 $(OBJS) -o $(NAME)
+$(NAME):	$(HEADERS) $(LIBS) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
 
-# $(LIB):
-# 		#make -C ./lib/
+$(LIBS):
+	make -C $(HTTP_DIR)
+	make -C $(CGI_DIR)
+	make -C $(AUTOINDEX_DIR)
+	make -C $(CONFIG_DIR)
+	make -C $(SERVER_DIR)
+
 clean:
-		${RM} -rf $(OBJS)
+	make clean -C $(HTTP_DIR)
+	make clean -C $(CGI_DIR)
+	make clean -C $(AUTOINDEX_DIR)
+	make clean -C $(CONFIG_DIR)
+	make clean -C $(SERVER_DIR)
+	$(RM) -rf $(OBJS)
+
 fclean:	clean
-		${RM} -rf ${NAME}
+	make fclean -C $(HTTP_DIR)
+	make fclean -C $(CGI_DIR)
+	make fclean -C $(AUTOINDEX_DIR)
+	make fclean -C $(CONFIG_DIR)
+	make fclean -C $(SERVER_DIR)
+	$(RM) -rf $(NAME)
+
 re:		fclean all
 
 .PHONY: all clean fclean re

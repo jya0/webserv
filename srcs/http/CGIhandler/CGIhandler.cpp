@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:18:26 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 14:09:31 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include	<cstdio>
 #include	"CGIhandler.hpp"
 #include	"Header.hpp"
+
+using namespace http;
 
 /*
 std::map<std::string, std::string>	headers = request.getHeaders();
@@ -193,7 +195,7 @@ static void	CGIparent(const int &outFileFd, std::string &cgiResult)
 	} while (readReturn > 0);
 }
 
-std::string	CGIhandler::executeCGI(const std::string &scriptName )
+std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::exception)
 {
 	pid_t		pid;
 	int			cinSave;

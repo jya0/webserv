@@ -6,10 +6,11 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/28 21:06:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 13:57:15 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include	<fstream>
 #include	"Http_namespace.hpp"
 
 using namespace http;
@@ -34,6 +35,18 @@ Response::Response(int status) {
     _ready = true;
 	return ;
 }
+
+/**
+ * @brief Construct a new Response object from status code and specified body
+ * 
+ * @param status 
+ * @param responseBody 
+ */
+Response::Response(int status, const std::string &responseBody) {
+	*this = Response(status);
+	this->setMessageBody(responseBody);
+};
+
 /**
  * @brief Construct a new Response object (copy constructor)
  *
@@ -98,7 +111,6 @@ unsigned short	Response::getHttpStatusCode(void) const {
     return (this->_httpStatusCode);
 }
 
-
 bool Response::responseReady() const {
 	return (_ready);
 }
@@ -106,6 +118,166 @@ bool Response::responseReady() const {
 void Response::setResponseStatus(bool status) {
 	_ready = status;
 }
+
+/**
+ * @brief Return the HTTP status string of the response.
+ *
+ * @return std::string The HTTP status string of the response
+ */
+bool    Response::validate(void) const {
+    return (true);
+}
+
+/*
+██╗  ██╗████████╗████████╗██████╗     ███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
+██║  ██║╚══██╔══╝╚══██╔══╝██╔══██╗    ████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗██╔══██╗██╔════╝
+███████║   ██║      ██║   ██████╔╝    ██╔████╔██║█████╗     ██║   ███████║██║   ██║██║  ██║███████╗
+██╔══██║   ██║      ██║   ██╔═══╝     ██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║██║  ██║╚════██║
+██║  ██║   ██║      ██║   ██║         ██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██████╔╝███████║
+╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝         ╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
+*/
+
+static std::string	getFilePath(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+{
+	std::string	filePath;
+
+	filePath = locREF.getRoot();
+	filePath = filePath.empty() ? servConfREF.getRoot() : filePath;
+	filePath += requestREF.getUri();
+	return (filePath);
+}
+
+static void	header_GetHead(Response &response, const std::string &fileStr) {
+	Header length("Content-Length", std::to_string(fileStr.length()));
+	Header type("Content-Type", "text/html");
+	Header server("Server", "webserv-kry");
+	// Header date("Date", getDate());
+
+	response.addHeader(length);
+	response.addHeader(type);
+}
+
+static Response	readContent(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+{
+	Response		response(200);
+	std::string		filePath;
+	std::string		result;
+	std::ifstream	infile;
+
+	filePath = getFilePath(requestREF, servConfREF, locREF);
+	if (Autoindex::isPathFolder(filePath) > 0)
+	{
+		if (locREF.getAutoIndex() == true)
+			result = Autoindex::genPage(filePath.c_str(), servConfREF.getListen().first, servConfREF.getListen().second);
+		else
+			return (Response(403));
+	}
+	else if (Autoindex::isPathReg(filePath) > 0)
+	{
+		infile.open(filePath.c_str(), std::ios::in);
+		if (infile.good()) {
+			result = std::string((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
+			infile.close();
+		}
+	}
+	else
+	{
+		if (errno == EACCES)
+			return (Response(403));
+	}
+	header_GetHead(response, result);
+	response.setMessageBody(result);
+	return (response);
+};
+
+// static Response handleHead(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+//     Response	response(200);
+// 	// CGIhandler	cgiHandler(requestREF, locREF);
+
+//     //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
+// 	// request data (they shouldn't include data).
+
+// 	response = readContent(requestREF, servConfREF, locREF);
+//     // 3. Check if the URI is a directory
+//     //  3.1 If it is, respond according to config
+//     // 4. Check if the URI is a CGI script
+//     //  4.1 If it is, handle CGI
+//     // 5. Return 404
+//     return (response);
+// }
+
+static Response handleGet(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+    Response response(200);
+    //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
+	// request data (they shouldn't include data).
+
+    // Flow:
+	response = readContent(requestREF, servConfREF, locREF);
+    // 3. Check if the URI is a directory
+    //  3.1 If it is, respond according to config
+    // 4. Check if the URI is a CGI script
+    //  4.1 If it is, handle CGI
+    // 5. Return 404
+    return (response);
+}
+
+// static Response handlePut(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+//     Response response(200);
+//     // @todo
+// 	/*
+// 		Flow:
+
+
+// 	*/
+//     return (response);
+// }
+
+// static Response handlePost(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+//     Response response(200);
+//     // @todo
+//     return (response);
+// }
+
+// static Response handleDelete(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+//     Response response(200);
+//     // @todo
+//     return (response);
+// }
+
+/**
+ * @brief calls the right httpMethod and things to generate the proper response
+ * 
+ * @param requestREF
+ * @param serverConfigREF 
+ */
+Response	Response::buildResponse(const Request &requestREF, const ServerConfig &servConfREF) {
+	std::vector< ServerConfig::Location >::const_iterator	locItc;
+
+	if (requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
+		return (*this = Response(413));
+	locItc = servConfREF.getLocation(requestREF.getUri());
+	if (!(locItc->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
+		return (*this = Response(405));
+	if (locItc == servConfREF.getLocations().end() && !locItc->getReturn().second.empty())
+		return (*this = Response(locItc->getReturn().first, "Location: " + locItc->getReturn().second));
+	else
+		return (*this = Response(404));
+	switch (requestREF.getHttpMethodEnum()) {
+		// case HEAD:
+		// 	*this = handleHead();
+		case GET:
+			*this = handleGet(requestREF, servConfREF, *locItc);
+		// case PUT:
+		// 	*this = handlePut();
+		// case POST:
+		// 	*this = handlePost();
+		// case DELETE:
+		// 	*this = handleDelete();
+		default:
+			*this = Response(501);
+	}
+	return (*this);
+};
 
 
 /**
@@ -277,13 +449,4 @@ std::string Response::getHttpStatusString(unsigned short statusCode) const {
         default:
             return ("");
 	}
-}
-
-/**
- * @brief Return the HTTP status string of the response.
- *
- * @return std::string The HTTP status string of the response
- */
-bool    Response::validate(void) const {
-    return (true);
 }

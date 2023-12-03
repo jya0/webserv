@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/03 14:39:19 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 15:00:22 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ using namespace http;
 /**
  * @brief Construct a new Request object (default constructor)
  */
-Request::Request(void) : AMessage()
-{
+Request::Request(void) : AMessage() {
 	return ;
 }
 
@@ -27,9 +26,8 @@ Request::Request(void) : AMessage()
  *
  * @param RequestREF Request to copy
  */
-Request::Request(Request const &RequestREF) : AMessage()
-{
-	*this = RequestREF;
+Request::Request(Request const &RequestREF) : AMessage() {
+	this->operator=(RequestREF);
     return ;
 }
 
@@ -78,12 +76,16 @@ std::string	Request::getHttpMethod(void) const {
     return (Request::methodName(this->_httpMethod));
 }
 
+const e_httpMethod	&Request::getHttpMethodEnum(void) const {
+	return (_httpMethod);
+};
+
 /**
  * @brief Returns the HTTP version of the request.
  *
  * @return std::string The HTTP version of the request.
  */
-std::string	Request::getHttpVersion(void) const {
+const std::string	&Request::getHttpVersion(void) const {
     return (this->_httpVersion);
 }
 
@@ -92,7 +94,7 @@ std::string	Request::getHttpVersion(void) const {
  *
  * @return std::string The URI of the request.
  */
-std::string	Request::getUri(void) const {
+const std::string	&Request::getUri(void) const {
     return (this->_uri);
 }
 

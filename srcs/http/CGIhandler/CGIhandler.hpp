@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 10:49:40 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 12:11:33 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,27 +25,29 @@
 
 # define	READ_BUF_SIZE		424242
 
-class	CGIhandler {
-	public:
-		class	CGIexception;
-	private:
-		std::map< std::string, std::string >	_cgiEnv;
-		http::Request							_cgiRequest;
-	protected:
-	public:
-		CGIhandler(void);
-		CGIhandler(const CGIhandler &cgiREF);
-		~CGIhandler(void);
-		CGIhandler	&operator=(const CGIhandler &cgiREF);
+namespace	http {
+	class	CGIhandler {
+		public:
+			class	CGIexception;
+		private:
+			std::map< std::string, std::string >	_cgiEnv;
+			http::Request							_cgiRequest;
+		protected:
+		public:
+			CGIhandler(void);
+			CGIhandler(const CGIhandler &cgiREF);
+			~CGIhandler(void);
+			CGIhandler	&operator=(const CGIhandler &cgiREF);
+			CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF);
 
-		const std::map< std::string, std::string >	&getCgiEnv(void) const;
-		const http::Request							&getCgiRequest(void) const;
+			const std::map< std::string, std::string >	&getCgiEnv(void) const;
+			const http::Request							&getCgiRequest(void) const;
 
-		CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF);
-		std::string	executeCGI(const std::string &scriptName);
-};
+			std::string	executeCGI(const std::string &scriptName) throw (std::exception);
+	};
+}
 
-class	CGIhandler::CGIexception: public std::exception {
+class	http::CGIhandler::CGIexception: public std::exception {
 		private:
 			std::string	_errorMsg;
     	public:

@@ -6,25 +6,26 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/27 16:57:49 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/01 14:21:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<dirent.h>
+#include	<sys/stat.h>
 #include	<iostream>
 #include	<sstream>
 #include	"Autoindex_namespace.hpp"
 
-static std::string	direntLink(const std::string &dirName, const std::string &dirent, const std::string &hostREF, const int &portREF)
-{
+using namespace http;
+
+static std::string	direntLink(const std::string &dirName, const std::string &dirent, const std::string &hostREF, const int &portREF) {
 	std::stringstream	ssDirentLink;
 
 	ssDirentLink <<	"\t\t<p><a href=\"http://" + hostREF + ":" << portREF << dirName + "/" + dirent + "\">" + dirent + "</a></p>\n";
 	return (ssDirentLink.str());
 };
 
-static void	pageAddOpening(std::string &pageREF, const std::string &dirNameREF)
-{
+static void	pageAddOpening(std::string &pageREF, const std::string &dirNameREF) {
 	pageREF +=	"<!DOCTYPE html>\n"
 					"<html>\n"
 						"<head>\n"
@@ -35,15 +36,13 @@ static void	pageAddOpening(std::string &pageREF, const std::string &dirNameREF)
 							"<p>\n";
 };
 
-static void	pageAddClosing(std::string &pageREF)
-{
+static void	pageAddClosing(std::string &pageREF) {
 	pageREF +=	"</p>\n"
 				"</body>\n"
     			"</html>\n";
 };
 
-std::string	Autoindex::genPage(const char *path, const std::string &hostREF, const int &portREF)
-{
+std::string	Autoindex::genPage(const char *path, const std::string &hostREF, const int &portREF) {
 	DIR			*dirPTR;
 	std::string	dirNameSTR;
 	std::string	page;
@@ -68,4 +67,22 @@ std::string	Autoindex::genPage(const char *path, const std::string &hostREF, con
 	}
 	pageAddClosing(page);
 	return (page);
+};
+
+int	Autoindex::isPathFolder(const std::string &path)
+{
+	struct stat	pathStat;
+
+	if (stat(path.c_str(), &pathStat) < 0)
+		return (-1);
+	return (pathStat.st_mode & S_IFDIR);
+};
+
+int	Autoindex::isPathReg(const std::string &path)
+{
+	struct stat	pathStat;
+
+	if (stat(path.c_str(), &pathStat) < 0)
+		return (-1);
+	return (pathStat.st_mode & S_IFREG);
 };

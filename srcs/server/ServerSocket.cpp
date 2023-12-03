@@ -1,12 +1,23 @@
-#include "../../inc/ServerSocket.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ServerSocket.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
+/*   Updated: 2023/12/03 13:50:09 by jyao             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static void log(std::string mesg)
-{
+#include	"ServerSocket.hpp"
+#include	"Header.hpp"
+
+static void log(std::string mesg) {
 	std::cout << mesg << std::endl;
 }
 
-ServerSocket::ServerSocket()
-{
+ServerSocket::ServerSocket() {
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
@@ -15,8 +26,7 @@ ServerSocket::ServerSocket()
 
 ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
 													  passive_socket(), socket_address(),
-													  socket_address_len(sizeof(socket_address))
-{
+													  socket_address_len(sizeof(socket_address)) {
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
@@ -28,16 +38,14 @@ ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr),
 	}
 }
 
-ServerSocket::~ServerSocket()
-{
+ServerSocket::~ServerSocket() {
 	closeConnection();
 }
 
-std::string ServerSocket::generateDefaultResponse()
-{
+std::string ServerSocket::generateDefaultResponse() {
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
-	ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << "\r\n\r\n"
+	ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << (CR_LF CR_LF)
 	   << htmlFile;
 	return ss.str();
 }
@@ -67,9 +75,8 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	return (ret);
 }
 
-void ServerSocket::sendData(int peer_socket, std::string message)
-{
-    long bytesSent;
+void ServerSocket::sendData(int peer_socket, std::string message) {
+    size_t bytesSent;
 	const char *s = message.c_str();
 	std::cerr<<message;
 	bytesSent = send(peer_socket, s, message.size(), 0);
@@ -79,8 +86,7 @@ void ServerSocket::sendData(int peer_socket, std::string message)
 		log("Error sending response to client");
 }
 
-void ServerSocket::startConnection()
-{
+void ServerSocket::startConnection() {
 	passive_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (passive_socket < 0)
 	{
@@ -96,8 +102,7 @@ void ServerSocket::startConnection()
 	fcntl(passive_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 }
 
-void ServerSocket::startListening()
-{
+void ServerSocket::startListening() {
     if (listen(passive_socket, 20) < 0)
 	{
 		log("Socket listen failed\n");
@@ -108,8 +113,7 @@ void ServerSocket::startListening()
 	   << " ***\n\n";
 }
 
-int ServerSocket::acceptConnection()
-{
+int ServerSocket::acceptConnection() {
     int peer_socket = accept(passive_socket, (sockaddr *)&socket_address,
 						&socket_address_len);
 	if (peer_socket < 0)
@@ -123,18 +127,15 @@ int ServerSocket::acceptConnection()
 	return (peer_socket);
 }
 
-void ServerSocket::closeConnection()
-{
+void ServerSocket::closeConnection() {
 	close(passive_socket);
 }
 
-const int &ServerSocket::getPassiveSocket()
-{
+const int &ServerSocket::getPassiveSocket() {
 	return (passive_socket);
 }
 
 
-const char *ServerSocket::SocketIOError::what() const throw()
-{
+const char *ServerSocket::SocketIOError::what() const throw() {
     return ("Socket IO error!\n");
 }
