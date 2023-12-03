@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 22:17:29 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 21:49:09 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #include	"ServerConfig.hpp"
 
 /* class ServerConfig */
-ServerConfig::ServerConfig(void):	_cgiPathInfo(DEFAULT_CGI_BIN), 
-									_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
+ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
 									_autoIndex(DEFAULT_AUTO_INDEX), 
+									_cgiPathInfo(DEFAULT_CGI_BIN), 
 									_sizeCMB(DEFAULT_CMB_SIZE), 
 									_errorPage(DEFAULT_ERROR_PAGE), 
 									_index(std::vector< std::string >(1, DEFAULT_INDEX)), 
@@ -62,14 +62,14 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 	if (serverDve != NULL)
 	{
 		try {
-			_cgiPathInfo	= serverDve->checkDirectiveSimple(DVE_CGI_PATH_INFO).front();
-		} catch (std::exception &e) {};
+			_cgiPathInfo = serverDve->checkDirectiveSimple(DVE_CGI_PATH_INFO).front();
+		} catch (std::exception &e) {}
 		try {
 			_listen = parseListenDirective(serverDve->checkDirectiveSimple(DVE_LISTEN).front());
-		} catch (std::exception &e) {};
+		} catch (std::exception &e) {}
 		try {
 			_serverNames = serverDve->checkDirectiveSimple(DVE_SERVER_NAME);
-		} catch (std::exception &e) {};
+		} catch (std::exception &e) {}
 		try {
 			std::pair< std::multimap< std::string, ADirective * >::const_iterator, std::multimap< std::string, ADirective * >::const_iterator>	dveITRS;
 
@@ -81,7 +81,7 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			}
 		} catch (std::exception &e) {};
 		try {
-			_autoIndex = serverDve->checkDirectiveSimple(DVE_AUTO_INDEX).front().compare("on") ? false : true;
+			_autoIndex = (serverDve->checkDirectiveSimple(DVE_AUTO_INDEX).front() == "on") ? true : false;
 		} catch (std::exception &e) {};
 		try {
 			_sizeCMB = std::atof(serverDve->checkDirectiveSimple(DVE_CMB_SIZE).front().c_str());
@@ -142,7 +142,7 @@ const std::vector< ServerConfig::Location >				&ServerConfig::getLocations(void)
 	return (_locations);
 };
 
-std::vector< ServerConfig::Location >::const_iterator	ServerConfig::getLocation(const std::string &uriREF) const throw (std::exception) {
+std::vector< ServerConfig::Location >::const_iterator	ServerConfig::getLocation(const std::string &uriREF) const {
 	std::vector< Location >::const_iterator	itc;
 
 	itc = std::find_if(_locations.begin(), _locations.end(), Location::IsLocationUnary(uriREF));

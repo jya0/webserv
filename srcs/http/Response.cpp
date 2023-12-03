@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 18:57:54 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 22:05:30 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ Response readContent(const Request &requestREF, const ServerConfig &servConfREF,
 	if (Autoindex::isPathFolder(filePath) > 0)
 	{
 		if (locREF.getAutoIndex() == true)
-			result = Autoindex::genPage(filePath.c_str(), servConfREF.getListen().first, servConfREF.getListen().second);
+			result = Autoindex::genPage(filePath.c_str(), requestREF, servConfREF);
 		else
 			return (Response(403));
 	}
@@ -227,19 +227,18 @@ static Response handleHead(const Request &requestREF, const ServerConfig &servCo
 }
 
 static Response handleGet(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF){
-	// Response response(200);
+	Response response(200);
 	//@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
 	// Flow:
-	// response = readContent(requestREF, servConfREF, locREF);
+	response = readContent(requestREF, servConfREF, locREF);
 	// 3. Check if the URI is a directory
 	//  3.1 If it is, respond according to config
 	// 4. Check if the URI is a CGI script
 	//  4.1 If it is, handle CGI
 	// 5. Return 404
-	// return (response);
-	return (readContent(requestREF, servConfREF, locREF));
+	return (response);
 }
 
 // static Response handlePut(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {

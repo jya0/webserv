@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/01 16:30:49 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 22:11:09 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define	DEFAULT_LISTEN_PORT				8000
 # define	DEFAULT_RETURN_CODE				-1	//not defined by NGINX
 # define	DEFAULT_RETURN_URI				""	//not defined by NGINX
-# define	DEFAULT_ROOT					""	//will be cwd if not specified
+# define	DEFAULT_ROOT					"./"	//will be cwd if not specified
 # define	DEFAULT_SERVER_NAMES			""
 # define	DEFAULT_LIMIT_EXCEPT_METHODS	0xffffff
 # define	DEFAULT_LOCATION_URI			"" //not defined by NGINX
@@ -38,12 +38,12 @@ class	ServerConfig {
 	public:
 		class	Location;
 	private:
-		std::string							_cgiPathInfo;
 		std::pair< std::string, int >		_listen;
 		std::vector< std::string >			_serverNames;
 		std::vector< Location >				_locations;
 	protected:
 		bool								_autoIndex;
+		std::string							_cgiPathInfo;
 		std::size_t							_sizeCMB;
 		std::string							_errorPage;
 		std::vector< std::string >			_index;
@@ -61,7 +61,7 @@ class	ServerConfig {
 		const std::pair< std::string, int >		&getListen(void) const;
 		const std::vector< std::string >		&getServerNames(void) const;
 		const std::vector< Location >			&getLocations(void) const;
-		std::vector< Location >::const_iterator	getLocation(const std::string &uriREF) const throw (std::exception);
+		std::vector< Location >::const_iterator	getLocation(const std::string &uriREF) const;
 		const bool								&getAutoIndex(void) const;
 		const std::size_t						&getSizeCMB(void) const;
 		const std::string						&getErrorPage(void) const;
@@ -105,7 +105,7 @@ class	ServerConfig::Location::IsLocationUnary {
 		IsLocationUnary(const std::string &uri): _uri(uri) {};
 		bool	operator()(const Location &locationREF)
 		{
-			return (_uri.compare(0, locationREF.locationUri.size(), locationREF.locationUri));
+			return (_uri.compare(0, locationREF.locationUri.size(), locationREF.locationUri) == 0);
 		};
 };
 
