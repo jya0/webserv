@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 01:18:39 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 03:16:18 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 # include	<cstdio>
 # include	"Request.hpp"
 # include	"ServerConfig.hpp"
+#include	<stdio.h>
+#include	<ctime>
+#include	<iostream>
 
 # define	GATEWAY_INTERFACE	"CGI/1.1"
 # define	SERVER_PROTOCOL		"HTTP/1.1"
@@ -41,18 +44,27 @@ namespace	http {
 			int										_outFileFd;
 			int										_cinSave;
 			int										_coutSave;
+			std::clock_t 							_startTime;
 		protected:
 		public:
 			CGIhandler(void);
 			CGIhandler(const CGIhandler &cgiREF);
 			~CGIhandler(void);
-			CGIhandler	&operator=(const CGIhandler &cgiREF);
+			CGIhandler	&operator=(const  CGIhandler &cgiREF);
 			CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF);
 
 			const std::map< std::string, std::string >	&getCgiEnv(void) const;
 			const http::Request							&getCgiRequest(void) const;
 
 			std::string	executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler);
+			std::clock_t &getStartTime();
+			pid_t	&getChildPid();
+			int &getCinSave() ;
+			int &getCoutSave() ;
+			int &getInFileFd() ;
+			int &getOutFileFd() ;
+			FILE *getInFile() ;
+			FILE *getOutFile() ;
 	};
 }
 

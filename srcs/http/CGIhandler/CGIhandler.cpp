@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 01:21:37 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 03:29:32 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"CGIhandler.hpp"
-#include	"Header.hpp"
+#include "CGIhandler.hpp"
+#include "Header.hpp"
 
 using namespace http;
 
@@ -43,28 +43,29 @@ this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 this->_env["SERVER_SOFTWARE"] = "Weebserv/1.0";
 */
 
-CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1)
+CGIhandler::CGIhandler(void) : _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1)
 {
-	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
-	_cgiEnv["SERVER_PROTOCOL"]		= SERVER_PROTOCOL;
-	_cgiEnv["SERVER_SOFTWARE"]		= SERVER_SOFTWARE;
+	_cgiEnv["GATEWAY_INTERFACE"] = GATEWAY_INTERFACE;
+	_cgiEnv["SERVER_PROTOCOL"] = SERVER_PROTOCOL;
+	_cgiEnv["SERVER_SOFTWARE"] = SERVER_SOFTWARE;
 };
 
 CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF)
 {
 	*this = CGIhandler();
+	(void)locationREF;
 	_cgiRequest = requestREF;
-	_cgiEnv["AUTH_TYPE"] 			= requestREF.getHeaderValue(HEADER_KEY_AUTH);
-	_cgiEnv["CONTENT_LENGTH"]		= std::to_string(requestREF.getMessageBody().size());
-	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
-	_cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
-	_cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
+	_cgiEnv["AUTH_TYPE"] = requestREF.getHeaderValue(HEADER_KEY_AUTH);
+	_cgiEnv["CONTENT_LENGTH"] = std::to_string(requestREF.getMessageBody().size());
+	_cgiEnv["CONTENT_TYPE"] = requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
+	// _cgiEnv["PATH_INFO"] = requestREF.getHeaderValue(locationREF.getCgiPathInfo());
+	// _cgiEnv["PATH_TRANSLATED"] = requestREF.getHeaderValue(locationREF.getCgiPathInfo());
 	// _cgiEnv["QUERY_STRING"]			= requestREF.getHeaderValue(requestREF.getQuery());
 	// _cgiEnv["REMOTE_ADDR"]			= requestREF.getHeaderValue();
 	// _cgiEnv["REMOTE_HOST"]			= requestREF.getHeaderValue();
 	// _cgiEnv["REMOTE_IDENT"]			= requestREF.getHeaderValue();
 	// _cgiEnv["REMOTE_USER"]			= requestREF.getHeaderValue();
-	_cgiEnv["REQUEST_METHOD"]		= requestREF.getHttpMethod();
+	_cgiEnv["REQUEST_METHOD"] = requestREF.getHttpMethod();
 	// _cgiEnv["SCRIPT_NAME"]			= requestREF.getHeaderValue();
 	// _cgiEnv["SERVER_PORT"]			= requestREF.getHeaderValue();
 };
@@ -74,9 +75,9 @@ CGIhandler::CGIhandler(const CGIhandler &cgiREF)
 	this->operator=(cgiREF);
 };
 
-CGIhandler::~CGIhandler(void) {};
+CGIhandler::~CGIhandler(void){};
 
-CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF)
+CGIhandler &CGIhandler::operator=(const CGIhandler &cgiREF)
 {
 	if (this != &cgiREF)
 	{
@@ -86,38 +87,39 @@ CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF)
 	return (*this);
 };
 
-const std::map< std::string, std::string >	&CGIhandler::getCgiEnv(void) const
+const std::map<std::string, std::string> &CGIhandler::getCgiEnv(void) const
 {
 	return (_cgiEnv);
 };
 
-const http::Request							&CGIhandler::getCgiRequest(void) const
+const http::Request &CGIhandler::getCgiRequest(void) const
 {
 	return (_cgiRequest);
 };
 
-static void	deleteEnvArr(char * const *envArr)
+static void deleteEnvArr(char *const *envArr)
 {
 	if (envArr != NULL)
 	{
 		for (int i = 0; envArr[i] != NULL; ++i)
 			delete (envArr[i]);
-		delete [] (envArr);
+		delete[] (envArr);
 	}
 };
 
-static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF)
+static char **mapToArr(const std::map<std::string, std::string> &cgiEnvREF)
 {
-	char		**envArr;
-	char		*envArrPTR;
-	std::string	cgiElment;
+	char **envArr;
+	char *envArrPTR;
+	std::string cgiElment;
 
 	if (cgiEnvREF.size() <= 0)
 		return (NULL);
-	try {
+	try
+	{
 		envArr = new char *[cgiEnvREF.size() + 1];
 		envArrPTR = *envArr;
-		for (std::map< std::string, std::string >::const_iterator cit = cgiEnvREF.begin(); cit != cgiEnvREF.end(); ++cit)
+		for (std::map<std::string, std::string>::const_iterator cit = cgiEnvREF.begin(); cit != cgiEnvREF.end(); ++cit)
 		{
 			cgiElment = cit->first + "=" + cit->second;
 			envArrPTR = new char[cgiElment.size() + 1];
@@ -127,28 +129,29 @@ static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF)
 		}
 		envArrPTR = NULL;
 	}
-	catch (std::exception &e) {
-		std::cerr	<< e.what()
-					<< std::endl;
+	catch (std::exception &e)
+	{
+		std::cerr << e.what()
+				  << std::endl;
 		deleteEnvArr(envArr);
 		return (NULL);
 	}
 	return (envArr);
 };
 
-static void	createTmpFiles(FILE *&inFile, FILE *&outFile, int &inFileFd, int &outFileFd)
+static void createTmpFiles(FILE *&inFile, FILE *&outFile, int &inFileFd, int &outFileFd)
 {
 	inFile = tmpfile();
 	outFile = tmpfile();
 	if (inFile == NULL || outFile == NULL)
-		throw (CGIhandler::CGIexception("CGI failed to create temporary files!"));
+		throw(CGIhandler::CGIexception("CGI failed to create temporary files!"));
 	inFileFd = fileno(inFile);
 	outFileFd = fileno(outFile);
 	if (inFileFd < 0 || outFileFd < 0)
-		throw (CGIhandler::CGIexception("CGI failed to get fd of temporary files!"));
+		throw(CGIhandler::CGIexception("CGI failed to get fd of temporary files!"));
 };
 
-static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cgiEnv, const std::string &scriptName)
+static void CGIchild(const int &inFileFd, const int &outFileFd, char *const *cgiEnv, const std::string &scriptName)
 {
 	if (cgiEnv != NULL)
 	{
@@ -157,7 +160,7 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
 		(void)inFileFd;
 		(void)outFileFd;
 		// int x = execl(scriptName.c_str(), scriptName.c_str());
-		char **av = new char*[2];
+		char **av = new char *[2];
 		av[0] = new char[2 + scriptName.size() + 1];
 		av[1] = new char[1];
 		// av[0] = scriptName.c_str();
@@ -171,7 +174,7 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
 	// deleteEnvArr(cgiEnv);
 }
 
-/* 
+/*
 ██╗   ██╗███████╗███████╗    ██╗███╗   ██╗    ███████╗███████╗██████╗ ██╗   ██╗███████╗██████╗     ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗ ██╗
 ██║   ██║██╔════╝██╔════╝    ██║████╗  ██║    ██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗██║
 ██║   ██║███████╗█████╗      ██║██╔██╗ ██║    ███████╗█████╗  ██████╔╝██║   ██║█████╗  ██████╔╝    ██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██████╔╝██║
@@ -179,63 +182,33 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
 ╚██████╔╝███████║███████╗    ██║██║ ╚████║    ███████║███████╗██║  ██║ ╚████╔╝ ███████╗██║  ██║    ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║██╗
  ╚═════╝ ╚══════╝╚══════╝    ╚═╝╚═╝  ╚═══╝    ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝
   */
-/* static void	CGIparent(const int &outFileFd, std::string &cgiResult)
+
+std::string CGIhandler::executeCGI(const std::string &scriptName) throw(std::exception, CGIhandler)
 {
-	int status = 0;
-	waitpid(pid, &status, 0);
-	if (status == -1 || status == 1)
-		throw(CGIexception("CGI failed to run!"));
-
-	char	*readBuf;
-	ssize_t	readReturn;
-
-	try {
-		readBuf = new char[READ_BUF_SIZE];
-	}
-	catch (std::exception &e) {
-		std::cerr	<< e.what()
-					<< std::endl;
-		throw(CGIhandler::CGIexception("CGI failed to read result!"));
-	}
-	lseek(outFileFd, 0, SEEK_SET);
-	do {
-		std::memset(readBuf, 0, READ_BUF_SIZE);
-		readReturn = read(outFileFd, readBuf, READ_BUF_SIZE);
-		cgiResult += readBuf;
-	} while (readReturn > 0);
-	dup2(cinSave, STDIN_FILENO);
-	dup2(coutSave, STDOUT_FILENO);
-	close(cinSave);
-	close(coutSave);
-	close(inFileFd);
-	close(outFileFd);
-	fclose(inFile);
-	fclose(outFile);
-} */
-
-std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler)
-{
-	pid_t		pid;
-	int			cinSave;
-	int			coutSave;
-	FILE		*inFile;
-	int			inFileFd;
-	FILE		*outFile;
-	int			outFileFd;
-	std::string	cgiResult;
+	pid_t pid;
+	int cinSave;
+	int coutSave;
+	FILE *inFile;
+	int inFileFd;
+	FILE *outFile;
+	int outFileFd;
+	std::string cgiResult;
 
 	cinSave = dup(STDIN_FILENO);
 	coutSave = dup(STDOUT_FILENO);
 	createTmpFiles(inFile, outFile, inFileFd, outFileFd);
 	write(inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
 	lseek(inFileFd, 0, SEEK_SET);
+	_startTime = std::clock_t();
 	pid = fork();
 	if (pid < 0)
-		throw (CGIexception("CGI failed to create fork!"));
-	if (pid == 0) {
+		throw(CGIexception("CGI failed to create fork!"));
+	if (pid == 0)
+	{
 		CGIchild(inFileFd, outFileFd, mapToArr(_cgiEnv), scriptName);
 	}
-	else {
+	else
+	{
 		_childPid = pid;
 		_inFile = inFile;
 		_inFileFd = inFileFd;
@@ -243,7 +216,7 @@ std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::ex
 		_outFileFd = outFileFd;
 		_cinSave = cinSave;
 		_coutSave = coutSave;
-		throw (*this);
+		throw(*this);
 	}
 	dup2(cinSave, STDIN_FILENO);
 	dup2(coutSave, STDOUT_FILENO);
@@ -257,3 +230,43 @@ std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::ex
 		exit(EXIT_FAILURE);
 	return (cgiResult);
 };
+
+std::clock_t &CGIhandler::getStartTime()
+{
+	return (_startTime);
+}
+
+pid_t &CGIhandler::getChildPid()
+{
+	return (_childPid);
+}
+
+int &CGIhandler::getCinSave()
+{
+	return (_cinSave);
+}
+
+int &CGIhandler::getCoutSave()
+{
+	return (_coutSave);
+}
+
+int &CGIhandler::getInFileFd()
+{
+	return (_inFileFd);
+}
+
+int &CGIhandler::getOutFileFd()
+{
+	return (_outFileFd);
+}
+
+FILE *CGIhandler::getInFile()
+{
+	return (_inFile);
+}
+
+FILE *CGIhandler::getOutFile()
+{
+	return (_outFile);
+}

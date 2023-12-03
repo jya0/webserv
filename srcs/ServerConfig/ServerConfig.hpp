@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 00:15:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 03:27:18 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class	ServerConfig {
 		ServerConfig(const ServerConfig &servConfREF);
 		ServerConfig &operator=(const ServerConfig &servConfREF);
 
-		const std::string						&getCgiPathInfo(void) const;
+
 		const std::vector< std::string >		&getIndex(void) const;
 		const std::pair< std::string, int >		&getListen(void) const;
 		const std::vector< std::string >		&getServerNames(void) const;

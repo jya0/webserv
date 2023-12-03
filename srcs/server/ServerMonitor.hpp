@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 16:00:37 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 03:24:03 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@
 #include	<map>
 #include	"PollManager.hpp"
 #include	"WebServer.hpp"
-#include	"HTTPServerParser.hpp"
+#include	<signal.h>
+#include <sys/wait.h>
 
 class ServerMonitor {
 	private:
 		std::map<int, WebServer*>	_servers;
 		PollManager					_sockets;
+		std::map<int, CGIhandler> _cgiScripts;
+
 	public:
 		void startServers() ;
 		int retrieveClientHandlerSocket(int);

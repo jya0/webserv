@@ -23,6 +23,7 @@
 # include	<sys/event.h>
 # include	<sys/ioctl.h>
 # include	<poll.h>
+# include	<stdio.h>
 # include	"ServerConfig.hpp"
 # include	"Http_namespace.hpp"
 # include	"ServerSocket.hpp"
@@ -74,7 +75,7 @@ public:
 
 	void buildResponse(int client);
 	bool requestReady(int client);
-
+	void closeCGI(CGIhandler &cgiREF);
 };
 
 #endif
