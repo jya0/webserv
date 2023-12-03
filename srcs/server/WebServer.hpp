@@ -25,7 +25,6 @@
 # include	<poll.h>
 # include	"ServerConfig.hpp"
 # include	"Http_namespace.hpp"
-// # include	"../srcs/ServerConfig/ServerConfig_namespace.hpp"
 # include	"ServerSocket.hpp"
 # include	"PollManager.hpp"
 
@@ -39,18 +38,7 @@ protected:
 	ServerSocket connection;
 	std::vector<int> clients;
 
-	//ServerConfig	config
-	std::string defaultErrorPagePath;
-	size_t max_body_size;
-	std::vector<std::pair<std::string, std::string> > redirections;
-	// std::byte methods;
-	bool autoindex;
-
-	std::string index;
-	std::string root;
-	bool CGI;
-	std::string cgi_bin;
-	DirectiveBlock *_serverConfig;
+	ServerConfig	_config;
 
 public:
 	std::map<int, Response *> responses;
@@ -59,7 +47,7 @@ public:
 	WebServer();
     WebServer(std::string ip, int port);
     ~WebServer();
-
+	WebServer(const ServerConfig &configREF);
 	ServerSocket &getConnection();
 	Request &recieveRequest();
 	void sendResponse(int client, const Response &response);

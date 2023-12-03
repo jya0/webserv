@@ -28,7 +28,7 @@ AMessage::AMessage(void) {
  *
  * @param aMessageREF Message to copy
  */
-AMessage::AMessage(AMessage &aMessageREF) {
+AMessage::AMessage(const AMessage &aMessageREF) {
     *this = aMessageREF;
     return ;
 }
@@ -46,7 +46,7 @@ AMessage::~AMessage(void) {
  * @param aMessageREF Message to copy
  * @return AMessage& Reference to the copied message
  */
-AMessage	&AMessage::operator=(AMessage &aMessageREF) {
+AMessage	&AMessage::operator=(const AMessage &aMessageREF) {
     if (this != &aMessageREF) {
         this->_startLine = aMessageREF._startLine;
         this->_headers = aMessageREF._headers;
@@ -117,7 +117,7 @@ std::list<Header>	AMessage::getHeaders(void) const {
 
 /**
  * @brief Returns the value of a given header key
- * 
+ *
  * @return std::string the header value if it finds anything
  */
 std::string	AMessage::getHeaderValue(const std::string &headerKey) const {

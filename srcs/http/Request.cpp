@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/03 15:00:22 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 17:04:13 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ Request::Request(std::string httpRaw): AMessage(httpRaw) {
     this->_httpVersion = this->_startLine.substr(this->_startLine.find(' ',
                 this->_startLine.find(' ') + 1) + 1);
 }
+
 
 /**
  * @brief Returns the HTTP method of the request.

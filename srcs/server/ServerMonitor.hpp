@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 13:54:02 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 16:00:37 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include	<map>
 #include	"PollManager.hpp"
 #include	"WebServer.hpp"
+#include	"HTTPServerParser.hpp"
 
 class ServerMonitor {
 	private:
@@ -27,6 +28,7 @@ class ServerMonitor {
 		int retrieveClientHandlerSocket(int);
 
 		ServerMonitor(std::map<int, WebServer *> servers) ;
+		ServerMonitor(const std::vector<ServerConfig> &configsREF);
 		~ServerMonitor();
 };
 

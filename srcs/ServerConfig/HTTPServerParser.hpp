@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:46:11 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/19 13:52:14 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 15:54:11 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include	"ADirective.hpp"
 # include	"DirectiveBlock.hpp"
 # include	"DirectiveSimple.hpp"
+# include	"ServerConfig.hpp"
 
 # define	SPACE_CHARSET	" \n\t\v\f\r"
 
@@ -23,7 +24,7 @@ class HTTPServerParser {
 private:
     HTTPServerParser();
 public:
-    static std::vector< DirectiveBlock * >	parseConfigFile(std::string filename);
+    static std::vector< ServerConfig >	parseConfigFile(std::string filename);
 	static const std::vector< std::string >	dveNames;
     ~HTTPServerParser();
 

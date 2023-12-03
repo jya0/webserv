@@ -3,39 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 14:38:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 17:34:16 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WebServer.hpp"
 #include "PollManager.hpp"
 #include "ServerMonitor.hpp"
+#include "HTTPServerParser.hpp"
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	(void) argc;
 	(void) argv;
-	WebServer s1 = WebServer("127.0.0.1", atoi(argv[1]));
-	WebServer s2 = WebServer("127.0.0.1", atoi(argv[1]) + 1);
-	std::map<int, WebServer*> servers;
-	servers.insert(std::make_pair(s1.getConnection().getPassiveSocket(), &s1));
-	servers.insert(std::make_pair(s2.getConnection().getPassiveSocket(), &s2));
-
-	ServerMonitor monitor(servers);
 	if (argc != 2)
 	{
 		std::cout<<"Invalid Paramaters!\n";
 		std::cout << "./web_serve [config_file_name]\n";
 		return (0);
 	}
+	std::vector<ServerConfig> configs = HTTPServerParser::parseConfigFile(argv[1]);
+	ServerMonitor monitor(configs);
 	try
 	{
 		monitor.startServers();
-		// servers = HTTPServerParser::parseConfigFile(argv[1]);
-		// s1.startServer();
-
 	}
 	// catch (HTTPServerParser::ParseError &e)
 	// {
@@ -49,7 +43,5 @@ int main(int argc, char **argv) {
 	{
 
 	}
-
-	// server.startListening();
 	return (0);
 }

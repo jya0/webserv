@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 14:35:31 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 17:47:41 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ namespace http {
 			std::string			_messageBody;
 		public:
 			AMessage(void);
-			AMessage(AMessage &aMessageREF);
+			AMessage(const AMessage &aMessageREF);
 			AMessage(std::string startLine, std::list<Header> headers,
 				std::string messageBody);
 			AMessage(std::string rawMessage);
@@ -59,7 +59,7 @@ namespace http {
 			std::list<Header>	getHeaders(void) const;
 			std::string			getHeaderValue(const std::string &headerKey) const;
 			virtual		~AMessage(void);
-			AMessage	&operator=(AMessage &aMessageREF);
+			AMessage	&operator=(const AMessage &aMessageREF);
 			std::string	getMessageBody(void) const;
 			std::string	getRawMessage(void) const;
 			void addHeader(Header header);

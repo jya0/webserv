@@ -6,11 +6,24 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 15:02:54 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 17:32:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerMonitor.hpp"
+
+ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
+{
+	WebServer					*server;
+	int i = 0;
+
+	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++, i++)
+	{
+		server = new WebServer(*itr);
+		_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
+	}
+	_sockets = PollManager(_servers.size());
+}
 
 ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers): _servers(servers), _sockets(_servers.size()) {};
 

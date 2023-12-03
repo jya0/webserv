@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPServerParser.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 15:54:28 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"HTTPServerParser.hpp"
+#include	"ServerConfig.hpp"
 #include 	<utility>
 #include	<fstream>
 #include	<sstream>
@@ -128,9 +129,9 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF) {
 
 const std::vector<std::string> HTTPServerParser::dveNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
 
-std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string filename) {
+std::vector< ServerConfig >	HTTPServerParser::parseConfigFile(std::string filename) {
 	DirectiveBlock					*dveBlock;
-	std::vector< DirectiveBlock * >	serverBlocks;
+	std::vector< ServerConfig >	serverBlocks;
 	std::ifstream					configIF;
 
 	dveBlock = NULL;
@@ -152,7 +153,8 @@ std::vector< DirectiveBlock * >	HTTPServerParser::parseConfigFile(std::string fi
 		{
 			dveBlock->printDirective();
 			dveBlock->parseDirective();
-			serverBlocks.push_back(dveBlock);
+			serverBlocks.push_back(ServerConfig(dveBlock));
+			delete (dveBlock);
 		}
 	}
 	configIF.close();

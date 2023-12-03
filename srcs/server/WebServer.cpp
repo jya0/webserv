@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 15:19:23 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 18:06:42 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,15 @@
 
 WebServer::WebServer() {
 }
-// WebServer::WebServer(const DirectiveBlock &serverBlockREF)
-// {
 
-// }
+WebServer::WebServer(const ServerConfig &configREF): connection(configREF.getListen().first, configREF.getListen().second),_config(configREF) {
+	// std::cout << "HELLO!" << std::endl;
+	// std::cout << configREF.getListen().first << configREF.getListen().second << std::endl;
+	// connection = ServerSocket(configREF.getListen().first, configREF.getListen().second);
+}
 
 WebServer::WebServer(std::string ip, int port) : connection(ip, port) {
 }
-
-// WebServer::WebServer(DirectiveBlock const	&serverBlockREF): _serverConfig(&serverBlockREF)
-// {
-// }
 
 WebServer::~WebServer() {
 }
@@ -75,10 +73,13 @@ int WebServer::recieveData(int &client)
 	requests[client]->setRequestStatus(false);
 	if (requests[client]->getRawData().find("\r\n\r\n") != std::string::npos)
 	{
-		requests[client]->setRequestStatus(true);
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
 		std::cout<<requests[client]->getRawData()<<"\n";
-
+		std::string raw = requests[client]->getRawData();
+		std::map<int, Request *>::iterator itr = requests.find(client);
+		requests.erase(itr);
+		requests[client] = new Request(raw);
+		requests[client]->setRequestStatus(true);
 	}
 	return (ret.size());
 }
@@ -117,7 +118,12 @@ bool WebServer::requestReady(int client){
 }
 
 void WebServer::buildResponse(int client) {
-	responses[client] = new Response(ServerSocket::generateDefaultResponse());
-	//convert request to response
+	responses[client] = new Response();
+	try {
+		responses[client]->buildResponse(*requests[client], _config);
+	}
+	catch (http::CGIhandler &cgi) {
+		//do stuff
+	}
 	responses[client]->setResponseStatus(true);
 }
