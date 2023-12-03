@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 17:32:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 01:45:13 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
 	WebServer					*server;
-	int i = 0;
+	size_t i = 0;
 
 	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++, i++)
 	{
@@ -92,7 +92,6 @@ void ServerMonitor::startServers()
 						std::cout<<"done reading\n";
 					}
 					else {
-						// _servers.at(server)->buildRequest(triggered);
 						if (_servers.at(server)->requestReady(triggered))
 						{
 							_servers.at(server)->buildResponse(triggered);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 22:05:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 02:00:06 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,11 @@ using namespace http;
 
 static std::string	direntLink(const std::string &dirName, const std::string &dirent, const std::string &hostREF, const int &portREF) {
 	std::stringstream	ssDirentLink;
+	std::string			slash("/");
 
-	ssDirentLink <<	"\t\t<p><a href=\"http://" + hostREF + ":" << portREF << dirName + "/" + dirent + "\">" + dirent + "</a></p>\n";
+	if (!dirName.empty())
+		slash = (dirName[dirName.size() - 1] == '/' ? "" : "/");
+	ssDirentLink << "\t\t<p><a href=\"http://" + hostREF + ":" << portREF << dirName + (slash) + dirent + "\">" + dirent + "</a></p>\n";
 	return (ssDirentLink.str());
 };
 
@@ -54,6 +57,7 @@ std::string	Autoindex::genPage(const char *path, const Request &requestREF, cons
 		std::cerr	<< "Couldn't open directory: "
 					<< path
 					<< std::endl;
+
 		return (page);
 	};
 	pageAddOpening(page, requestREF.getUri());

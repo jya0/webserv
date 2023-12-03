@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 01:04:09 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 01:45:22 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void WebServer::buildResponse(int client) {
 	}
 	catch (http::CGIhandler &cgi) {
 		//do stuff
+
 	}
 	responses[client]->setResponseStatus(true);
 }
