@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 18:06:42 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 01:04:09 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ int WebServer::recieveData(int &client)
 		requests[client] = new Request();
 	requests[client]->appendRawData(ret);
 	requests[client]->setRequestStatus(false);
-	if (requests[client]->getRawData().find("\r\n\r\n") != std::string::npos)
+	size_t pos = 0;
+	if ((pos = requests[client]->getRawData().find("\r\n\r\n")) != std::string::npos)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
 		std::cout<<requests[client]->getRawData()<<"\n";
