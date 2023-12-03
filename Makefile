@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
+#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/03 17:42:26 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/03 19:03:36 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,11 +47,19 @@ all:	$(NAME)
 $(NAME):	$(HEADERS) $(LIBS) $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
 
-$(LIBS):
+$(HTTP_LIB):
 	make -C $(HTTP_DIR)
+
+$(CGI_LIB):
 	make -C $(CGI_DIR)
+
+$(AUTOINDEX_LIB):
 	make -C $(AUTOINDEX_DIR)
+
+$(CONFIG_LIB):
 	make -C $(CONFIG_DIR)
+
+$(SERVER_LIB):
 	make -C $(SERVER_DIR)
 
 clean:

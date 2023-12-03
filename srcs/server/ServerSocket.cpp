@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 18:17:29 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 18:30:23 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,8 @@ std::string ServerSocket::recieveData(int &peer_socket)
 
 void ServerSocket::sendData(int peer_socket, std::string message) {
     size_t bytesSent;
-	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
-	std::ostringstream ss;
-	ss << "HTTP/1.1 404 Forbidden\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << (CR_LF CR_LF)
-	   << htmlFile;
-	message = ss.str();
-	 const char *s = message.c_str();
+
+	const char *s = message.c_str();
 	std::cerr<<message;
 	bytesSent = send(peer_socket, s, message.size(), 0);
 	if (bytesSent == message.size())

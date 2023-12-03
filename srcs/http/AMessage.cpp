@@ -147,9 +147,9 @@ std::string	AMessage::getRawMessage(void) const {
 	std::string rawMessage = this->_startLine;
     for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++) {
 		if (rawMessage.size() == 0)
-			rawMessage = it->getName() + ": " + it->getValue() + CR_LF;
+			rawMessage = it->getKey() + ": " + it->getValue() + CR_LF;
 		else
-			rawMessage += it->getName() + ": " + it->getValue() + CR_LF;
+			rawMessage += it->getKey() + ": " + it->getValue() + CR_LF;
     }
     rawMessage += CR_LF + this->_messageBody;
 	if (_messageBody.find(CR_LF CR_LF) == std::string::npos)
@@ -158,7 +158,13 @@ std::string	AMessage::getRawMessage(void) const {
 }
 
 void AMessage::addHeader(Header header) {
-    this->_headers.push_back(header);
+	std::list<Header>::iterator	it;
+
+	it = std::find_if(_headers.begin(), _headers.end(), Header::IsHeaderKeyUnary(header.getKey()));
+	if (it != _headers.end())
+		it->setValue(header.getValue());
+	else
+    	this->_headers.push_back(header);
 }
 
 void AMessage::setMessageBody(std::string messageBody) {

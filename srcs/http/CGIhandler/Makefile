@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
-#    Updated: 2023/12/03 14:03:20 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/03 19:00:55 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,12 +37,8 @@ CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98 -fsanitize=address
 
 all: $(NAME)
 
-$(NAME): $(LIBS) $(HEADERS) $(OBJS)
+$(NAME): $(HEADERS) $(OBJS)
 	ar -rvs $@ $(OBJS)
-
-$(LIBS):
-	make -C $(HTTP_DIR)
-	make -C $(CONFIG_DIR)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<

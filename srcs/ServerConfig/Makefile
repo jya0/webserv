@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/03 14:10:15 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/03 18:59:17 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,11 +40,8 @@ all: $(NAME)
 # $(NAME): $(LIBS) $(HEADERS) $(OBJS)
 # 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
-$(NAME): $(LIBS) $(HEADERS) $(OBJS)
+$(NAME): $(HEADERS) $(OBJS)
 	ar -rvs $@ $(OBJS)
-
-$(LIBS):
-	make -C $(HTTP_DIR)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:19:21 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/30 18:27:45 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 18:48:19 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace http {
     class Header {
 		private:
         protected:
-            std::string _name;
+            std::string _key;
             std::string _value;
         public:
             Header(void);
@@ -33,9 +33,10 @@ namespace http {
             virtual ~Header();
             Header & operator=(Header const & src);
             std::string toString(void) const;
-            std::string getName(void) const;
+            std::string getKey(void) const;
             std::string getValue(void) const;
-
+			void		setKey(const std::string &strREF);
+			void		setValue(const std::string &strREF);
 			class	IsHeaderKeyUnary;
     };
 }
@@ -47,7 +48,7 @@ class	http::Header::IsHeaderKeyUnary {
 		IsHeaderKeyUnary(const std::string &headerKeyToFind): _headerKeyToFind(headerKeyToFind) {};
 		bool	operator()(const Header &headerREF)
 		{
-			return (headerREF.getName() == _headerKeyToFind);
+			return (headerREF.getKey() == _headerKeyToFind);
 		};
 };
 

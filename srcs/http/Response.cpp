@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 18:03:34 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 18:57:54 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ Response::Response(int status)
 {
 	this->_httpVersion = "HTTP/1.1";
 	this->_httpStatusCode = status;
-	this->_startLine = this->_httpVersion + " " + std::to_string(status) + " " + this->getHttpStatusString(status) + (CR_LF CR_LF CR_LF);
+	this->_startLine = this->_httpVersion + " " + std::to_string(status) + " " + this->getHttpStatusString(status) + CR_LF;
+	this->setMessageBody(this->getHttpStatusString(status));
+	this->addHeader(Header("Content-Type", "text/html"));
+	this->addHeader(Header("Content-Length", std::to_string(this->getMessageBody().length())));
 	_ready = true;
 	return;
 }
