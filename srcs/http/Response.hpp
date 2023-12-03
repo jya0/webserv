@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/30 15:02:51 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 21:43:50 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,13 @@ namespace http {
 			~Response(void);
 			Response	&operator=(const Response &responseREF);
 			Response(int status);
+			Response(int status, const std::string &responseBody);
 			Response(std::string httpRaw);
 
 			std::string		getHttpVersion(void) const;
 			unsigned short	getHttpStatusCode(void) const;
 			std::string		getHttpStatusString(unsigned short statusCode) const;
-			void			callHttpMethod(const Request &requestREF, const ServerConfig &serverConfigREF);
+			Response		buildResponse(const Request &requestREFREF, const ServerConfig &servConfREF);
 			bool			validate(void) const;
 			bool			responseReady() const;
 			void			setResponseStatus(bool status);

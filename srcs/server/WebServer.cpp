@@ -6,14 +6,12 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/30 15:09:54 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 21:27:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/WebServer.hpp"
-#include "../../inc/PollManager.hpp"
-
-#include <fstream>
+#include	"WebServer.hpp"
+#include	"PollManager.hpp"
 
 WebServer::WebServer() {
 }
@@ -94,104 +92,6 @@ void WebServer::sendResponse(int client, const Response &response) {
 void WebServer::prepareResponse(int client) {
 	responses[client] = new Response(ServerSocket::generateDefaultResponse());
 	responses[client]->setResponseStatus(true);
-}
-
-Response WebServer::handleRequest(const Request &request) const {
-	for (std::vector<std::pair<std::string, std::string> >::const_iterator it = redirections.begin(); it != redirections.end(); ++it)
-		if (it->first == request.getUri())
-			return(Response("HTTP/1.1 301 Moved Permanently\r\nLocation: " + it->second + "\r\n\r\n"));
-    switch (Request::methodEnum(request.getHttpMethod())) {
-        case GET:
-            return (handleGet(request));
-        case POST:
-            return (handlePost(request));
-        case PUT:
-            return (handlePut(request));
-        case DELETE:
-            return (handleDelete(request));
-        case HEAD:
-            return (handleHead(request));
-        default:
-            return (Response(501));
-    }
-}
-
-static void	header_GetHead(Response &response, const std::string &fileStr) {
-	Header length("Content-Length", std::to_string(fileStr.length()));
-	Header type("Content-Type", "text/html");
-	Header server("Server", "webserv-kry");
-	// Header date("Date", getDate());
-
-	response.addHeader(length);
-	response.addHeader(type);
-}
-
-Response WebServer::handleHead(const Request &request) const {
-    Response response(200);
-	std::string filePath = "." + request.getUri();
-    //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
-	// request data (they shouldn't include data).
-
-    // Flow:
-    std::ifstream file(filePath.c_str());
-	if (file.good()) {
-        std::string fileStr((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		header_GetHead(response, fileStr);
-        file.close();
-        return (response);
-	}
-    // 3. Check if the URI is a directory
-    //  3.1 If it is, respond according to config
-    // 4. Check if the URI is a CGI script
-    //  4.1 If it is, handle CGI
-    // 5. Return 404
-    return (response);
-}
-
-Response WebServer::handleGet(const Request &request) const {
-    Response response(200);
-	std::string filePath = "." + request.getUri();
-    //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
-	// request data (they shouldn't include data).
-
-    // Flow:
-    std::ifstream file(filePath.c_str());
-	if (file.good()) {
-        std::string fileStr((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		header_GetHead(response, fileStr);
-        response.setMessageBody(fileStr);
-        file.close();
-        return (response);
-	}
-    // 3. Check if the URI is a directory
-    //  3.1 If it is, respond according to config
-    // 4. Check if the URI is a CGI script
-    //  4.1 If it is, handle CGI
-    // 5. Return 404
-    return (response);
-}
-
-Response WebServer::handlePut(const Request &request) const {
-    Response response(200);
-    // @todo
-	/*
-		Flow:
-
-
-	*/
-    return (response);
-}
-
-Response WebServer::handlePost(const Request &request) const {
-    Response response(200);
-    // @todo
-    return (response);
-}
-
-Response WebServer::handleDelete(const Request &request) const {
-    Response response(200);
-    // @todo
-    return (response);
 }
 
 bool WebServer::connectedClient(int client) const{

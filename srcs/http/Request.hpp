@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/28 21:09:02 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/01 16:28:20 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,20 @@ namespace http {
 			std::string		_uri;
 		protected:
 		public:
-			static std::string methodName(e_httpMethod method) ;
-			static e_httpMethod methodEnum(const std::string method) ;
 			Request(void);
 			Request(Request const &RequestREF);
-			Request(std::string httpRaw);
 			~Request(void);
 			Request	&operator=(Request const &RequestREF);
-			std::string	getHttpMethod(void) const;
-			std::string	getHttpVersion(void) const;
-			std::string	getUri(void) const;
-			bool validate(void) const;
+			Request(std::string httpRaw);
+
+			static std::string	methodName(e_httpMethod method);
+			static e_httpMethod	methodEnum(const std::string method);
+
+			std::string			getHttpMethod(void) const;
+			const e_httpMethod	&getHttpMethodEnum(void) const;
+			const std::string	&getHttpVersion(void) const;
+			const std::string	&getUri(void) const;
+			bool 				validate(void) const;
 	};
 };
 

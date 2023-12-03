@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
+#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
-#    Updated: 2023/11/30 13:07:23 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/03 14:03:20 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile CGI -*-
 
-# NAME		:=	libcgi.a
-NAME		:=	cgiTest
+NAME		:=	libcgi.a
+# NAME		:=	cgiTest
 
 HTTP_DIR	:=	../
 HTTP_LIB	=	$(HTTP_DIR)libhttp.a
@@ -21,11 +21,11 @@ CONFIG_DIR	:=	../../ServerConfig/
 CONFIG_LIB	=	$(CONFIG_DIR)libconfparser.a
 LIBS		=	$(HTTP_LIB) $(CONFIG_LIB)
 
-INCLUDES	:=	-I.	-I$(HTTP_DIR) -I../../ServerConfig/
+INCLUDES	:=	-I.	-I$(HTTP_DIR) -I$(CONFIG_DIR)
 
 HEADERS		:=	CGIhandler.hpp
 
-FILES		:=	CGIhandler	test
+FILES		:=	CGIhandler
 
 CXX			:=	c++
 RM			:=	rm
@@ -38,8 +38,7 @@ CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98 -fsanitize=address
 all: $(NAME)
 
 $(NAME): $(LIBS) $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
-#	ar -rvs $@ $^
+	ar -rvs $@ $(OBJS)
 
 $(LIBS):
 	make -C $(HTTP_DIR)

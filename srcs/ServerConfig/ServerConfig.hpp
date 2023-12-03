@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:59:29 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/01 16:30:49 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define	DEFAULT_LISTEN_PORT				8000
 # define	DEFAULT_RETURN_CODE				-1	//not defined by NGINX
 # define	DEFAULT_RETURN_URI				""	//not defined by NGINX
-# define	DEFAULT_ROOT					""	//current working directory
+# define	DEFAULT_ROOT					""	//will be cwd if not specified
 # define	DEFAULT_SERVER_NAMES			""
 # define	DEFAULT_LIMIT_EXCEPT_METHODS	0xffffff
 # define	DEFAULT_LOCATION_URI			"" //not defined by NGINX
@@ -53,20 +53,20 @@ class	ServerConfig {
 		ServerConfig(void);
 		ServerConfig(DirectiveBlock *serverDveBlock);
 		virtual ~ServerConfig(void);
-		ServerConfig(const ServerConfig &serverConfigREF);
-		ServerConfig &operator=(const ServerConfig &serverConfigREF);
+		ServerConfig(const ServerConfig &servConfREF);
+		ServerConfig &operator=(const ServerConfig &servConfREF);
 
-		const std::string					&getCgiPathInfo(void) const;
-		const std::vector< std::string >	&getIndex(void) const;
-		const std::pair< std::string, int >	&getListen(void) const;
-		const std::vector< std::string >	&getServerNames(void) const;
-		const std::vector< Location >		&getLocations(void) const;
-		const Location						&getLocation(const std::string &uriREF) const throw (std::exception);
-		const bool							&getAutoIndex(void) const;
-		const std::size_t					&getSizeCMB(void) const;
-		const std::string					&getErrorPage(void) const;
-		const std::pair< int, std::string >	&getReturn(void) const;
-		const std::string					&getRoot(void) const;
+		const std::string						&getCgiPathInfo(void) const;
+		const std::vector< std::string >		&getIndex(void) const;
+		const std::pair< std::string, int >		&getListen(void) const;
+		const std::vector< std::string >		&getServerNames(void) const;
+		const std::vector< Location >			&getLocations(void) const;
+		std::vector< Location >::const_iterator	getLocation(const std::string &uriREF) const throw (std::exception);
+		const bool								&getAutoIndex(void) const;
+		const std::size_t						&getSizeCMB(void) const;
+		const std::string						&getErrorPage(void) const;
+		const std::pair< int, std::string >		&getReturn(void) const;
+		const std::string						&getRoot(void) const;
 };
 
 class	ServerConfig::Location: public ServerConfig {
@@ -99,13 +99,13 @@ class	ServerConfig::Location: public ServerConfig {
 
 class	ServerConfig::Location::IsLocationUnary {
 	private:
-		std::string	_locationToFind;
+		std::string	_uri;
 	protected:
 	public:
-		IsLocationUnary(const std::string &locationToFind): _locationToFind(locationToFind) {};
+		IsLocationUnary(const std::string &uri): _uri(uri) {};
 		bool	operator()(const Location &locationREF)
 		{
-			return (locationREF.locationUri == _locationToFind);
+			return (_uri.compare(0, locationREF.locationUri.size(), locationREF.locationUri));
 		};
 };
 

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   PollManager.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 05:03:53 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/30 11:48:12 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 13:54:02 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/PollManager.hpp"
+#include "PollManager.hpp"
 
 
 PollManager::PollManager(size_t n) : nfds(n){
@@ -20,11 +20,11 @@ PollManager::~PollManager() {
 }
 
 int PollManager::callPoll() {
-	return (poll(&sockets[0], nfds, -1));
+	return (poll(&_sockets[0], nfds, -1));
 }
 
 pollfd &PollManager::operator[](int index) {
-	return (sockets[index]);
+	return (_sockets[index]);
 }
 
 int PollManager::getNfds() {
@@ -32,29 +32,29 @@ int PollManager::getNfds() {
 }
 
 
-void PollManager::addFd(int fd, short events) {
-	sockets[nfds].fd = fd;
-	sockets[nfds].events = events;
-	sockets[nfds].revents = 0;
+void PollManager::addFd(size_t fd, short events) {
+	_sockets[nfds].fd = fd;
+	_sockets[nfds].events = events;
+	_sockets[nfds].revents = 0;
 	nfds++;
 }
 
-void PollManager::removeFd(int fd) {
+void PollManager::removeFd(size_t fd) {
 	//1. find index of fd to remove
-	int i = 0;
+	size_t	i = 0;
 	for (i = 0; i < nfds; i++)
-		if (sockets[i].fd == fd)
+		if (_sockets[i].fd == (int)fd)
 			break ;
 	//2. skip element and copy bacwards until the end
 	if (i == nfds)
 		return ;
 	i++;
 	while (i < nfds) {
-		sockets[i] = sockets[i+1];
+		_sockets[i] = _sockets[i+1];
 		i++;
 	}
-	sockets[i].fd = 0;
-	sockets[i].events = 0;
-	sockets[i].revents = 0;
+	_sockets[i].fd = 0;
+	_sockets[i].events = 0;
+	_sockets[i].revents = 0;
 	nfds--;
 }

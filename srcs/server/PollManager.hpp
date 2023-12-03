@@ -8,8 +8,8 @@
 class PollManager {
 private:
 	size_t				nfds;
-	// std::vector<pollfd> sockets;
-	struct pollfd sockets[200];
+	// std::vector<pollfd> _sockets;
+	struct pollfd _sockets[200];
 
 public:
 	PollManager(size_t);
@@ -20,8 +20,8 @@ public:
 	void operator--(int);
 
 
-	void addFd(int fd, short events);
-	void removeFd(int fd);
+	void addFd(size_t fd, short events);
+	void removeFd(size_t fd);
 	int callPoll();
 	int getNfds();
 };

@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/11/30 14:54:05 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/03 14:10:15 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,16 +19,16 @@ NAME		:=	libconfparser.a
 HTTP_DIR	:=	../http/
 HTTP_LIB	=	$(HTTP_DIR)libhttp.a
 LIBS		=	$(HTTP_LIB)
-HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
-				HTTPServerParser.hpp				ServerConfig.hpp
 
 INCLUDES	:=	-I.	-I$(HTTP_DIR)
+
+HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
+				HTTPServerParser.hpp				ServerConfig.hpp
 
 CXX			:=	c++
 RM			:=	rm
 FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
-				HTTPServerParser			ServerConfig	\
-				test
+				HTTPServerParser			ServerConfig	
 
 SRCS		=	$(addsuffix .cpp, $(FILES))
 

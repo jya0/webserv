@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:50:20 by jyao             ###   ########.fr       */
+/*   Updated: 2023/11/30 22:17:29 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ ServerConfig::ServerConfig(const ServerConfig &serverConfigREF) {
 ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
 	if (this != &serverConfigREF)
 	{
-		_cgiPathInfo			= serverConfigREF.getCgiPathInfo();
+		_cgiPathInfo	= serverConfigREF.getCgiPathInfo();
 		_listen			= serverConfigREF.getListen();
 		_serverNames	= serverConfigREF.getServerNames();
 		_locations		= serverConfigREF.getLocations();
@@ -122,52 +122,50 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
 	return (*this);
 };
 
-const std::string								&ServerConfig::getCgiPathInfo(void) const {
+const std::string										&ServerConfig::getCgiPathInfo(void) const {
 	return (_cgiPathInfo);
 };
 
-const std::vector< std::string >				&ServerConfig::getIndex(void) const {
+const std::vector< std::string >						&ServerConfig::getIndex(void) const {
 	return (_index);
 };
 
-const std::pair< std::string, int >				&ServerConfig::getListen(void) const {
+const std::pair< std::string, int >						&ServerConfig::getListen(void) const {
 	return (_listen);
 };
 
-const std::vector< std::string >				&ServerConfig::getServerNames(void) const {
+const std::vector< std::string >						&ServerConfig::getServerNames(void) const {
 	return (_serverNames);
 };
 
-const std::vector< ServerConfig::Location >		&ServerConfig::getLocations(void) const {
+const std::vector< ServerConfig::Location >				&ServerConfig::getLocations(void) const {
 	return (_locations);
 };
 
-const ServerConfig::Location					&ServerConfig::getLocation(const std::string &uriREF) const throw (std::exception) {
-	std::vector<Location>::const_iterator	itc;
+std::vector< ServerConfig::Location >::const_iterator	ServerConfig::getLocation(const std::string &uriREF) const throw (std::exception) {
+	std::vector< Location >::const_iterator	itc;
 
 	itc = std::find_if(_locations.begin(), _locations.end(), Location::IsLocationUnary(uriREF));
-	if (itc == _locations.end())
-		throw (http::Response::ResponseException("Couldn't find location uri!"));
-	return (*itc);
+	return (itc);
 };
 
-const bool										&ServerConfig::getAutoIndex(void) const {
+const bool												&ServerConfig::getAutoIndex(void) const {
 	return (_autoIndex);
 };
 
-const std::size_t								&ServerConfig::getSizeCMB(void) const {
+const std::size_t										&ServerConfig::getSizeCMB(void) const {
 	return (_sizeCMB);
 };
 
-const std::string								&ServerConfig::getErrorPage(void) const {
+const std::string										&ServerConfig::getErrorPage(void) const {
 	return (_errorPage);
 };
 
-const std::pair< int, std::string >				&ServerConfig::getReturn(void) const {
+const std::pair< int, std::string >						&ServerConfig::getReturn(void) const {
 	return (_return);
 };
 
-const std::string								&ServerConfig::getRoot(void) const {
+const std::string										&ServerConfig::getRoot(void) const {
 	return (_root);
 };
 

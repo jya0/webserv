@@ -11,8 +11,9 @@
 # include	<arpa/inet.h>
 # include	<fstream>
 # include	<unistd.h>
-# include <fcntl.h>
-#define BUFFER_SIZE 10
+# include	<fcntl.h>
+
+# define	BUFFER_SIZE 10
 
 class ServerSocket {
 protected:

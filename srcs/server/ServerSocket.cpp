@@ -1,4 +1,17 @@
-#include "../../inc/ServerSocket.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ServerSocket.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
+/*   Updated: 2023/12/03 13:50:09 by jyao             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include	"ServerSocket.hpp"
+#include	"Header.hpp"
 
 static void log(std::string mesg) {
 	std::cout << mesg << std::endl;
@@ -32,7 +45,7 @@ ServerSocket::~ServerSocket() {
 std::string ServerSocket::generateDefaultResponse() {
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
-	ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << "\r\n\r\n"
+	ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << (CR_LF CR_LF)
 	   << htmlFile;
 	return ss.str();
 }
@@ -64,7 +77,7 @@ std::string ServerSocket::recieveData(int &peer_socket)
 }
 
 void ServerSocket::sendData(int peer_socket, std::string message) {
-    long bytesSent;
+    size_t bytesSent;
 	const char *s = message.c_str();
 	std::cerr<<message;
 	bytesSent = send(peer_socket, s, message.size(), 0);

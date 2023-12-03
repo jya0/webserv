@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/01 16:28:03 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Request::Request(void) : AMessage() {
  * @param RequestREF Request to copy
  */
 Request::Request(Request const &RequestREF) : AMessage() {
-	*this = RequestREF;
+	this->operator=(RequestREF);
     return ;
 }
 
@@ -76,12 +76,16 @@ std::string	Request::getHttpMethod(void) const {
     return (Request::methodName(this->_httpMethod));
 }
 
+const e_httpMethod	&Request::getHttpMethodEnum(void) const {
+	return (_httpMethod);
+};
+
 /**
  * @brief Returns the HTTP version of the request.
  *
  * @return std::string The HTTP version of the request.
  */
-std::string	Request::getHttpVersion(void) const {
+const std::string	&Request::getHttpVersion(void) const {
     return (this->_httpVersion);
 }
 
@@ -90,7 +94,7 @@ std::string	Request::getHttpVersion(void) const {
  *
  * @return std::string The URI of the request.
  */
-std::string	Request::getUri(void) const {
+const std::string	&Request::getUri(void) const {
     return (this->_uri);
 }
 
