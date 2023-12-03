@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/11/28 21:08:52 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 14:39:19 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,4 +148,20 @@ e_httpMethod Request::methodEnum(std::string method) {
  */
 bool	Request::validate(void) const {
     return (true); /// @todo: implement
+}
+
+void Request::appendRawData(std::string _data) {
+	_raw = _raw + _data;
+}
+
+
+bool Request::requestReady() const {
+	return (_ready);
+}
+void Request::setRequestStatus(bool status) {
+	_ready = status;
+}
+
+std::string Request::getRawData() {
+	return (_raw);
 }

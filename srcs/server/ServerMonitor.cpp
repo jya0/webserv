@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/30 13:43:12 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 14:51:36 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 	return (-1);
 }
 
+
+
+
 void ServerMonitor::startServers()
 {
 
@@ -42,7 +45,6 @@ void ServerMonitor::startServers()
 	int client;
 	int server;
 	i = 0;
-
 	while (2)
 	{
 		rc = sockets.callPoll();
@@ -74,14 +76,23 @@ void ServerMonitor::startServers()
 				else
 				{
 					std::cout << "Triggered = " << triggered<<std::endl;
-					servers.at(server)->recieveData(triggered);
-					// build request (data)
-					// if request complete -> build response
-
-					if (triggered != -1)
-						servers.at(server)->prepareResponse(triggered);
-					else
+					int status = servers.at(server)->recieveData(triggered);
+					if (triggered == -1)
 						continue;
+					if(status == 0)
+					{
+						//nothin to read - closed
+						std::cout<<"done reading\n";
+					}
+					else {
+						// servers.at(server)->buildRequest(triggered);
+						if (servers.at(server)->requestReady(triggered))
+						{
+							servers.at(server)->buildResponse(triggered);
+							std::map<int, Request*>::iterator itr = servers.at(server)->requests.find(triggered);
+							servers.at(server)->requests.erase(itr);
+						}
+					}
 				}
 			}
 			else if (server != -1 && (sockets[i].revents & POLLOUT) && servers.at(server)->responseReady(triggered))

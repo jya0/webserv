@@ -54,6 +54,8 @@ protected:
 
 public:
 	std::map<int, Response *> responses;
+	std::map<int, Request *> requests;
+
 	WebServer();
     WebServer(std::string ip, int port);
     ~WebServer();
@@ -61,9 +63,9 @@ public:
 	ServerSocket &getConnection();
 	Request &recieveRequest();
 	void sendResponse(int client, const Response &response);
-	void prepareResponse(int client);
+
 	void sendData(int client, std::string message);
-	std::string recieveData(int &client);
+	int recieveData(int &client);
 	Request receiveRequest(int client, std::string );
 	Response handleRequest(const Request &request) const ;
 	Response handleGet(const Request &request) const ;
@@ -81,6 +83,9 @@ public:
 	void closeClientConnection(int client);
 	bool connectedClient(int client) const ;
 	bool responseReady(int client);
+
+	void buildResponse(int client);
+	bool requestReady(int client);
 
 };
 

@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/11/30 12:56:44 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 14:43:39 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,22 @@ void WebServer::sendData(int client, std::string message)
 	connection.sendData(client, message);
 }
 
-std::string WebServer::recieveData(int &client)
+int WebServer::recieveData(int &client)
 {
 	std::string ret = connection.recieveData(client);
-	return (ret);
+	std::map<int, Request *>::iterator itr = requests.find(client);
+	if (itr == requests.end())
+		requests[client] = new Request();
+	requests[client]->appendRawData(ret);
+	requests[client]->setRequestStatus(false);
+	if (requests[client]->getRawData().find("\r\n\r\n") != std::string::npos)
+	{
+		requests[client]->setRequestStatus(true);
+		std::cout << "------ Finished Reading Request from client completely------\n\n";
+		std::cout<<requests[client]->getRawData()<<"\n";
+
+	}
+	return (ret.size());
 }
 
 
@@ -98,11 +110,6 @@ Request WebServer::receiveRequest(int client, std::string rawRequest) {
 void WebServer::sendResponse(int client, const Response &response) {
 	std::string rawResponse = response.getRawMessage();
     sendData(client, rawResponse);
-}
-
-void WebServer::prepareResponse(int client) {
-	responses[client] = new Response(ServerSocket::generateDefaultResponse());
-	responses[client]->setResponseStatus(true);
 }
 
 Response WebServer::handleRequest(const Request &request) const {
@@ -212,4 +219,16 @@ bool WebServer::responseReady(int client){
 	if (responses.count(client) == 0)
 		return (false);
 	return (responses[client]->responseReady());
+}
+
+bool WebServer::requestReady(int client){
+	if (requests.count(client) == 0)
+		return (false);
+	return (requests[client]->requestReady());
+}
+
+void WebServer::buildResponse(int client) {
+	responses[client] = new Response(ServerSocket::generateDefaultResponse());
+	//convert request to response
+	responses[client]->setResponseStatus(true);
 }

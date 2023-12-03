@@ -45,7 +45,6 @@ std::string ServerSocket::generateDefaultResponse()
 std::string ServerSocket::recieveData(int &peer_socket)
 {
 	long bytesRecieved;
-    // char buffer[BUFFER_SIZE + 1] = {0};
 	char *buffer = new char[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
@@ -61,8 +60,8 @@ std::string ServerSocket::recieveData(int &peer_socket)
 		delete []buffer;
 		exit(0);
 	}
-	std::cout << "------ Received Request from client ------\n\n";
-	std::cout<<std::string(buffer)<<"\n";
+	std::cout << "------ Reading Request from client ------\n\n";
+	// std::cout<<std::string(buffer)<<"\n";
 	std::string ret(buffer);
 	delete []buffer;
 	return (ret);
