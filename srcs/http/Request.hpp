@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/03 15:07:11 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 15:13:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,19 @@ namespace http {
 			bool			_ready;
 		protected:
 		public:
-			static std::string methodName(e_httpMethod method) ;
-			static e_httpMethod methodEnum(const std::string method) ;
 			Request(void);
 			Request(Request const &RequestREF);
-			Request(std::string httpRaw);
-			~Request(void);
 			Request	&operator=(Request const &RequestREF);
+			~Request(void);
+			Request(std::string httpRaw);
+
+			static std::string methodName(e_httpMethod method);
+			static e_httpMethod methodEnum(const std::string method);
+
+			const e_httpMethod	&getHttpMethodEnum(void) const;
+			const std::string	&getHttpVersion(void) const;
 			std::string	getHttpMethod(void) const;
-			std::string	getHttpVersion(void) const;
-			std::string	getUri(void) const;
+			const std::string	&getUri(void) const;
 			bool validate(void) const;
 			void appendRawData(std::string _data);
 			bool requestReady() const;

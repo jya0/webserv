@@ -12,9 +12,8 @@
 # include	<fstream>
 # include	<unistd.h>
 # include <fcntl.h>
-#define BUFFER_SIZE 1
 
-# define	BUFFER_SIZE 10
+# define	BUFFER_SIZE 420000
 
 class ServerSocket {
 protected:

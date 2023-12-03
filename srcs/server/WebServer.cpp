@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 15:03:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/03 15:19:23 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,12 +100,6 @@ void WebServer::sendResponse(int client, const Response &response) {
 	std::string rawResponse = response.getRawMessage();
     sendData(client, rawResponse);
 }
-
-void WebServer::prepareResponse(int client) {
-	responses[client] = new Response(ServerSocket::generateDefaultResponse());
-	responses[client]->setResponseStatus(true);
-}
-
 bool WebServer::connectedClient(int client) const{
 	return (std::find(clients.begin(), clients.end(), client) != clients.end());
 }
