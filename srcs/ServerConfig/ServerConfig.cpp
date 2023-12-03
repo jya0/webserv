@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 21:49:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 00:16:13 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 /* class ServerConfig */
 ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
 									_autoIndex(DEFAULT_AUTO_INDEX), 
-									_cgiPathInfo(DEFAULT_CGI_BIN), 
 									_sizeCMB(DEFAULT_CMB_SIZE), 
 									_errorPage(DEFAULT_ERROR_PAGE), 
 									_index(std::vector< std::string >(1, DEFAULT_INDEX)), 
@@ -62,9 +61,6 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 	if (serverDve != NULL)
 	{
 		try {
-			_cgiPathInfo = serverDve->checkDirectiveSimple(DVE_CGI_PATH_INFO).front();
-		} catch (std::exception &e) {}
-		try {
 			_listen = parseListenDirective(serverDve->checkDirectiveSimple(DVE_LISTEN).front());
 		} catch (std::exception &e) {}
 		try {
@@ -108,7 +104,6 @@ ServerConfig::ServerConfig(const ServerConfig &serverConfigREF) {
 ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
 	if (this != &serverConfigREF)
 	{
-		_cgiPathInfo	= serverConfigREF.getCgiPathInfo();
 		_listen			= serverConfigREF.getListen();
 		_serverNames	= serverConfigREF.getServerNames();
 		_locations		= serverConfigREF.getLocations();
@@ -120,10 +115,6 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
 		_root			= serverConfigREF.getRoot();
 	}
 	return (*this);
-};
-
-const std::string										&ServerConfig::getCgiPathInfo(void) const {
-	return (_cgiPathInfo);
 };
 
 const std::vector< std::string >						&ServerConfig::getIndex(void) const {

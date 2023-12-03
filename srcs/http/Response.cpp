@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 22:05:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 01:12:04 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,24 +175,22 @@ static void header_GetHead(Response &response, const std::string &fileStr)
 	response.addHeader(type);
 }
 
-Response readContent(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+Response readContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
 {
 	Response response(200);
-	std::string filePath;
 	std::string result;
 	std::ifstream infile;
 
-	filePath = getFilePath(requestREF, servConfREF, locREF);
-	if (Autoindex::isPathFolder(filePath) > 0)
+	if (Autoindex::isPathFolder(filePathREF) > 0)
 	{
 		if (locREF.getAutoIndex() == true)
-			result = Autoindex::genPage(filePath.c_str(), requestREF, servConfREF);
+			result = Autoindex::genPage(filePathREF.c_str(), requestREF, servConfREF);
 		else
 			return (Response(403));
 	}
-	else if (Autoindex::isPathReg(filePath) > 0)
+	else if (Autoindex::isPathReg(filePathREF) > 0)
 	{
-		infile.open(filePath.c_str(), std::ios::in);
+		infile.open(filePathREF.c_str(), std::ios::in);
 		if (infile.good())
 		{
 			result = std::string((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
@@ -209,39 +207,31 @@ Response readContent(const Request &requestREF, const ServerConfig &servConfREF,
 	return (response);
 };
 
-static Response handleHead(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
     Response	response(200);
 	// CGIhandler	cgiHandler(requestREF, locREF);
 
     //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
-	response = readContent(requestREF, servConfREF, locREF);
+	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	response.setMessageBody("");
-    // 3. Check if the URI is a directory
-    //  3.1 If it is, respond according to config
-    // 4. Check if the URI is a CGI script
-    //  4.1 If it is, handle CGI
-    // 5. Return 404
     return (response);
 }
 
-static Response handleGet(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF){
+static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF){
 	Response response(200);
 	//@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
 	// Flow:
-	response = readContent(requestREF, servConfREF, locREF);
-	// 3. Check if the URI is a directory
-	//  3.1 If it is, respond according to config
-	// 4. Check if the URI is a CGI script
-	//  4.1 If it is, handle CGI
-	// 5. Return 404
+	//code for CGI checking function
+	// if (locREF.locationUri )
+	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
 }
 
-// static Response handlePut(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+// static Response handlePut(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
 //     Response response(200);
 //     // @todo
 // 	/*
@@ -251,13 +241,13 @@ static Response handleGet(const Request &requestREF, const ServerConfig &servCon
 //     return (response);
 // }
 
-/* static Response handlePost(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+/* static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
 	Response response(200);
 	// @todo
 	return (response);
 } */
 
-// static Response handleDelete(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+// static Response handleDelete(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
 //     Response response(200);
 //     // @todo
 //     return (response);
@@ -272,6 +262,7 @@ static Response handleGet(const Request &requestREF, const ServerConfig &servCon
 Response Response::buildResponse(const Request &requestREF, const ServerConfig &servConfREF)
 {
 	std::vector<ServerConfig::Location>::const_iterator locItc;
+	std::string											filePath;
 
 	// if (requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
 	// 	return (*this = Response(413));
@@ -282,23 +273,24 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	// 	return (*this = Response(locItc->getReturn().first, "Location: " + locItc->getReturn().second));
 	// else
 	// 	return (*this = Response(404));
+	filePath = getFilePath(requestREF, servConfREF, *locItc);
 	switch (requestREF.getHttpMethodEnum())
 	{
-	case HEAD:
-		*this = handleHead(requestREF, servConfREF, *locItc);
-		break ;
-	case GET:
-		*this = handleGet(requestREF, servConfREF, *locItc);
-		break ;
-	// case PUT:
-	// 	*this = handlePut();
-	// case POST:
-	// 	*this = handlePost();
-	// case DELETE:
-	// 	*this = handleDelete();
-	default:
-		*this = Response(501);
-		break ;
+		case HEAD:
+			*this = handleHead(filePath, requestREF, servConfREF, *locItc);
+			break ;
+		case GET:
+			*this = handleGet(filePath, requestREF, servConfREF, *locItc);
+			break ;
+		// case PUT:
+		// 	*this = handlePut();
+		// case POST:
+		// 	*this = handlePost();
+		// case DELETE:
+		// 	*this = handleDelete();
+		default:
+			*this = Response(501);
+			break ;
 	}
 	return (*this);
 };

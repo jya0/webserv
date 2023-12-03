@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/28 17:22:05 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 00:21:27 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,20 @@
 //ALL DIRECTIVE NAMES!
 /*SIMPLE*/
 # define	DVE_AUTO_INDEX		"auto_index"			":"	//bool
-# define	DVE_CGI_PATH_INFO	"cgi_path_info"			":"	//std::string
 # define	DVE_CMB_SIZE		"client_max_body_size"	":"	//std::size_t
 # define	DVE_ERROR_PAGE		"error_page"			":"	//std::string
 # define	DVE_INDEX			"index"					":"	//std::string
+# define	DVE_LIMIT_EXECPT	"limit_except"			":"	//struct LimitExcept {enum HttpMethods}
 # define	DVE_LISTEN			"listen"				":"	//std::string
 # define	DVE_RETURN			"return"				":"	//struct Return {int, std::string}
 # define	DVE_ROOT			"root"					":"	//std::string
 # define	DVE_SERVER_NAME		"server_name"			":"	//std::string
 /*BLOCK*/
-# define	DVE_LIMIT_EXECPT	"limit_except"			":"	//struct LimitExcept {enum HttpMethods}
 # define	DVE_LOCATION		"location"				":"	//struct Location {}
 # define	DVE_SERVER			"server"				":"	//class ServerConfig {}
 
 # define	SIMPLE_DIRECTIVES	\
 								DVE_AUTO_INDEX			" "		\
-								DVE_CGI_PATH_INFO		" "		\
 								DVE_CMB_SIZE			" "		\
 								DVE_ERROR_PAGE			" "		\
 								DVE_INDEX				" "		\
@@ -51,7 +49,6 @@
 typedef enum	DirectiveType {
 	INIT = -1,
 	AUTOINDEX,
-	CGI_BIN,
 	CLIENT_MAX_BODY_SIZE,
 	ERROR_PAGE,
 	INDEX,

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 12:11:33 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 01:18:39 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include	<map>
 # include	<string>
 # include	<exception>
+# include	<unistd.h>
+# include	<cstdio>
 # include	"Request.hpp"
 # include	"ServerConfig.hpp"
 
@@ -32,6 +34,13 @@ namespace	http {
 		private:
 			std::map< std::string, std::string >	_cgiEnv;
 			http::Request							_cgiRequest;
+			pid_t									_childPid;
+			FILE									*_inFile;
+			int										_inFileFd;
+			FILE									*_outFile;
+			int										_outFileFd;
+			int										_cinSave;
+			int										_coutSave;
 		protected:
 		public:
 			CGIhandler(void);
@@ -43,7 +52,7 @@ namespace	http {
 			const std::map< std::string, std::string >	&getCgiEnv(void) const;
 			const http::Request							&getCgiRequest(void) const;
 
-			std::string	executeCGI(const std::string &scriptName) throw (std::exception);
+			std::string	executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler);
 	};
 }
 

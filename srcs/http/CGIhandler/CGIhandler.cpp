@@ -6,13 +6,10 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 14:09:31 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 01:21:37 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	<exception>
-#include	<unistd.h>
-#include	<cstdio>
 #include	"CGIhandler.hpp"
 #include	"Header.hpp"
 
@@ -46,7 +43,7 @@ this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 this->_env["SERVER_SOFTWARE"] = "Weebserv/1.0";
 */
 
-CGIhandler::CGIhandler(void)
+CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1)
 {
 	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
 	_cgiEnv["SERVER_PROTOCOL"]		= SERVER_PROTOCOL;
@@ -174,8 +171,21 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
 	// deleteEnvArr(cgiEnv);
 }
 
-static void	CGIparent(const int &outFileFd, std::string &cgiResult)
+/* 
+██╗   ██╗███████╗███████╗    ██╗███╗   ██╗    ███████╗███████╗██████╗ ██╗   ██╗███████╗██████╗     ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗ ██╗
+██║   ██║██╔════╝██╔════╝    ██║████╗  ██║    ██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗██║
+██║   ██║███████╗█████╗      ██║██╔██╗ ██║    ███████╗█████╗  ██████╔╝██║   ██║█████╗  ██████╔╝    ██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██████╔╝██║
+██║   ██║╚════██║██╔══╝      ██║██║╚██╗██║    ╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██╔══╝  ██╔══██╗    ██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██╔══██╗╚═╝
+╚██████╔╝███████║███████╗    ██║██║ ╚████║    ███████║███████╗██║  ██║ ╚████╔╝ ███████╗██║  ██║    ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║██╗
+ ╚═════╝ ╚══════╝╚══════╝    ╚═╝╚═╝  ╚═══╝    ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝
+  */
+/* static void	CGIparent(const int &outFileFd, std::string &cgiResult)
 {
+	int status = 0;
+	waitpid(pid, &status, 0);
+	if (status == -1 || status == 1)
+		throw(CGIexception("CGI failed to run!"));
+
 	char	*readBuf;
 	ssize_t	readReturn;
 
@@ -193,16 +203,24 @@ static void	CGIparent(const int &outFileFd, std::string &cgiResult)
 		readReturn = read(outFileFd, readBuf, READ_BUF_SIZE);
 		cgiResult += readBuf;
 	} while (readReturn > 0);
-}
+	dup2(cinSave, STDIN_FILENO);
+	dup2(coutSave, STDOUT_FILENO);
+	close(cinSave);
+	close(coutSave);
+	close(inFileFd);
+	close(outFileFd);
+	fclose(inFile);
+	fclose(outFile);
+} */
 
-std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::exception)
+std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler)
 {
 	pid_t		pid;
 	int			cinSave;
 	int			coutSave;
 	FILE		*inFile;
-	FILE		*outFile;
 	int			inFileFd;
+	FILE		*outFile;
 	int			outFileFd;
 	std::string	cgiResult;
 
@@ -218,11 +236,14 @@ std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::ex
 		CGIchild(inFileFd, outFileFd, mapToArr(_cgiEnv), scriptName);
 	}
 	else {
-		int status = 0;
-		waitpid(pid, &status, 0);
-		if (status == -1 || status == 1)
-			throw(CGIexception("CGI failed to run!"));
-		CGIparent(outFileFd, cgiResult);
+		_childPid = pid;
+		_inFile = inFile;
+		_inFileFd = inFileFd;
+		_outFile = outFile;
+		_outFileFd = outFileFd;
+		_cinSave = cinSave;
+		_coutSave = coutSave;
+		throw (*this);
 	}
 	dup2(cinSave, STDIN_FILENO);
 	dup2(coutSave, STDOUT_FILENO);

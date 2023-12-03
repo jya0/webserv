@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 22:11:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 00:15:57 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ class	ServerConfig {
 		std::vector< Location >				_locations;
 	protected:
 		bool								_autoIndex;
-		std::string							_cgiPathInfo;
 		std::size_t							_sizeCMB;
 		std::string							_errorPage;
 		std::vector< std::string >			_index;
