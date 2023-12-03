@@ -69,12 +69,31 @@ AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string
     return ;
 }
 
+void AMessage::parseMessageBody() {
+	std::string	head = _messageBody.substr(0, _messageBody.find("\r\n\r\n"));
+	std::string	chunks = _messageBody.substr(_messageBody.find("\r\n\r\n") + 4, _messageBody.size() - 1);
+	std::string	subchunk = chunks.substr(0, 20);
+	std::string	body = "";
+	int			chunksize = strtol(subchunk.c_str(), NULL, 16);
+	size_t		i = 0;
+
+	do {
+		i = chunks.find("\r\n", i) + 2;
+		body += chunks.substr(i, chunksize);
+		i += chunksize + 2;
+		subchunk = chunks.substr(i, 20);
+		chunksize = strtol(subchunk.c_str(), NULL, 16);
+	} while (chunksize);
+	_messageBody = head + "\r\n\r\n" + body + "\r\n\r\n";
+}
+
 /**
  * @brief Construct a new AMessage object
  *
  * @param rawMessage The raw message to be parsed
  */
-AMessage::AMessage(std::string rawMessage) {
+AMessage::AMessage(std::string rawMessage)
+{
 
 	std::istringstream iss(rawMessage);
     std::string line;
@@ -94,7 +113,6 @@ AMessage::AMessage(std::string rawMessage) {
 		}
 	}
 	this->_messageBody = iss.str().substr(iss.tellg());
-
 }
 
 /**

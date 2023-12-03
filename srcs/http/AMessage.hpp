@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMessage.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 18:40:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 00:50:32 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ namespace http {
 			virtual bool validate(void) const = 0;
 			void setMessageBody(std::string messageBody);
 			void setStartLine(std::string startLine);
+			void parseMessageBody();
+
 	};
 }
 
