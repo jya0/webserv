@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:02 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/01 14:21:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 22:04:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 # define	AUTOINDEX_HPP
 
 # include	<string>
+# include	"ServerConfig.hpp"
+# include	"Request.hpp"
 
 namespace	http {
 	namespace	Autoindex {
-		std::string	genPage(const char *path, const std::string &hostREF, const int &portREF);
+		std::string	genPage(const char *path, const Request &requestREF, const ServerConfig &servConfREF);
 		int			isPathFolder(const std::string &path);
 		int			isPathReg(const std::string &path);
 	};

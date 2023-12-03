@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/01 14:21:43 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/03 22:05:06 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,8 @@ static void	pageAddClosing(std::string &pageREF) {
     			"</html>\n";
 };
 
-std::string	Autoindex::genPage(const char *path, const std::string &hostREF, const int &portREF) {
+std::string	Autoindex::genPage(const char *path, const Request &requestREF, const ServerConfig &servConfREF) {
 	DIR			*dirPTR;
-	std::string	dirNameSTR;
 	std::string	page;
 
 	if (path == NULL)
@@ -57,13 +56,10 @@ std::string	Autoindex::genPage(const char *path, const std::string &hostREF, con
 					<< std::endl;
 		return (page);
 	};
-	dirNameSTR = path;
-	if (dirNameSTR.front() != '/')
-		dirNameSTR = '/' + dirNameSTR;
-	pageAddOpening(page, dirNameSTR);
+	pageAddOpening(page, requestREF.getUri());
 	for (struct dirent *dirent = readdir(dirPTR); dirent != NULL; dirent = readdir(dirPTR))
 	{
-		page += direntLink(dirNameSTR, std::string(dirent->d_name), hostREF, portREF);
+		page += direntLink(requestREF.getUri(), std::string(dirent->d_name), servConfREF.getListen().first, servConfREF.getListen().second);
 	}
 	pageAddClosing(page);
 	return (page);
