@@ -6,10 +6,11 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 13:29:51 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include	<cstdlib>
 #include	"ServerSocket.hpp"
 #include	"Header.hpp"
 

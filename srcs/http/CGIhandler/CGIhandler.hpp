@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 04:11:53 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 12:41:17 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ namespace	http {
 			const std::map< std::string, std::string >	&getCgiEnv(void) const;
 			const http::Request							&getCgiRequest(void) const;
 
-			std::string	executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler);
 			std::clock_t &getStartTime();
 			pid_t	&getChildPid();
 			int &getCinSave() ;
@@ -70,6 +69,7 @@ namespace	http {
 			FILE *getOutFile() ;
 			int	getClientSocket();
 			int getServerSocket();
+			std::string	executeCGI(const std::string &scriptName);
 	};
 }
 

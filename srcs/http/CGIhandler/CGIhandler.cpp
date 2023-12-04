@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 05:41:42 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 13:25:54 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "CGIhandler.hpp"
-#include "Header.hpp"
+#include 	"CGIhandler.hpp"
+#include 	"Header.hpp"
+#include	"ToString.tpp"
+#include	<cstring>
+#include	<cstdlib>
 
 using namespace http;
 
@@ -55,7 +58,7 @@ CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Loca
 	(void)locationREF;
 	_cgiRequest = requestREF;
 	_cgiEnv["AUTH_TYPE"] 			= requestREF.getHeaderValue(HEADER_KEY_AUTH);
-	_cgiEnv["CONTENT_LENGTH"]		= std::to_string(requestREF.getMessageBody().size());
+	_cgiEnv["CONTENT_LENGTH"]		= http::toString(requestREF.getMessageBody().size());
 	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
 	// _cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
 	// _cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
@@ -174,7 +177,7 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
  ╚═════╝ ╚══════╝╚══════╝    ╚═╝╚═╝  ╚═══╝    ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝
   */
 
-std::string CGIhandler::executeCGI(const std::string &scriptName) throw(std::exception, CGIhandler)
+std::string CGIhandler::executeCGI(const std::string &scriptName)
 {
 	pid_t pid;
 	int cinSave;

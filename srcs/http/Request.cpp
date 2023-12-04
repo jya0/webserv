@@ -6,11 +6,12 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 12:40:15 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Request.hpp"
+#include	"Request.hpp"
+#include	<cstdlib>
 
 using namespace http;
 

@@ -6,11 +6,13 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 04:31:56 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 13:29:33 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<sstream>
+#include	<algorithm>
+#include	<cstdlib>
 #include	"ServerConfig.hpp"
 
 /* class ServerConfig */
@@ -38,7 +40,7 @@ static std::pair< std::string, int >	parseListenDirective(std::string listenDve)
 	std::getline(ssListen, ipStr, ':');
 	ssListen >> portStr;
 	ipStr = (ipStr.empty()) ? DEFAULT_LISTEN_IP : ipStr;
-	port = (portStr.empty()) ? DEFAULT_LISTEN_PORT : std::atoi(portStr.c_str());
+	port = (portStr.empty()) ? DEFAULT_LISTEN_PORT : strtol(portStr.c_str(), NULL, 10);
 	return (std::make_pair(ipStr, port));
 };
 

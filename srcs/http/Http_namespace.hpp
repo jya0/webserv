@@ -8,5 +8,6 @@
 #include	"CGIhandler.hpp"
 #include	"Autoindex_namespace.hpp"
 #include	"MimeTypes.hpp"
+#include	"ToString.tpp"
 
 #endif
