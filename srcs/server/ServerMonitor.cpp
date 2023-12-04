@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 01:45:13 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerMonitor.hpp"
 
-ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
-{
+ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size()) {
 	WebServer					*server;
 	size_t i = 0;
 
@@ -38,8 +37,7 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered) {
 	return (-1);
 }
 
-void ServerMonitor::startServers()
-{
+void ServerMonitor::startServers() {
 
 	int i = 0;
 	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)

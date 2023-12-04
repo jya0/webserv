@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 01:12:04 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 03:53:44 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ using namespace http;
 /**
  * @brief Construct a new Response object (default constructor)
  */
-Response::Response(void) : AMessage()
-{
+Response::Response(void) : AMessage() {
 	_ready = false;
 	return;
 }
@@ -29,8 +28,7 @@ Response::Response(void) : AMessage()
  *
  * @param status The status code of the response
  */
-Response::Response(int status)
-{
+Response::Response(int status) {
 	this->_httpVersion = "HTTP/1.1";
 	this->_httpStatusCode = status;
 	this->_startLine = this->_httpVersion + " " + std::to_string(status) + " " + this->getHttpStatusString(status) + CR_LF;
@@ -47,8 +45,7 @@ Response::Response(int status)
  * @param status
  * @param responseBody
  */
-Response::Response(int status, const std::string &responseBody)
-{
+Response::Response(int status, const std::string &responseBody) {
 	*this = Response(status);
 	this->setMessageBody(responseBody);
 };
@@ -58,8 +55,7 @@ Response::Response(int status, const std::string &responseBody)
  *
  * @param responseREF Response object to copy
  */
-Response::Response(const Response &responseREF): AMessage(responseREF)
-{
+Response::Response(const Response &responseREF): AMessage(responseREF) {
 	*this = responseREF;
 	return;
 }
@@ -67,8 +63,7 @@ Response::Response(const Response &responseREF): AMessage(responseREF)
 /**
  * @brief Destroy the Response object
  */
-Response::~Response(void)
-{
+Response::~Response(void) {
 	return;
 }
 
@@ -78,8 +73,7 @@ Response::~Response(void)
  * @param responseREF Response object to copy
  * @return Response& Reference to the new Response object
  */
-Response &Response::operator=(const Response &responseREF)
-{
+Response &Response::operator=(const Response &responseREF) {
 	if (this != &responseREF)
 	{
 		AMessage::operator=(responseREF);
@@ -95,8 +89,7 @@ Response &Response::operator=(const Response &responseREF)
  *
  * @param httpRaw The string to parse
  */
-Response::Response(std::string httpRaw) : AMessage(httpRaw)
-{
+Response::Response(std::string httpRaw) : AMessage(httpRaw) {
 
 	this->_httpVersion = this->_startLine.substr(0, this->_startLine.find(' '));
 	this->_httpStatusCode = std::stoi(this->_startLine.substr(this->_startLine.find(' ') + 1,
@@ -110,8 +103,7 @@ Response::Response(std::string httpRaw) : AMessage(httpRaw)
  *
  * @return std::string The HTTP version of the response
  */
-std::string Response::getHttpVersion(void) const
-{
+std::string Response::getHttpVersion(void) const {
 	return (this->_httpVersion);
 }
 
@@ -120,18 +112,15 @@ std::string Response::getHttpVersion(void) const
  *
  * @return unsigned short The HTTP status code of the response
  */
-unsigned short Response::getHttpStatusCode(void) const
-{
+unsigned short Response::getHttpStatusCode(void) const {
 	return (this->_httpStatusCode);
 }
 
-bool Response::responseReady() const
-{
+bool Response::responseReady() const {
 	return (_ready);
 }
 
-void Response::setResponseStatus(bool status)
-{
+void Response::setResponseStatus(bool status) {
 	_ready = status;
 }
 
@@ -140,8 +129,7 @@ void Response::setResponseStatus(bool status)
  *
  * @return std::string The HTTP status string of the response
  */
-bool Response::validate(void) const
-{
+bool Response::validate(void) const {
 	return (true);
 }
 
@@ -154,8 +142,7 @@ bool Response::validate(void) const
 ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝         ╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
 */
 
-static std::string getFilePath(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
-{
+static std::string getFilePath(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
 	std::string filePath;
 
 	filePath = locREF.getRoot();
@@ -164,8 +151,7 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 	return (filePath);
 }
 
-static void header_GetHead(Response &response, const std::string &fileStr)
-{
+static void header_GetHead(Response &response, const std::string &fileStr) {
 	Header length("Content-Length", std::to_string(fileStr.length()));
 	Header type("Content-Type", "text/html");
 	Header server("Server", "webserv-kry");
@@ -175,8 +161,7 @@ static void header_GetHead(Response &response, const std::string &fileStr)
 	response.addHeader(type);
 }
 
-Response readContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
-{
+static Response readContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
 	Response response(200);
 	std::string result;
 	std::ifstream infile;
@@ -207,6 +192,15 @@ Response readContent(const std::string &filePathREF, const Request &requestREF, 
 	return (response);
 };
 
+static void	callCGI(const std::string &filePathREF, const Request &requestREF, const ServerConfig::Location &locREF) {
+	CGIhandler	cgiHandler(requestREF, locREF);
+
+	if (!http::checkMimeType(locREF.locationUri).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
+	{
+		cgiHandler.executeCGI(filePathREF);
+	}
+}
+
 static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
     Response	response(200);
 	// CGIhandler	cgiHandler(requestREF, locREF);
@@ -219,14 +213,14 @@ static Response handleHead(const std::string &filePathREF, const Request &reques
     return (response);
 }
 
-static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF){
+static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
 	Response response(200);
 	//@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
 	// Flow:
 	//code for CGI checking function
-	// if (locREF.locationUri )
+	callCGI(filePathREF, requestREF, locREF);
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
 }
@@ -259,8 +253,7 @@ static Response handleGet(const std::string &filePathREF, const Request &request
  * @param requestREF
  * @param serverConfigREF
  */
-Response Response::buildResponse(const Request &requestREF, const ServerConfig &servConfREF)
-{
+Response Response::buildResponse(const Request &requestREF, const ServerConfig &servConfREF) {
 	std::vector<ServerConfig::Location>::const_iterator locItc;
 	std::string											filePath;
 
@@ -301,8 +294,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
  * @param statusCode The status code to retrieve the string from
  * @return std::string The HTTP status string
  */
-std::string Response::getHttpStatusString(unsigned short statusCode) const
-{
+std::string Response::getHttpStatusString(unsigned short statusCode) const {
 	switch (statusCode)
 	{
 	case 100:

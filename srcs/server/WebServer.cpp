@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 01:45:22 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,7 @@ void WebServer::sendData(int client, std::string message) {
 	connection.sendData(client, message);
 }
 
-int WebServer::recieveData(int &client)
-{
+int WebServer::recieveData(int &client) {
 	std::string ret = connection.recieveData(client);
 	std::map<int, Request *>::iterator itr = requests.find(client);
 	if (itr == requests.end())

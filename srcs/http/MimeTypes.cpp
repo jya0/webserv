@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
+/*   MimeTypes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/27 17:01:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
+/*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
+/*   Updated: 2023/12/04 03:43:46 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"CGIhandler.hpp"
-#include	"Request.hpp"
-#include	"Response.hpp"
+#include	"MimeTypes.hpp"
 
+std::string	http::checkMimeType(const std::string &keyREF) {
+	std::map< std::string, std::string >::const_iterator	itc;
 
-int	main(void) {
-	http::CGIhandler handler;
-	std::cout<<handler.executeCGI("s1.sh");
-	return (0);
+	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), IsMimeTypeUnary(keyREF));
+	if (itc != mimeTypes.end())	
+		return (itc->second);
+	return ("");
 };

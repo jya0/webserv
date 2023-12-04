@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 01:21:37 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 03:38:02 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,22 +43,21 @@ this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 this->_env["SERVER_SOFTWARE"] = "Weebserv/1.0";
 */
 
-CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1)
-{
+CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1) {
 	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
 	_cgiEnv["SERVER_PROTOCOL"]		= SERVER_PROTOCOL;
 	_cgiEnv["SERVER_SOFTWARE"]		= SERVER_SOFTWARE;
 };
 
-CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF)
-{
+CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF) {
 	*this = CGIhandler();
+	(void)locationREF;
 	_cgiRequest = requestREF;
 	_cgiEnv["AUTH_TYPE"] 			= requestREF.getHeaderValue(HEADER_KEY_AUTH);
 	_cgiEnv["CONTENT_LENGTH"]		= std::to_string(requestREF.getMessageBody().size());
 	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
-	_cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
-	_cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
+	// _cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
+	// _cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
 	// _cgiEnv["QUERY_STRING"]			= requestREF.getHeaderValue(requestREF.getQuery());
 	// _cgiEnv["REMOTE_ADDR"]			= requestREF.getHeaderValue();
 	// _cgiEnv["REMOTE_HOST"]			= requestREF.getHeaderValue();
@@ -69,15 +68,13 @@ CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Loca
 	// _cgiEnv["SERVER_PORT"]			= requestREF.getHeaderValue();
 };
 
-CGIhandler::CGIhandler(const CGIhandler &cgiREF)
-{
+CGIhandler::CGIhandler(const CGIhandler &cgiREF) {
 	this->operator=(cgiREF);
 };
 
 CGIhandler::~CGIhandler(void) {};
 
-CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF)
-{
+CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF) {
 	if (this != &cgiREF)
 	{
 		_cgiEnv = cgiREF.getCgiEnv();
@@ -86,18 +83,15 @@ CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF)
 	return (*this);
 };
 
-const std::map< std::string, std::string >	&CGIhandler::getCgiEnv(void) const
-{
+const std::map< std::string, std::string >	&CGIhandler::getCgiEnv(void) const {
 	return (_cgiEnv);
 };
 
-const http::Request							&CGIhandler::getCgiRequest(void) const
-{
+const http::Request							&CGIhandler::getCgiRequest(void) const {
 	return (_cgiRequest);
 };
 
-static void	deleteEnvArr(char * const *envArr)
-{
+static void	deleteEnvArr(char * const *envArr) {
 	if (envArr != NULL)
 	{
 		for (int i = 0; envArr[i] != NULL; ++i)
@@ -106,8 +100,7 @@ static void	deleteEnvArr(char * const *envArr)
 	}
 };
 
-static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF)
-{
+static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF) {
 	char		**envArr;
 	char		*envArrPTR;
 	std::string	cgiElment;
@@ -136,8 +129,7 @@ static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF)
 	return (envArr);
 };
 
-static void	createTmpFiles(FILE *&inFile, FILE *&outFile, int &inFileFd, int &outFileFd)
-{
+static void	createTmpFiles(FILE *&inFile, FILE *&outFile, int &inFileFd, int &outFileFd) {
 	inFile = tmpfile();
 	outFile = tmpfile();
 	if (inFile == NULL || outFile == NULL)
@@ -148,8 +140,7 @@ static void	createTmpFiles(FILE *&inFile, FILE *&outFile, int &inFileFd, int &ou
 		throw (CGIhandler::CGIexception("CGI failed to get fd of temporary files!"));
 };
 
-static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cgiEnv, const std::string &scriptName)
-{
+static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cgiEnv, const std::string &scriptName) {
 	if (cgiEnv != NULL)
 	{
 		dup2(inFileFd, STDIN_FILENO);
@@ -179,8 +170,7 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
 ╚██████╔╝███████║███████╗    ██║██║ ╚████║    ███████║███████╗██║  ██║ ╚████╔╝ ███████╗██║  ██║    ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║██╗
  ╚═════╝ ╚══════╝╚══════╝    ╚═╝╚═╝  ╚═══╝    ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝
   */
-/* static void	CGIparent(const int &outFileFd, std::string &cgiResult)
-{
+/* static void	CGIparent(void) {
 	int status = 0;
 	waitpid(pid, &status, 0);
 	if (status == -1 || status == 1)
@@ -213,8 +203,7 @@ static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cg
 	fclose(outFile);
 } */
 
-std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler)
-{
+std::string	CGIhandler::executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler) {
 	pid_t		pid;
 	int			cinSave;
 	int			coutSave;
