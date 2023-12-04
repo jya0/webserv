@@ -6,14 +6,15 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 05:47:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "WebServer.hpp"
-#include "PollManager.hpp"
-#include "ServerMonitor.hpp"
-#include "HTTPServerParser.hpp"
+#include	"WebServer.hpp"
+#include	"PollManager.hpp"
+#include	"ServerMonitor.hpp"
+#include	"HTTPServerParser.hpp"
+#include	"MimeTypes.hpp"
 
 int main(int argc, char **argv) {
 	(void) argc;

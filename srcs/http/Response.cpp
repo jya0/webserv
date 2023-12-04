@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 03:53:44 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 05:52:24 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,11 @@ static Response readContent(const std::string &filePathREF, const Request &reque
 static void	callCGI(const std::string &filePathREF, const Request &requestREF, const ServerConfig::Location &locREF) {
 	CGIhandler	cgiHandler(requestREF, locREF);
 
-	if (!http::checkMimeType(locREF.locationUri).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
+	for (std::map< std::string, std::string >::const_iterator itc = http::mimeTypes.begin(); itc != http::mimeTypes.end(); ++itc)
+	{
+		std::cout << itc->first << ":" << itc->second << std::endl;
+	}
+	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
 	{
 		cgiHandler.executeCGI(filePathREF);
 	}
