@@ -6,11 +6,12 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 14:11:02 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 14:58:04 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
+#include	<cstring>
 #include	"WebServer.hpp"
 #include	"PollManager.hpp"
 

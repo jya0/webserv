@@ -11,7 +11,8 @@
 # include	<arpa/inet.h>
 # include	<fstream>
 # include	<unistd.h>
-# include <fcntl.h>
+# include	<fcntl.h>
+# include	<exception>
 
 # define	BUFFER_SIZE 420000
 
@@ -43,7 +44,7 @@ public:
 	const int &getPassiveSocket();
 
 
-	class SocketIOError : public std::exception
+	class SocketIOError: public std::exception
 	{
 	public:
 		virtual const char *what() const throw();

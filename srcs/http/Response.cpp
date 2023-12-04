@@ -6,12 +6,14 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 13:32:44 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 14:57:18 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fstream>
-#include "Http_namespace.hpp"
+#include	<fstream>
+#include	<sstream>
+#include	<cstdlib>
+#include	"Http_namespace.hpp"
 
 using namespace http;
 
@@ -31,12 +33,15 @@ Response::Response(void) : AMessage()
  */
 Response::Response(int status)
 {
+	std::stringstream	ss;
+
 	this->_httpVersion = "HTTP/1.1";
 	this->_httpStatusCode = status;
-	this->_startLine = this->_httpVersion + " " + std::to_string(status) + " " + this->getHttpStatusString(status) + CR_LF;
+	ss << this->_httpVersion << " " << status << " " << this->getHttpStatusString(status) << CR_LF;
+	this->_startLine = ss.str();
 	this->setMessageBody(this->getHttpStatusString(status));
 	this->addHeader(Header("Content-Type", "text/html"));
-	this->addHeader(Header("Content-Length", std::to_string(this->getMessageBody().length())));
+	this->addHeader(Header("Content-Length", http::toString(this->getMessageBody().length())));
 	_ready = true;
 	return;
 }
@@ -99,9 +104,9 @@ Response::Response(std::string httpRaw) : AMessage(httpRaw)
 {
 
 	_httpVersion		=	this->_startLine.substr(0, this->_startLine.find(' '));
-	_httpStatusCode		=	std::stoi(this->_startLine.substr(this->_startLine.find(' ') + 1,
+	_httpStatusCode		=	strtol(this->_startLine.substr(this->_startLine.find(' ') + 1,
 								this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
-								this->_startLine.find(' ') - 1));
+								this->_startLine.find(' ') - 1).c_str(), NULL, 10);
 	_ready = true;
 }
 
@@ -166,7 +171,7 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 
 static void header_GetHead(Response &response, const std::string &fileStr)
 {
-	Header length("Content-Length", std::to_string(fileStr.length()));
+	Header length("Content-Length", http::toString(fileStr.length()));
 	Header type("Content-Type", "text/html");
 	Header server("Server", "webserv-kry");
 	// Header date("Date", getDate());
@@ -296,7 +301,7 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 	else
 		status = 404;
 	if (status == 403 || status == 404)
-		;//display error page
+		std::cout << "IMPLEMENT HERE!\n";//display error page
 	return (Response(status, "<html><body><h1>File deleted.</h1></body></html>"));
 }
 
@@ -335,6 +340,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	// 	*this = handlePost();
 	case DELETE:
 		*this = handleDelete(filePath, requestREF, servConfREF, *locItc);
+		break ;
 	default:
 		*this = Response(501);
 		break;

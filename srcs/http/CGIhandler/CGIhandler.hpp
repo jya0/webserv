@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 13:36:04 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 14:57:55 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ namespace	http {
 			const std::map< std::string, std::string >	&getCgiEnv(void) const;
 			const http::Request							&getCgiRequest(void) const;
 
-			std::string	executeCGI(const std::string &scriptName) throw (std::exception, CGIhandler);
 			std::clock_t &getStartTime();
 			pid_t	&getChildPid();
 			int &getCinSave() ;
@@ -72,6 +71,7 @@ namespace	http {
 			int getServerSocket();
 			void setServerSocket(int serverSocket);
 			void setClientSocket(int clientSocket);
+			std::string	executeCGI(const std::string &scriptName);
 	};
 }
 
