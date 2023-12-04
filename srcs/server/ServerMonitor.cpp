@@ -6,13 +6,14 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 04:17:42 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerMonitor.hpp"
 
-ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size()) {
+ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
+{
 	WebServer					*server;
 	size_t i = 0;
 
@@ -37,7 +38,8 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered) {
 	return (-1);
 }
 
-void ServerMonitor::startServers() {
+void ServerMonitor::startServers()
+{
 
 	int i = 0;
 	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
@@ -49,6 +51,8 @@ void ServerMonitor::startServers() {
 	int triggered;
 	int client;
 	int server;
+	int status;
+	std::clock_t curr_time;
 	i = 0;
 	while (2)
 	{
@@ -80,20 +84,22 @@ void ServerMonitor::startServers() {
 				}
 				else
 				{
-					std::cout << "Triggered = " << triggered<<std::endl;
-					int status = _servers.at(server)->recieveData(triggered);
+					_servers.at(server)->recieveData(triggered);
 					if (triggered == -1)
 						continue;
-					if(status == 0)
-					{
-						//nothin to read - closed
-						std::cout<<"done reading\n";
-					}
 					else {
 						if (_servers.at(server)->requestReady(triggered))
 						{
-							_servers.at(server)->buildResponse(triggered);
-							std::map<int, Request*>::iterator itr = _servers.at(server)->requests.find(triggered);
+							try
+							{
+								_servers.at(server)->buildResponse(triggered);
+							}
+							catch (http::CGIhandler &cgi)
+							{
+								_cgiScripts.insert(std::make_pair<int, CGIhandler>(server, cgi));
+							}
+							std::map<int, Request *>::iterator itr = _servers.at(server)->requests.find(triggered);
+							// append cgi if needed
 							_servers.at(server)->requests.erase(itr);
 						}
 					}
@@ -105,6 +111,22 @@ void ServerMonitor::startServers() {
 				std::map<int, Response *>::iterator itr = _servers.at(server)->responses.find(triggered);
 				_servers.at(server)->responses.erase(itr);
 			}
+		}
+		status = 0;
+		for (std::map<int, CGIhandler>::iterator itr = _cgiScripts.begin(); itr != _cgiScripts.end(); itr++) {
+			curr_time = std::clock();
+			if ((curr_time - itr->second.getStartTime()) / CLOCKS_PER_SEC >= 10000000)
+				kill(itr->second.getChildPid(), SIGTERM);
+			else
+			{
+				waitpid(itr->second.getChildPid(), &status, WNOHANG);
+				if (status == -1 || status == 1)
+					throw(http::CGIhandler::CGIexception("CGI failed to run!"));
+				if (WIFEXITED(status)) {
+					_servers.at((itr->first))->closeCGI(itr->second);
+				}
+			}
+
 		}
 	}
 }
