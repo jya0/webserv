@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 14:57:25 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 15:55:17 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ std::string CGIhandler::executeCGI(const std::string &scriptName)
 	createTmpFiles(inFile, outFile, inFileFd, outFileFd);
 	write(inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
 	lseek(inFileFd, 0, SEEK_SET);
-	_startTime = std::clock_t();
+	_startTime = std::clock();
 	pid = fork();
 	if (pid < 0)
 		throw(CGIexception("CGI failed to create fork!"));
