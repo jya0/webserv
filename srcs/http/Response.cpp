@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 01:12:04 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 05:40:09 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	<fstream>
-#include	"Http_namespace.hpp"
+#include <fstream>
+#include "Http_namespace.hpp"
 
 using namespace http;
 
@@ -58,7 +58,7 @@ Response::Response(int status, const std::string &responseBody)
  *
  * @param responseREF Response object to copy
  */
-Response::Response(const Response &responseREF): AMessage(responseREF)
+Response::Response(const Response &responseREF) : AMessage(responseREF)
 {
 	*this = responseREF;
 	return;
@@ -207,25 +207,27 @@ Response readContent(const std::string &filePathREF, const Request &requestREF, 
 	return (response);
 };
 
-static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
-    Response	response(200);
+static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+{
+	Response response(200);
 	// CGIhandler	cgiHandler(requestREF, locREF);
 
-    //@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
+	//@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	response.setMessageBody("");
-    return (response);
+	return (response);
 }
 
-static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF){
+static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+{
 	Response response(200);
 	//@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
 	// request data (they shouldn't include data).
 
 	// Flow:
-	//code for CGI checking function
+	// code for CGI checking function
 	// if (locREF.locationUri )
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
@@ -241,17 +243,44 @@ static Response handleGet(const std::string &filePathREF, const Request &request
 //     return (response);
 // }
 
-/* static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
-	Response response(200);
-	// @todo
-	return (response);
-} */
-
-// static Response handleDelete(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
-//     Response response(200);
-//     // @todo
-//     return (response);
+// static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+// 	Response response(200);
+// 	// @todo
+// 	return (response);
 // }
+
+static int fileExists(const std::string &path)
+{
+	struct stat file;
+	if (stat(path.c_str(), &file))
+	{
+		if (file.st_mode & S_IFDIR)
+			return 0;
+		else if (file.st_mode & S_IFREG)
+			return 1;
+		return 0;
+	}
+	return (0);
+}
+
+Response handleDelete(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+{
+	(void) requestREF;
+	(void) servConfREF;
+	(void) locREF;
+	int status = 200;
+	if (fileExists(filePathREF)) {
+		if (remove(filePathREF.c_str()) == 0)
+			status = 204; //no content
+		else
+			status = 403; // error page
+	}
+	else
+		status = 404;
+	if (status == 403 || status == 404)
+		;//display error page
+	return (Response(status, "<html><body><h1>File deleted.</h1></body></html>"));
+}
 
 /**
  * @brief calls the right httpMethod and things to generate the proper response
@@ -262,7 +291,7 @@ static Response handleGet(const std::string &filePathREF, const Request &request
 Response Response::buildResponse(const Request &requestREF, const ServerConfig &servConfREF)
 {
 	std::vector<ServerConfig::Location>::const_iterator locItc;
-	std::string											filePath;
+	std::string filePath;
 
 	// if (requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
 	// 	return (*this = Response(413));
@@ -276,21 +305,21 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	filePath = getFilePath(requestREF, servConfREF, *locItc);
 	switch (requestREF.getHttpMethodEnum())
 	{
-		case HEAD:
-			*this = handleHead(filePath, requestREF, servConfREF, *locItc);
-			break ;
-		case GET:
-			*this = handleGet(filePath, requestREF, servConfREF, *locItc);
-			break ;
-		// case PUT:
-		// 	*this = handlePut();
-		// case POST:
-		// 	*this = handlePost();
-		// case DELETE:
-		// 	*this = handleDelete();
-		default:
-			*this = Response(501);
-			break ;
+	case HEAD:
+		*this = handleHead(filePath, requestREF, servConfREF, *locItc);
+		break;
+	case GET:
+		*this = handleGet(filePath, requestREF, servConfREF, *locItc);
+		break;
+	// case PUT:
+	// 	*this = handlePut();
+	// case POST:
+	// 	*this = handlePost();
+	// case DELETE:
+	// 	*this = handleDelete();
+	default:
+		*this = Response(501);
+		break;
 	}
 	return (*this);
 };

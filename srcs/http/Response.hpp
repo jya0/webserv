@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/03 15:24:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 05:00:03 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@
 # include	<string>
 # include	<exception>
 # include	"ServerConfig.hpp"
-# include   "AMessage.hpp"
+# include	"AMessage.hpp"
 # include	"Request.hpp"
+# include	<sys/types.h>
+# include	<sys/stat.h>
+# include	<unistd.h>
 
 class	ServerConfig;
 
