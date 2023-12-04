@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   MimeTypes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 12:23:43 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 13:09:10 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<iostream>
 #include	<sstream>
 #include	"MimeTypes.hpp"
+#include <unistd.h>
 
 std::string	http::checkMimeType(const std::string &uriREF) {
 	http::t_mime_map::const_iterator	itc;
@@ -24,7 +25,7 @@ std::string	http::checkMimeType(const std::string &uriREF) {
 	ss >> suffix;
 	http::IsMimeTypeUnary	mimeUnary(suffix);
 	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), mimeUnary);
-	if (itc != mimeTypes.end())	
+	if (itc != mimeTypes.end())
 		return (itc->second);
 	return ("");
 };
@@ -38,9 +39,13 @@ http::t_mime_map	http::loadMimeFile(void) {
 	std::vector< std::string >	keys;
 	std::string					value;
 
+	char temp[1024];
+	std::string dir = getcwd(temp, sizeof(temp)) ? std::string(temp) : std::string("");
+	std::cerr<<dir;
 	infile.open(DEFAULT_MIME_FILE, std::ios::in);
 	if (infile.good())
 	{
+		std::cerr<<"IT OPENED!****************************\n";
 		while (std::getline(infile, line, MIME_FILE_DELIM))
 		{
 			lineSS.clear();
@@ -56,11 +61,14 @@ http::t_mime_map	http::loadMimeFile(void) {
 			keys.clear();
 		}
 	}
+	else
+		std::cerr<<"NUUUUuuuuuuuuuuuuuuuu!****************************\n";
 	return (mimeTypes);
 };
 
-namespace http {
-	const t_mime_map	mimeTypes = loadMimeFile();
+namespace http
+{
+	const t_mime_map mimeTypes = loadMimeFile();
 
 }
 

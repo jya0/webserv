@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 04:17:42 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 14:08:35 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ void ServerMonitor::startServers()
 	int server;
 	int status;
 	std::clock_t curr_time;
-	i = 0;
+	std::map<int, CGIhandler>::iterator itr;
+		i = 0;
 	while (2)
 	{
 		rc = _sockets.callPoll();
@@ -96,10 +97,11 @@ void ServerMonitor::startServers()
 							}
 							catch (http::CGIhandler &cgi)
 							{
+								cgi.setServerSocket(server);
+								cgi.setClientSocket(triggered);
 								_cgiScripts.insert(std::make_pair<int, CGIhandler>(server, cgi));
 							}
 							std::map<int, Request *>::iterator itr = _servers.at(server)->requests.find(triggered);
-							// append cgi if needed
 							_servers.at(server)->requests.erase(itr);
 						}
 					}
@@ -113,7 +115,7 @@ void ServerMonitor::startServers()
 			}
 		}
 		status = 0;
-		for (std::map<int, CGIhandler>::iterator itr = _cgiScripts.begin(); itr != _cgiScripts.end(); itr++) {
+		for (itr = _cgiScripts.begin(); itr != _cgiScripts.end();) {
 			curr_time = std::clock();
 			if ((curr_time - itr->second.getStartTime()) / CLOCKS_PER_SEC >= 10000000)
 				kill(itr->second.getChildPid(), SIGTERM);
@@ -124,9 +126,11 @@ void ServerMonitor::startServers()
 					throw(http::CGIhandler::CGIexception("CGI failed to run!"));
 				if (WIFEXITED(status)) {
 					_servers.at((itr->first))->closeCGI(itr->second);
+					itr = _cgiScripts.erase(itr);
 				}
 			}
-
+			if (itr != _cgiScripts.end())
+				itr++;
 		}
 	}
 }

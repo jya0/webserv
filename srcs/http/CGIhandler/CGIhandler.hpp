@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 04:11:53 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 13:36:04 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ namespace	http {
 			FILE *getOutFile() ;
 			int	getClientSocket();
 			int getServerSocket();
+			void setServerSocket(int serverSocket);
+			void setClientSocket(int clientSocket);
 	};
 }
 

@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 05:41:42 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 13:35:43 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,16 @@ CGIhandler	&CGIhandler::operator=(const CGIhandler &cgiREF) {
 	{
 		_cgiEnv = cgiREF.getCgiEnv();
 		_cgiRequest = cgiREF.getCgiRequest();
+		_childPid = cgiREF._childPid;
+		_inFile = cgiREF._inFile;
+		_inFileFd = cgiREF._inFileFd;
+		_outFile = cgiREF._outFile;
+		_outFileFd = cgiREF._outFileFd;
+		_cinSave = cgiREF._cinSave;
+		_coutSave = cgiREF._coutSave;
+		_startTime = cgiREF._startTime;
+		_clientSocket = cgiREF._clientSocket;
+		_serverSocket = cgiREF._serverSocket;
 	}
 	return (*this);
 };
@@ -269,4 +279,13 @@ int	CGIhandler::getClientSocket() {
 
 int CGIhandler::getServerSocket() {
 	return (_serverSocket);
+}
+
+void CGIhandler::setServerSocket(int serverSocket)
+{
+	_serverSocket = serverSocket;
+}
+void CGIhandler::setClientSocket(int clientSocket)
+{
+	_clientSocket = clientSocket;
 }
