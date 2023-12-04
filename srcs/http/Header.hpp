@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:19:21 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/03 18:48:19 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 12:00:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,8 @@ class	http::Header::IsHeaderKeyUnary {
 		std::string	_headerKeyToFind;
 	protected:
 	public:
-		IsHeaderKeyUnary(const std::string &headerKeyToFind): _headerKeyToFind(headerKeyToFind) {};
-		bool	operator()(const Header &headerREF)
-		{
-			return (headerREF.getKey() == _headerKeyToFind);
-		};
+		IsHeaderKeyUnary(const std::string &headerKeyToFind);
+		bool	operator()(const Header &headerREF);
 };
 
 #endif

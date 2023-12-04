@@ -6,11 +6,12 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:19:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/03 18:50:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 12:03:35 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"Header.hpp"
+#include	<iostream>
 
 using namespace http;
 
@@ -51,4 +52,12 @@ void		Header::setKey(const std::string &keyREF) {
 
 void		Header::setValue(const std::string &valueREF) {
 	_value = valueREF;
+};
+
+Header::IsHeaderKeyUnary::IsHeaderKeyUnary(const std::string &headerKeyToFind): _headerKeyToFind(headerKeyToFind) {};
+
+bool	Header::IsHeaderKeyUnary::operator()(const Header &headerREF)
+{
+	std::cerr << "I am called! HEADER!\n";
+	return (headerREF.getKey() == _headerKeyToFind);
 };

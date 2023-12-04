@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 10:51:32 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 12:23:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,22 @@
 #include	"MimeTypes.hpp"
 
 std::string	http::checkMimeType(const std::string &uriREF) {
-	http::t_mime_struct::const_iterator	itc;
+	http::t_mime_map::const_iterator	itc;
 	std::stringstream					ss;
 	std::string							suffix;
 
 	ss.str(uriREF);
 	std::getline(ss, suffix, '.');
 	ss >> suffix;
-	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), IsMimeTypeUnary(suffix));
+	http::IsMimeTypeUnary	mimeUnary(suffix);
+	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), mimeUnary);
 	if (itc != mimeTypes.end())	
 		return (itc->second);
 	return ("");
 };
 
-http::t_mime_struct	http::loadMimeFile(void) {
-	t_mime_struct				mimeTypes;
+http::t_mime_map	http::loadMimeFile(void) {
+	t_mime_map					mimeTypes;
 	std::ifstream				infile;
 	std::stringstream			lineSS;
 	std::string					line;
@@ -45,12 +46,13 @@ http::t_mime_struct	http::loadMimeFile(void) {
 			lineSS.clear();
 			lineSS.str(line);
 			lineSS >> value;
+			lineSS.clear();
 			while (lineSS.rdbuf()->in_avail())
 			{
 				lineSS >> key;
 				keys.push_back(key);
 			}
-			mimeTypes.insert(std::make_pair(keys, value));
+			mimeTypes.push_back(std::make_pair(keys, value));
 			keys.clear();
 		}
 	}
@@ -58,5 +60,20 @@ http::t_mime_struct	http::loadMimeFile(void) {
 };
 
 namespace http {
-	const t_mime_struct	mimeTypes = loadMimeFile();
+	const t_mime_map	mimeTypes = loadMimeFile();
+
 }
+
+http::IsMimeTypeUnary::IsMimeTypeUnary(const std::string &mimeType): _mimeType(mimeType) {};
+
+bool	http::IsMimeTypeUnary::operator()(const t_mime_pair &mimePairREF)
+{
+	// std::cerr << "I am called! MIME!\n";
+	std::cerr << mimePairREF.second;
+	for (std::vector< std::string >::const_iterator	itc = mimePairREF.first.begin(); itc != mimePairREF.first.end(); ++itc)
+	{
+		if (*itc == _mimeType)
+			return (true);
+	}
+	return (false);
+};

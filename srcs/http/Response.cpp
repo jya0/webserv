@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 11:08:07 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 12:22:38 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ Response readContent(const std::string &filePathREF, const Request &requestREF, 
 static void	callCGI(const std::string &filePathREF, const Request &requestREF, const ServerConfig::Location &locREF) {
 	CGIhandler	cgiHandler(requestREF, locREF);
 
-	for (http::t_mime_struct::const_iterator itc = http::mimeTypes.begin(); itc != http::mimeTypes.end(); ++itc)
+	for (http::t_mime_map::const_iterator itc = http::mimeTypes.begin(); itc != http::mimeTypes.end(); ++itc)
 	{
 		for (std::vector < std::string >::const_iterator itc2 = itc->first.begin(); itc2 != itc->first.end(); ++itc2)
 		{
@@ -218,12 +218,11 @@ static void	callCGI(const std::string &filePathREF, const Request &requestREF, c
 		}
 		std::cout << ":" << itc->second << std::endl;
 	}
-	http::t_mime_struct	test = http::mimeTypes;
-	(void)test;
 	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
 	{
 		cgiHandler.executeCGI(filePathREF);
 	}
+	std::cerr << "I DIDN'T RUN CGI" << std::endl;
 }
 
 static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
