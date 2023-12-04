@@ -92,11 +92,10 @@ void AMessage::parseMessageBody() {
  *
  * @param rawMessage The raw message to be parsed
  */
-AMessage::AMessage(std::string rawMessage)
-{
-
+AMessage::AMessage(std::string rawMessage) {
 	std::istringstream iss(rawMessage);
     std::string line;
+
 	while(std::getline(iss, line, '\r')) {
 		iss.ignore();
 		if (this->_startLine == "")

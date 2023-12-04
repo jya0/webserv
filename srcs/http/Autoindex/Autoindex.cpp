@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 02:00:06 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 03:52:55 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ std::string	Autoindex::genPage(const char *path, const Request &requestREF, cons
 	return (page);
 };
 
-int	Autoindex::isPathFolder(const std::string &path)
-{
+int	Autoindex::isPathFolder(const std::string &path) {
 	struct stat	pathStat;
 
 	if (stat(path.c_str(), &pathStat) < 0)
@@ -78,11 +77,34 @@ int	Autoindex::isPathFolder(const std::string &path)
 	return (pathStat.st_mode & S_IFDIR);
 };
 
-int	Autoindex::isPathReg(const std::string &path)
-{
+int	Autoindex::isPathReg(const std::string &path) {
 	struct stat	pathStat;
 
 	if (stat(path.c_str(), &pathStat) < 0)
 		return (-1);
 	return (pathStat.st_mode & S_IFREG);
+};
+
+int	Autoindex::isPathExec(const std::string &path) {
+	struct stat	pathStat;
+
+	if (stat(path.c_str(), &pathStat) < 0)
+		return (-1);
+	return (pathStat.st_mode & S_IXUSR);
+};
+
+int	Autoindex::isPathRead(const std::string &path) {
+	struct stat	pathStat;
+
+	if (stat(path.c_str(), &pathStat) < 0)
+		return (-1);
+	return (pathStat.st_mode & S_IRUSR);
+};
+
+int	Autoindex::isPathWrite(const std::string &path) {
+	struct stat	pathStat;
+
+	if (stat(path.c_str(), &pathStat) < 0)
+		return (-1);
+	return (pathStat.st_mode & S_IWUSR);
 };

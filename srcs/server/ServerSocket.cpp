@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 01:44:34 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ std::string ServerSocket::generateDefaultResponse() {
 	return ss.str();
 }
 
-std::string ServerSocket::recieveData(int &peer_socket)
-{
+std::string ServerSocket::recieveData(int &peer_socket) {
 	long bytesRecieved;
 	char *buffer = new char[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);

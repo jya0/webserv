@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/04 01:00:48 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 02:04:30 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ using namespace http;
 /**
  * @brief Construct a new Request object (default constructor)
  */
-Request::Request(void) : AMessage()
-{
+Request::Request(void) : AMessage() {
 	return;
 }
 
@@ -27,8 +26,7 @@ Request::Request(void) : AMessage()
  *
  * @param RequestREF Request to copy
  */
-Request::Request(Request const &RequestREF) : AMessage()
-{
+Request::Request(Request const &RequestREF) : AMessage() {
 	this->operator=(RequestREF);
 	return;
 }
@@ -36,8 +34,7 @@ Request::Request(Request const &RequestREF) : AMessage()
 /**
  * @brief Destroy the Request object
  */
-Request::~Request(void)
-{
+Request::~Request(void) {
 	return;
 }
 
@@ -47,8 +44,7 @@ Request::~Request(void)
  * @param RequestREF Request to copy
  * @return Request& Reference to the copied Request
  */
-Request &Request::operator=(Request const &RequestREF)
-{
+Request &Request::operator=(Request const &RequestREF) {
 	if (this != &RequestREF)
 	{
 		this->_httpMethod = RequestREF._httpMethod;
@@ -62,8 +58,7 @@ Request &Request::operator=(Request const &RequestREF)
  *
  * @param httpRaw The raw HTTP request to be parsed
  */
-Request::Request(std::string httpRaw) : AMessage(httpRaw)
-{
+Request::Request(std::string httpRaw) : AMessage(httpRaw) {
 	std::string method = this->_startLine.substr(0, this->_startLine.find(' '));
 	this->_httpMethod = this->methodEnum(method);
 	this->_uri = this->_startLine.substr(this->_startLine.find(' ') + 1,
@@ -83,13 +78,11 @@ Request::Request(std::string httpRaw) : AMessage(httpRaw)
  *
  * @return std::string The HTTP method of the request.
  */
-std::string Request::getHttpMethod(void) const
-{
+std::string Request::getHttpMethod(void) const {
 	return (Request::methodName(this->_httpMethod));
 }
 
-const e_httpMethod &Request::getHttpMethodEnum(void) const
-{
+const e_httpMethod &Request::getHttpMethodEnum(void) const {
 	return (_httpMethod);
 };
 
@@ -98,8 +91,7 @@ const e_httpMethod &Request::getHttpMethodEnum(void) const
  *
  * @return std::string The HTTP version of the request.
  */
-const std::string &Request::getHttpVersion(void) const
-{
+const std::string &Request::getHttpVersion(void) const {
 	return (this->_httpVersion);
 }
 
@@ -108,8 +100,7 @@ const std::string &Request::getHttpVersion(void) const
  *
  * @return std::string The URI of the request.
  */
-const std::string &Request::getUri(void) const
-{
+const std::string &Request::getUri(void) const {
 	return (this->_uri);
 }
 
@@ -119,8 +110,7 @@ const std::string &Request::getUri(void) const
  * @param method The enum of the HTTP method.
  * @return std::string The name of the HTTP method.
  */
-std::string Request::methodName(e_httpMethod method)
-{
+std::string Request::methodName(e_httpMethod method) {
 	switch (method)
 	{
 	case GET:
@@ -144,8 +134,7 @@ std::string Request::methodName(e_httpMethod method)
  * @param method The name of the HTTP method.
  * @return e_httpMethod The enum of the HTTP method.
  */
-e_httpMethod Request::methodEnum(std::string method)
-{
+e_httpMethod Request::methodEnum(std::string method) {
 	if (method == GET_METHOD)
 		return (GET);
 	else if (method == POST_METHOD)
@@ -166,26 +155,21 @@ e_httpMethod Request::methodEnum(std::string method)
  * @return true If the headers are valid.
  * @return false If the headers are invalid.
  */
-bool Request::validate(void) const
-{
+bool Request::validate(void) const {
 	return (true); /// @todo: implement
 }
 
-void Request::appendRawData(std::string _data)
-{
+void Request::appendRawData(std::string _data) {
 	_raw = _raw + _data;
 }
 
-bool Request::requestReady() const
-{
+bool Request::requestReady() const {
 	return (_ready);
 }
-void Request::setRequestStatus(bool status)
-{
+void Request::setRequestStatus(bool status) {
 	_ready = status;
 }
 
-std::string Request::getRawData()
-{
+std::string Request::getRawData() {
 	return (_raw);
 }

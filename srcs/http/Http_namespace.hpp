@@ -7,5 +7,6 @@
 #include	"Header.hpp"
 #include	"CGIhandler.hpp"
 #include	"Autoindex_namespace.hpp"
+#include	"MimeTypes.hpp"
 
 #endif

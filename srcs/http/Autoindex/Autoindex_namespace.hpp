@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:02 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 22:04:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 03:51:56 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ namespace	http {
 		std::string	genPage(const char *path, const Request &requestREF, const ServerConfig &servConfREF);
 		int			isPathFolder(const std::string &path);
 		int			isPathReg(const std::string &path);
+		int			isPathRead(const std::string &path);
+		int			isPathWrite(const std::string &path);
+		int			isPathExec(const std::string &path);
 	};
 }
 
