@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 03:19:20 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 04:02:28 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,11 +150,12 @@ void WebServer::closeCGI(CGIhandler &cgiREF)
 	fclose(cgiREF.getOutFile());
 
 	//append response to body
-
+	*responses[cgiREF.getClientSocket()] = Response(200, cgiResult);
 }
 
 void WebServer::buildResponse(int client) {
 	responses[client] = new Response();
+	responses[client]->setResponseStatus(false);
 	responses[client]->buildResponse(*requests[client], _config);
 	responses[client]->setResponseStatus(true);
 }

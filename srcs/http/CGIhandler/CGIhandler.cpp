@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 03:29:32 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 04:12:15 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,4 +269,13 @@ FILE *CGIhandler::getInFile()
 FILE *CGIhandler::getOutFile()
 {
 	return (_outFile);
+}
+
+int	CGIhandler::getClientSocket() {
+	return (_clientSocket);
+}
+
+
+int CGIhandler::getServerSocket() {
+	return (_serverSocket);
 }

@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 03:26:02 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/04 04:05:28 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,10 @@ void ServerMonitor::startServers()
 							try
 							{
 								_servers.at(server)->buildResponse(triggered);
-
 							}
 							catch (http::CGIhandler &cgi)
 							{
-								// do stuff
-								_servers.at(server)->closeCGI(cgi);
+								_cgiScripts.insert(std::make_pair<int, CGIhandler>(server, cgi));
 							}
 							std::map<int, Request *>::iterator itr = _servers.at(server)->requests.find(triggered);
 							// append cgi if needed
@@ -115,7 +113,6 @@ void ServerMonitor::startServers()
 			}
 		}
 		status = 0;
-
 		for (std::map<int, CGIhandler>::iterator itr = _cgiScripts.begin(); itr != _cgiScripts.end(); itr++) {
 			curr_time = std::clock();
 			if ((curr_time - itr->second.getStartTime()) / CLOCKS_PER_SEC >= 10000000)
