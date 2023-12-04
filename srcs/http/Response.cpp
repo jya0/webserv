@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 05:54:16 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 11:08:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,10 @@ Response &Response::operator=(const Response &responseREF)
 Response::Response(std::string httpRaw) : AMessage(httpRaw)
 {
 
-	this->_httpVersion = this->_startLine.substr(0, this->_startLine.find(' '));
-	this->_httpStatusCode = std::stoi(this->_startLine.substr(this->_startLine.find(' ') + 1,
-															  this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
-																  this->_startLine.find(' ') - 1));
+	_httpVersion		=	this->_startLine.substr(0, this->_startLine.find(' '));
+	_httpStatusCode		=	std::stoi(this->_startLine.substr(this->_startLine.find(' ') + 1,
+								this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
+								this->_startLine.find(' ') - 1));
 	_ready = true;
 }
 
@@ -210,10 +210,16 @@ Response readContent(const std::string &filePathREF, const Request &requestREF, 
 static void	callCGI(const std::string &filePathREF, const Request &requestREF, const ServerConfig::Location &locREF) {
 	CGIhandler	cgiHandler(requestREF, locREF);
 
-	for (std::map< std::string, std::string >::const_iterator itc = http::mimeTypes.begin(); itc != http::mimeTypes.end(); ++itc)
+	for (http::t_mime_struct::const_iterator itc = http::mimeTypes.begin(); itc != http::mimeTypes.end(); ++itc)
 	{
-		std::cout << itc->first << ":" << itc->second << std::endl;
+		for (std::vector < std::string >::const_iterator itc2 = itc->first.begin(); itc2 != itc->first.end(); ++itc2)
+		{
+			std::cout << *itc2 << " ";
+		}
+		std::cout << ":" << itc->second << std::endl;
 	}
+	http::t_mime_struct	test = http::mimeTypes;
+	(void)test;
 	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
 	{
 		cgiHandler.executeCGI(filePathREF);
@@ -241,6 +247,7 @@ static Response handleGet(const std::string &filePathREF, const Request &request
 	// Flow:
 	// code for CGI checking function
 	// if (locREF.locationUri )
+	callCGI(filePathREF, requestREF, locREF);
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
 }
@@ -327,8 +334,8 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	// 	*this = handlePut();
 	// case POST:
 	// 	*this = handlePost();
-	// case DELETE:
-	// 	*this = handleDelete();
+	case DELETE:
+		*this = handleDelete(filePath, requestREF, servConfREF, *locItc);
 	default:
 		*this = Response(501);
 		break;

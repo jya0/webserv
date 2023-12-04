@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 05:51:10 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/04 10:51:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include	"MimeTypes.hpp"
 
 std::string	http::checkMimeType(const std::string &uriREF) {
-	std::map< std::string, std::string >::const_iterator	itc;
-	std::stringstream										ss;
-	std::string												suffix;
+	http::t_mime_struct::const_iterator	itc;
+	std::stringstream					ss;
+	std::string							suffix;
 
 	ss.str(uriREF);
 	std::getline(ss, suffix, '.');
@@ -28,13 +28,14 @@ std::string	http::checkMimeType(const std::string &uriREF) {
 	return ("");
 };
 
-std::map< std::string, std::string >	http::loadMimeFile(void) {
-	std::map< std::string, std::string > mimeTypes;
-	std::ifstream		infile;
-	std::stringstream	lineSS;
-	std::string			line;
-	std::string			key;
-	std::string			value;
+http::t_mime_struct	http::loadMimeFile(void) {
+	t_mime_struct				mimeTypes;
+	std::ifstream				infile;
+	std::stringstream			lineSS;
+	std::string					line;
+	std::string					key;
+	std::vector< std::string >	keys;
+	std::string					value;
 
 	infile.open(DEFAULT_MIME_FILE, std::ios::in);
 	if (infile.good())
@@ -44,13 +45,18 @@ std::map< std::string, std::string >	http::loadMimeFile(void) {
 			lineSS.clear();
 			lineSS.str(line);
 			lineSS >> value;
-			lineSS >> key;
-			mimeTypes.insert(std::make_pair(key, value));
+			while (lineSS.rdbuf()->in_avail())
+			{
+				lineSS >> key;
+				keys.push_back(key);
+			}
+			mimeTypes.insert(std::make_pair(keys, value));
+			keys.clear();
 		}
 	}
 	return (mimeTypes);
 };
 
 namespace http {
-	const std::map< std::string, std::string >	mimeTypes = loadMimeFile();
+	const t_mime_struct	mimeTypes = loadMimeFile();
 }
