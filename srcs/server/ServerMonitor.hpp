@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 13:45:51 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/06 01:16:59 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class ServerMonitor {
 	private:
 		std::map<int, WebServer*>	_servers;
 		PollManager					_sockets;
-		std::map<int, CGIhandler> _cgiScripts;
+		std::map<int, CGIhandler>	_cgiScripts;
 
 	public:
 		void startServers();

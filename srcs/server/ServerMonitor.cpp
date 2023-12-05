@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 16:01:37 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/06 00:50:41 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,8 @@ void ServerMonitor::startServers()
 			{
 				kill(itr->second.getChildPid(), SIGTERM);
 				_servers.at((itr->first))->closeCGI(itr->second);
-				itr = _cgiScripts.erase(itr);
+				_cgiScripts.erase(itr++);
 				*_servers.at(server)->responses[itr->second.getClientSocket()] = Response(408);
-
 			}
 			else
 			{

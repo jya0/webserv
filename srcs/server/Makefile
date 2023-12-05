@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/03 13:29:44 by jyao              #+#    #+#              #
-#    Updated: 2023/12/05 23:52:17 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 01:21:01 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,19 +41,13 @@ OBJS			=	$(addsuffix .o, $(FILES))
 
 CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98
 
-#DEPDIR			:= .deps
-#DEPFLAGS		= -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
-
 all:	$(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	libtool -static -v -o $@ $(OBJS)
+	ar -rvs $@ $(OBJS)
 
-%.o: %.cpp #$(DEPDIR)/%.d | $(DEPDIR)
-	$(CXX) $(CXXFLAGS) $(DEPFLAGS) $(INCLUDES) -o $@ -c $<
-
-#$(DEPDIR):
-#	@mkdir -p $@
+%.o: %.cpp $(HEADERS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
 	$(RM) -rf $(OBJS)

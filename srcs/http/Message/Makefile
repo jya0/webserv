@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/05 23:49:14 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 01:21:28 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,36 +25,22 @@ CXX				=	c++
 FILES			:=	AMessage	Header	Request	Response	MimeTypes
 SRCS			=	$(addsuffix .cpp, $(FILES))
 
-OBJS		=	${SRCS:.cpp=.o}
+OBJS			=	${SRCS:.cpp=.o}
 CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
-
-DEPDIR := .deps
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-		libtool -static -v -o $@ $(OBJS)
+	ar -rvs $@ $(OBJS)
 
-%.o: %.cpp #$(DEPDIR)/%.d | $(DEPDIR)
+%.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<
 
-#$(DEPDIR): ; @mkdir -p $@
-
-#DEPFILES := $(SRCS:%.c=$(DEPDIR)/%.d)
-#$(DEPFILES):
-
-#include $(wildcard $(DEPFILES))
-
-# $(CXX) $(CXXFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
-
-# $(LIB):
-# 		#make -C ./lib/
-
 clean:
-		rm -rf $(OBJS)
+	rm -rf $(OBJS)
+
 fclean: clean
-		rm -rf $(NAME)
+	rm -rf $(NAME)
 
 re: fclean all
 

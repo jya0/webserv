@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/05 21:33:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/06 01:18:31 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	DirectiveBlock::insertMapDirective(ADirective *dvePTR) {
  * @param dveName 
  * @return std::vector<std::string> 
  */
-std::vector<std::string>	DirectiveBlock::readDirectiveSimple(const std::string &dveName) throw (std::exception) {
+std::vector<std::string>	DirectiveBlock::readDirectiveSimple(const std::string &dveName) {
 	std::multimap< std::string, ADirective * >::const_iterator	dveITR;
 
 	dveITR = _dvesMap.find(dveName);

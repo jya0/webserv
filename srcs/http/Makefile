@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/05 23:48:33 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 01:21:28 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,8 +31,16 @@ CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 
 all: $(NAME)
 
+UNAME := $(shell uname)
+
 $(NAME): | $(LIBS)
+ifeq ($(UNAME), Linux)
+# libtool --mode=link --tag=CXX $(LIBS) -o $@
+	ar -cq $@ */*.o
+endif
+ifeq ($(UNAME), Darwin)
 	libtool -static -o $@ $(LIBS)
+endif
 
 $(CGI_LIB):
 	make -C $(CGI_DIR)
@@ -42,11 +50,6 @@ $(AUTOINDEX_LIB):
 
 $(MESSAGE_LIB):
 	make -C $(MESSAGE_DIR)
-
-# $(CXX) $(CXXFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
-
-# $(LIB):
-# 		#make -C ./lib/
 
 clean:
 	make clean -C $(CGI_DIR)

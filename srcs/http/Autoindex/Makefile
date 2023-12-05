@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/05 23:49:48 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 01:21:28 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,26 +35,14 @@ SRCS		=	$(addsuffix .cpp, $(FILES))
 OBJS		=	$(SRCS:.cpp=.o)
 CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
 
-DEPDIR := .deps
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
-
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	libtool -static -v -o $@ $(OBJS)
+	ar -rvs $@ $(OBJS)
 #$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
-
-
-%.o: %.cpp #$(DEPDIR)/%.d | $(DEPDIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<
-
-#$(DEPDIR): ; @mkdir -p $@
-
-#DEPFILES := $(SRCS:%.c=$(DEPDIR)/%.d)
-#$(DEPFILES):
-
-#include $(wildcard $(DEPFILES))
+%.o: %.cpp $(HEADERS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
 	$(RM) -rf $(OBJS)
