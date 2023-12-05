@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 00:21:27 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 12:37:17 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@
 								DVE_CMB_SIZE			" "		\
 								DVE_ERROR_PAGE			" "		\
 								DVE_INDEX				" "		\
+								DVE_LIMIT_EXECPT		" "		\
 								DVE_LISTEN				" "		\
 								DVE_RETURN				" "		\
 								DVE_ROOT				" "		\
 								DVE_SERVER_NAME			" "
 
 # define	BLOCK_DIRECTIVES	\
-								DVE_LIMIT_EXECPT		" "		\
 								DVE_LOCATION			" "		\
 								DVE_SERVER				" "
 
@@ -52,11 +52,11 @@ typedef enum	DirectiveType {
 	CLIENT_MAX_BODY_SIZE,
 	ERROR_PAGE,
 	INDEX,
+	LIMIT_EXCEPT,
 	LISTEN,
 	RETURN,
 	ROOT,
 	SERVER_NAME,
-	LIMIT_EXCEPT,
 	LOCATION,
 	SERVER,
 }	DirectiveType;

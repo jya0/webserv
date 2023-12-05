@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HTTPServerParser.cpp                               :+:      :+:    :+:   */
+/*   ServerParser.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:44:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 15:54:28 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/05 16:12:12 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"HTTPServerParser.hpp"
+#include	"ServerParser_namespace.hpp"
 #include	"ServerConfig.hpp"
 #include 	<utility>
 #include	<fstream>
@@ -127,9 +127,9 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF) {
 	return (dveBlock);
 }
 
-const std::vector<std::string> HTTPServerParser::dveNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
+const std::vector<std::string> ServerParser::dveNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
 
-std::vector< ServerConfig >	HTTPServerParser::parseConfigFile(std::string filename) {
+std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &filename) {
 	DirectiveBlock					*dveBlock;
 	std::vector< ServerConfig >	serverBlocks;
 	std::ifstream					configIF;
@@ -159,11 +159,4 @@ std::vector< ServerConfig >	HTTPServerParser::parseConfigFile(std::string filena
 	}
 	configIF.close();
 	return (serverBlocks);
-}
-
-
-HTTPServerParser::HTTPServerParser() {
-}
-
-HTTPServerParser::~HTTPServerParser() {
 }

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 04:31:28 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 16:23:57 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ class	ServerConfig::Location: public ServerConfig {
 
 				LimitExcept(void);
 				~LimitExcept(void);
-				LimitExcept(ADirective *locationDveBlock);
+				LimitExcept(const std::vector< std::string > &methodStrs);
 				LimitExcept(const LimitExcept &limitExceptREF);
 				LimitExcept &operator=(const LimitExcept &limitExceptREF);
 		};

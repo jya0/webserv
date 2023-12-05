@@ -6,12 +6,12 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 16:16:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"DirectiveBlock.hpp"
-#include	"HTTPServerParser.hpp"
+#include	"ServerParser_namespace.hpp"
 
 DirectiveBlock::DirectiveBlock(void) {
 }
@@ -68,7 +68,7 @@ std::vector<std::string>	DirectiveBlock::checkDirectiveSimple(const std::string 
 	dveITR = _dvesMap.find(dveName);
 	if (dveITR == _dvesMap.end())
 	{
-		throw (HTTPServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!"));
+		throw (ServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!"));
 	}
 	else
 		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;

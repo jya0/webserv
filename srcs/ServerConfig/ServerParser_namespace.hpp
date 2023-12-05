@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HTTPServerParser.hpp                               :+:      :+:    :+:   */
+/*   ServerParser_namespace.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:46:11 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/03 15:54:11 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/05 16:13:16 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,14 @@
 
 # define	SPACE_CHARSET	" \n\t\v\f\r"
 
-class HTTPServerParser {
-private:
-    HTTPServerParser();
-public:
-    static std::vector< ServerConfig >	parseConfigFile(std::string filename);
-	static const std::vector< std::string >	dveNames;
-    ~HTTPServerParser();
+namespace	ServerParser {
+    std::vector< ServerConfig >				parseConfigFile(const std::string &filename);
+	extern const std::vector< std::string >	dveNames;
 
 	class ParseErrorException;
-
 };
 
-class HTTPServerParser::ParseErrorException: public std::exception {
+class ServerParser::ParseErrorException: public std::exception {
 		private:
 			std::string	_errorMsg;
     	public:

@@ -6,12 +6,12 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 16:16:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"ADirective.hpp"
-#include	"HTTPServerParser.hpp"
+#include	"ServerParser_namespace.hpp"
 #include	<algorithm>
 
 /**
@@ -80,13 +80,13 @@ int	ADirective::parseDirective(void) {
 	}
 	if (!errorReturn)
 	{
-		dveNameITR = std::find(HTTPServerParser::dveNames.begin(), HTTPServerParser::dveNames.end(), _dveName);
-		if (dveNameITR == HTTPServerParser::dveNames.end())
+		dveNameITR = std::find(ServerParser::dveNames.begin(), ServerParser::dveNames.end(), _dveName);
+		if (dveNameITR == ServerParser::dveNames.end())
 			std::cerr << "Error " << (errorReturn = 2) << " directive name: " << "\"" << _dveName << "\"" << std::endl;
 	}
 	if (!errorReturn)
 	{
-		_dveType = (DirectiveType)(dveNameITR - HTTPServerParser::dveNames.begin());
+		_dveType = (DirectiveType)(dveNameITR - ServerParser::dveNames.begin());
 		if (((_dveType == SERVER) != _dveValues.empty())
 			|| ((_dveType >= AUTOINDEX && _dveType <= SERVER_NAME) != (dynamic_cast<DirectiveBlock *>(this) == NULL)))
 			std::cerr << "Error " << (errorReturn = 3) << " missing or extra directive values: " << "\"" << _dveName << "\"" << std::endl;

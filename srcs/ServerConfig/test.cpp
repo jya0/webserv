@@ -6,17 +6,17 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 15:20:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 16:16:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HTTPServerParser.hpp"
+#include "ServerParser_namespace.hpp"
 
 int main(void) {
 	std::vector< DirectiveBlock * >	serverBlocks;
 
 	std::cout << SIMPLE_DIRECTIVES BLOCK_DIRECTIVES << std::endl;
-	serverBlocks = HTTPServerParser::parseConfigFile("../conf.d/test.conf");
+	serverBlocks = ServerParser::parseConfigFile("../conf.d/test.conf");
 
 	//Test Cases:
 	{

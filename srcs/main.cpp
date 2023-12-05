@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/04 14:57:12 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/05 16:16:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include	"PollManager.hpp"
 #include	"ServerMonitor.hpp"
 #include	"ServerSocket.hpp"
-#include	"HTTPServerParser.hpp"
+#include	"ServerParser_namespace.hpp"
 
 int main(int argc, char **argv) {
 	(void) argc;
@@ -25,13 +25,13 @@ int main(int argc, char **argv) {
 		std::cout << "./web_serve [config_file_name]\n";
 		return (0);
 	}
-	std::vector<ServerConfig> configs = HTTPServerParser::parseConfigFile(argv[1]);
+	std::vector<ServerConfig> configs = ServerParser::parseConfigFile(argv[1]);
 	ServerMonitor monitor(configs);
 	try
 	{
 		monitor.startServers();
 	}
-	// catch (HTTPServerParser::ParseError &e)
+	// catch (ServerParser::ParseError &e)
 	// {
 	// 	// handle parse error
 	// }

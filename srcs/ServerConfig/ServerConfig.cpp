@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 13:29:33 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 16:30:41 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_
 		locationUri	= locationDve->getValues().front();
 		try {
 			dveBlockPTR = dynamic_cast<DirectiveBlock *>(locationDve);
-			limitExcept = (dveBlockPTR == NULL) ? LimitExcept() : LimitExcept(dveBlockPTR->checkDirectiveBlock(DVE_LIMIT_EXECPT));
+			limitExcept = (dveBlockPTR == NULL) ? LimitExcept() : LimitExcept(dveBlockPTR->checkDirectiveSimple(DVE_LIMIT_EXECPT));
 		} catch (std::exception &e) {};
 	};
 };
@@ -196,13 +196,9 @@ ServerConfig::Location &ServerConfig::Location::operator=(const Location &locati
 /* class ServerConfig::Location::LimitExcept */
 ServerConfig::Location::LimitExcept::LimitExcept(void): acceptedMethods(DEFAULT_LIMIT_EXCEPT_METHODS) {};
 
-ServerConfig::Location::LimitExcept::LimitExcept(ADirective *limitExceptDve) {
-	std::vector< std::string >	methodStrs;
-
-	*this = LimitExcept();
-	if (limitExceptDve != NULL)
+ServerConfig::Location::LimitExcept::LimitExcept(const std::vector< std::string > &methodStrs) {
+	if (!methodStrs.empty())
 	{
-		methodStrs = limitExceptDve->getValues();
 		for (std::vector< std::string >::const_iterator itr = methodStrs.begin(); itr != methodStrs.end(); ++itr)
 		{
 			acceptedMethods |= http::Request::methodEnum(*itr);
