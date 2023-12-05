@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
-#    Updated: 2023/12/03 19:00:55 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/05 23:49:36 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,12 +16,10 @@ NAME		:=	libcgi.a
 # NAME		:=	cgiTest
 
 HTTP_DIR	:=	../
-HTTP_LIB	=	$(HTTP_DIR)libhttp.a
+MESSAGE_DIR	:=	../Message/
 CONFIG_DIR	:=	../../ServerConfig/
-CONFIG_LIB	=	$(CONFIG_DIR)libconfparser.a
-LIBS		=	$(HTTP_LIB) $(CONFIG_LIB)
 
-INCLUDES	:=	-I.	-I$(HTTP_DIR) -I$(CONFIG_DIR)
+INCLUDES	:=	-I.	-I$(MESSAGE_DIR) -I$(CONFIG_DIR) -I$(HTTP_DIR)
 
 HEADERS		:=	CGIhandler.hpp
 
@@ -33,15 +31,25 @@ RM			:=	rm
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
 OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98 -fsanitize=address
+CXXFLAGS	=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98
+
+DEPDIR := .deps
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	ar -rvs $@ $(OBJS)
+	libtool -static -v -o $@ $(OBJS)
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+%.o: %.cpp #$(DEPDIR)/%.d | $(DEPDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<
+
+#$(DEPDIR): ; @mkdir -p $@
+
+#DEPFILES := $(SRCS:%.c=$(DEPDIR)/%.d)
+#$(DEPFILES):
+
+#include $(wildcard $(DEPFILES))
 
 clean:
 	$(RM) -rf $(OBJS)

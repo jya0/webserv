@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/05 12:37:17 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 22:36:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ class ADirective {
 		void	setValues(std::vector< std::string > const	&strsREF);
 		virtual void	printDirective(void) const;
 		virtual int		parseDirective(void);
+		// virtual int		checkDirective(const DirectiveType &dveTypeREF) const;
 };
 
 #endif

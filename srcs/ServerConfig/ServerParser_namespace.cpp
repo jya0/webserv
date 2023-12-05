@@ -17,6 +17,9 @@
 #include	<sstream>
 #include	<cstdlib>
 
+const std::vector<std::string>	ServerParser::dveNames = ServerParser::tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
+size_t							ServerParser::lineNo = 0;
+
 static ADirective	*tokenToDirective(std::vector<std::string> &tokens) {
 	DirectiveSimple	*directive;
 
@@ -44,12 +47,13 @@ std::ifstream &configIF, std::string &lineREF) {
 
 	do {
 		befParesableLine = configIF.tellg();
+		ServerParser::lineNo++;
 	} while (getline(configIF, tmpLine) && tmpLine.find_first_not_of(SPACE_CHARSET) == std::string::npos);
 	lineREF = tmpLine;
 	return (befParesableLine);
 }
 
-static std::vector<std::string>	tokenize(const std::string &lineREF) {
+std::vector<std::string>	ServerParser::tokenize(const std::string &lineREF) {
 	std::vector<std::string>	tmpTokens;
 	std::istringstream			stringStream;
 	std::string					token;
@@ -71,7 +75,7 @@ static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlock
 	ADirective						*dveBlockInfo;
 
 	getParesableLine(configIF, line);
-	tokens = tokenize(line);
+	tokens = ServerParser::tokenize(line);
 	dveBlockInfo = tokenToDirective(tokens);
 	dveBlock = new DirectiveBlock();
 	*((ADirective *)(dveBlock)) = *(dveBlockInfo);
@@ -98,7 +102,7 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF) {
 		befNxt = getParesableLine(configIF, lineNxt);
 		if (countLeadingTabs(lineCnt) == tabBlockCount + 1 && countLeadingTabs(lineNxt) <= tabBlockCount + 1)
 		{
-			tokens = tokenize(lineCnt);
+			tokens = ServerParser::tokenize(lineCnt);
 			dveToInsert = tokenToDirective(tokens);
 			befCnt = befNxt;
 			lineCnt = lineNxt;
@@ -127,8 +131,6 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF) {
 	return (dveBlock);
 }
 
-const std::vector<std::string> ServerParser::dveNames = tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
-
 std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &filename) {
 	DirectiveBlock					*dveBlock;
 	std::vector< ServerConfig >	serverBlocks;
@@ -137,10 +139,7 @@ std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &fil
 	dveBlock = NULL;
 	configIF.open(filename.c_str(), std::ios::in);
 	if (!configIF.is_open())
-	{
-		std::cerr << "Could not open file" << std::endl;
-		exit(1);
-	}
+		throw (ServerParser::ParseErrorException("Could not open config file!"));
 	while (configIF.peek() != EOF)
 	{
 		dveBlock = getNextDirectiveBlock(configIF);
@@ -151,9 +150,16 @@ std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &fil
 		}
 		else
 		{
-			dveBlock->printDirective();
-			dveBlock->parseDirective();
-			serverBlocks.push_back(ServerConfig(dveBlock));
+			try {
+				dveBlock->printDirective();
+				dveBlock->parseDirective();
+				serverBlocks.push_back(ServerConfig(dveBlock));
+			}
+			catch (std::exception &e)
+			{
+				std::cerr	<< e.what()
+							<< std::endl;
+			}
 			delete (dveBlock);
 		}
 	}

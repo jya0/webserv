@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/04 13:53:39 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/05 23:50:16 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,18 +15,17 @@ NAME			=	webserv
 SRCS_DIR		:=	./srcs/
 HTTP_DIR		=	$(SRCS_DIR)http/
 HTTP_LIB		=	$(HTTP_DIR)libhttp.a
+MESSAGE_DIR		=	$(HTTP_DIR)Message/
 CGI_DIR			=	$(HTTP_DIR)CGIhandler/
-CGI_LIB			=	$(CGI_DIR)libcgi.a
 AUTOINDEX_DIR	=	$(HTTP_DIR)Autoindex/
-AUTOINDEX_LIB	=	$(AUTOINDEX_DIR)libautoindex.a
 CONFIG_DIR		=	$(SRCS_DIR)ServerConfig/
 CONFIG_LIB		=	$(CONFIG_DIR)libconfparser.a
 SERVER_DIR		=	$(SRCS_DIR)server/
 SERVER_LIB		=	$(SERVER_DIR)libserver.a
 
-LIBS			=	$(HTTP_LIB) $(CGI_LIB) $(AUTOINDEX_LIB) $(CONFIG_LIB) $(SERVER_LIB)
+LIBS			=	$(HTTP_LIB) $(CONFIG_LIB) $(SERVER_LIB)
 
-INCLUDES		:=	-I. -I$(HTTP_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(CONFIG_DIR) -I$(SERVER_DIR)
+INCLUDES		:=	-I. -I$(HTTP_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(CONFIG_DIR) -I$(SERVER_DIR) -I$(MESSAGE_DIR)
 
 CXX				=	c++
 RM				=	rm
@@ -39,12 +38,22 @@ OBJS			=	$(SRCS:.cpp=.o)
 
 CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98
 
+DEPDIR := .deps
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+
 all:	$(NAME)
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+%.o: %.cpp #$(DEPDIR)/%.d | $(DEPDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<
 
-$(NAME):	$(HEADERS) $(LIBS) $(OBJS)
+#$(DEPDIR): ; @mkdir -p $@
+
+#DEPFILES := $(SRCS:%.c=$(DEPDIR)/%.d)
+#$(DEPFILES):
+
+#include $(wildcard $(DEPFILES))
+
+$(NAME):	$(HEADERS) | $(LIBS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LIBS) $(OBJS) -o $@
 
 $(HTTP_LIB):

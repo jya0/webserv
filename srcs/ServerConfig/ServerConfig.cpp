@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/05 16:30:41 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/05 21:33:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 	if (serverDve != NULL)
 	{
 		try {
-			_listen = parseListenDirective(serverDve->checkDirectiveSimple(DVE_LISTEN).front());
+			_listen = parseListenDirective(serverDve->readDirectiveSimple(DVE_LISTEN).front());
 		} catch (std::exception &e) {}
 		try {
-			_serverNames = serverDve->checkDirectiveSimple(DVE_SERVER_NAME);
+			_serverNames = serverDve->readDirectiveSimple(DVE_SERVER_NAME);
 		} catch (std::exception &e) {}
 		try {
 			std::pair< std::multimap< std::string, ADirective * >::const_iterator, std::multimap< std::string, ADirective * >::const_iterator>	dveITRS;
@@ -79,22 +79,22 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			}
 		} catch (std::exception &e) {};
 		try {
-			_autoIndex = (serverDve->checkDirectiveSimple(DVE_AUTO_INDEX).front() == "on") ? true : false;
+			_autoIndex = (serverDve->readDirectiveSimple(DVE_AUTO_INDEX).front() == "on") ? true : false;
 		} catch (std::exception &e) {};
 		try {
-			_sizeCMB = std::atof(serverDve->checkDirectiveSimple(DVE_CMB_SIZE).front().c_str());
+			_sizeCMB = std::atof(serverDve->readDirectiveSimple(DVE_CMB_SIZE).front().c_str());
 		} catch (std::exception &e) {};
 		try {
-			_errorPage = serverDve->checkDirectiveSimple(DVE_ERROR_PAGE).front();
+			_errorPage = serverDve->readDirectiveSimple(DVE_ERROR_PAGE).front();
 		} catch (std::exception &e) {};
 		try {
-			_index = serverDve->checkDirectiveSimple(DVE_INDEX);
+			_index = serverDve->readDirectiveSimple(DVE_INDEX);
 		} catch (std::exception &e) {};
 		try {
-			_return = parseReturnDirective(serverDve->checkDirectiveSimple(DVE_RETURN).front());
+			_return = parseReturnDirective(serverDve->readDirectiveSimple(DVE_RETURN).front());
 		} catch (std::exception &e) {};
 		try {
-			_root = serverDve->checkDirectiveSimple(DVE_ROOT).front();
+			_root = serverDve->readDirectiveSimple(DVE_ROOT).front();
 		} catch (std::exception &e) {};
 	};
 };
@@ -173,7 +173,7 @@ ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_
 		locationUri	= locationDve->getValues().front();
 		try {
 			dveBlockPTR = dynamic_cast<DirectiveBlock *>(locationDve);
-			limitExcept = (dveBlockPTR == NULL) ? LimitExcept() : LimitExcept(dveBlockPTR->checkDirectiveSimple(DVE_LIMIT_EXECPT));
+			limitExcept = (dveBlockPTR == NULL) ? LimitExcept() : LimitExcept(dveBlockPTR->readDirectiveSimple(DVE_LIMIT_EXECPT));
 		} catch (std::exception &e) {};
 	};
 };

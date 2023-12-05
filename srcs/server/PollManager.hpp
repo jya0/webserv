@@ -7,7 +7,7 @@
 
 class PollManager {
 private:
-	size_t				nfds;
+	size_t					nfds;
 	// std::vector<pollfd> _sockets;
 	struct pollfd _sockets[200];
 

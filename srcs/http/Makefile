@@ -6,40 +6,42 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/04 11:14:01 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/05 23:48:33 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# -*- Makefile -*-
+# -*- Makefile http -*-
 
 NAME			:=	libhttp.a
 
-# LIB			=	./lib/
 HEADERS			:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
 				Request.hpp		Response.hpp
 CGI_DIR			:=	./CGIhandler/
-CONFIG_DIR		:=	../ServerConfig/
+CGI_LIB			=	$(CGI_DIR)libcgi.a
 AUTOINDEX_DIR	:=	./Autoindex/
-INCLUDES		:=	-I. -I../inc/	-I$(CONFIG_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR)
+AUTOINDEX_LIB	=	$(AUTOINDEX_DIR)libautoindex.a
+MESSAGE_DIR		:=	./Message/
+MESSAGE_LIB		=	$(MESSAGE_DIR)libmessage.a
+
+LIBS			=	$(CGI_LIB)	$(AUTOINDEX_LIB)	$(MESSAGE_LIB)
+
 CXX				=	c++
-FILES			:=	AMessage	Header	Request	Response	MimeTypes
-SRCS			=	$(addsuffix .cpp, $(FILES))
 
-# srcs/cgi/
-# srcs/http/
-# srcs/parser/
-# srcs/socket/
-
-OBJS		=	${SRCS:.cpp=.o}
 CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 
 all: $(NAME)
 
-$(NAME): $(HEADERS) $(OBJS)
-		ar -rvs $@ $(OBJS)
+$(NAME): | $(LIBS)
+	libtool -static -o $@ $(LIBS)
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+$(CGI_LIB):
+	make -C $(CGI_DIR)
+
+$(AUTOINDEX_LIB):
+	make -C $(AUTOINDEX_DIR)
+
+$(MESSAGE_LIB):
+	make -C $(MESSAGE_DIR)
 
 # $(CXX) $(CXXFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
 
@@ -47,10 +49,16 @@ $(NAME): $(HEADERS) $(OBJS)
 # 		#make -C ./lib/
 
 clean:
-		rm -rf $(OBJS)
+	make clean -C $(CGI_DIR)
+	make clean -C $(AUTOINDEX_DIR)
+	make clean -C $(MESSAGE_DIR)
+	rm -rf $(OBJS)
 fclean: clean
-		rm -rf $(NAME)
+	make fclean -C $(CGI_DIR)
+	make fclean -C $(AUTOINDEX_DIR)
+	make fclean -C $(MESSAGE_DIR)
+	rm -rf $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re $(LIBS)

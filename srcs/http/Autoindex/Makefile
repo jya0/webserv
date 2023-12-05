@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/03 22:07:34 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/05 23:49:48 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,15 +15,13 @@
 NAME		:=	libautoindex.a
 # NAME		:=	autoIndexTest
 
-HTTP_DIR		:=	../
+MESSAGE_DIR		:=	../Message/
 CONFIG_DIR		:=	../../ServerConfig/
 
 HEADERS			:=	PollManager.hpp	ServerMonitor.hpp	ServerSocket.hpp	\
 					WebServer.hpp
 
-LIBS			=	$(HTTP_LIB) $(CGI_LIB) $(AUTOINDEX_LIB) $(CONFIG_LIB)
-
-INCLUDES		:=	-I.	-I$(HTTP_DIR) -I$(CONFIG_DIR)
+INCLUDES		:=	-I.	-I$(MESSAGE_DIR) -I$(CONFIG_DIR)
 
 HEADERS		:=	Autoindex_namespace.hpp
 
@@ -37,14 +35,26 @@ SRCS		=	$(addsuffix .cpp, $(FILES))
 OBJS		=	$(SRCS:.cpp=.o)
 CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
 
+DEPDIR := .deps
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+
 all: $(NAME)
 
-$(NAME): $(LIBS) $(HEADERS) $(OBJS)
-	ar -rvs $@ $(OBJS)
+$(NAME): $(HEADERS) $(OBJS)
+	libtool -static -v -o $@ $(OBJS)
 #$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+
+
+%.o: %.cpp #$(DEPDIR)/%.d | $(DEPDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<
+
+#$(DEPDIR): ; @mkdir -p $@
+
+#DEPFILES := $(SRCS:%.c=$(DEPDIR)/%.d)
+#$(DEPFILES):
+
+#include $(wildcard $(DEPFILES))
 
 clean:
 	$(RM) -rf $(OBJS)

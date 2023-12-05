@@ -17,12 +17,20 @@
 # include	"DirectiveBlock.hpp"
 # include	"DirectiveSimple.hpp"
 # include	"ServerConfig.hpp"
+# include	"ToString.tpp"
 
 # define	SPACE_CHARSET	" \n\t\v\f\r"
 
 namespace	ServerParser {
+	enum	e_errors {
+		ERROR_COLON			= 1,
+		ERROR_DVE_NAME,
+		ERROR_DVE_VALUE
+	};
     std::vector< ServerConfig >				parseConfigFile(const std::string &filename);
 	extern const std::vector< std::string >	dveNames;
+	extern size_t							lineNo;
+	std::vector<std::string>				tokenize(const std::string &lineREF);
 
 	class ParseErrorException;
 };
@@ -34,6 +42,7 @@ class ServerParser::ParseErrorException: public std::exception {
 			virtual ~ParseErrorException() throw () {};
 			ParseErrorException(const std::string &errorMsg) {
 				_errorMsg = errorMsg;
+				_errorMsg += "Error is at line " + http::toString(ServerParser::lineNo);
 			};
 			virtual const char *what() const throw()
 			{

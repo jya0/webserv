@@ -5,47 +5,36 @@
 #                                                     +:+ +:+         +:+      #
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/05 23:50:44 by jyao             ###   ########.fr        #
+#    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
+#    Updated: 2023/12/05 23:49:14 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# -*- Makefile -*-
+# -*- Makefile Message -*-
 
-# REMEMBER TO REMOVE REMOVE REMOVE REMOVE REMOVE TEST FILES.CPP FROM LIBS!!!!!
+NAME			:=	libmessage.a
 
-NAME		:=	libconfparser.a
-# NAME		:=	parserTEST
-HTTP_DIR	:=	../http/
-MESSAGE_DIR	=	$(HTTP_DIR)Message/
+HEADERS			:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
+				Request.hpp		Response.hpp
+HTTP_DIR		:=	../
+CGI_DIR			:=	../CGIhandler/
+CONFIG_DIR		:=	../../ServerConfig/
+AUTOINDEX_DIR	:=	../Autoindex/
+INCLUDES		:=	-I.	-I$(CONFIG_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(HTTP_DIR)
+CXX				=	c++
+FILES			:=	AMessage	Header	Request	Response	MimeTypes
+SRCS			=	$(addsuffix .cpp, $(FILES))
 
-INCLUDES	:=	-I. -I$(MESSAGE_DIR) -I$(HTTP_DIR)
-
-HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
-				ServerParser_namespace.hpp				ServerConfig.hpp
-
-CXX			:=	c++
-RM			:=	rm
-FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
-				ServerParser_namespace			ServerConfig	
-
-SRCS		=	$(addsuffix .cpp, $(FILES))
-
-OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
+OBJS		=	${SRCS:.cpp=.o}
+CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 
 DEPDIR := .deps
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 
 all: $(NAME)
 
-# $(NAME): $(LIBS) $(HEADERS) $(OBJS)
-# 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
-
 $(NAME): $(HEADERS) $(OBJS)
-	libtool -static -v -o $@ $(OBJS)
-
-
+		libtool -static -v -o $@ $(OBJS)
 
 %.o: %.cpp #$(DEPDIR)/%.d | $(DEPDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<
@@ -57,12 +46,16 @@ $(NAME): $(HEADERS) $(OBJS)
 
 #include $(wildcard $(DEPFILES))
 
+# $(CXX) $(CXXFLAGS) -I ../inc/webserv.h  $(OBJS) -o $(NAME)
+
+# $(LIB):
+# 		#make -C ./lib/
+
 clean:
-	$(RM) -rf $(OBJS)
+		rm -rf $(OBJS)
+fclean: clean
+		rm -rf $(NAME)
 
-fclean:	clean
-	$(RM) -rf $(NAME)
-
-re:		fclean all
+re: fclean all
 
 .PHONY: all clean fclean re
