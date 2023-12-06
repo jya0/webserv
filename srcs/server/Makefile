@@ -6,13 +6,13 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/03 13:29:44 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 01:21:01 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 13:23:46 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile server
 
-NAME			=	libserver.a
+NAME			=	libserver.so
 
 HTTP_DIR		:=	../http/
 HTTP_LIB		=	$(HTTP_DIR)libhttp.a
@@ -39,12 +39,12 @@ SRCS			=	$(addsuffix .cpp, $(FILES))
 
 OBJS			=	$(addsuffix .o, $(FILES))
 
-CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all:	$(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	ar -rvs $@ $(OBJS)
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<

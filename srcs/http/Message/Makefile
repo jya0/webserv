@@ -6,13 +6,13 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 01:21:28 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 13:23:30 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Message -*-
 
-NAME			:=	libmessage.a
+NAME			:=	libmessage.so
 
 HEADERS			:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
 				Request.hpp		Response.hpp
@@ -26,15 +26,15 @@ FILES			:=	AMessage	Header	Request	Response	MimeTypes
 SRCS			=	$(addsuffix .cpp, $(FILES))
 
 OBJS			=	${SRCS:.cpp=.o}
-CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	ar -rvs $@ $(OBJS)
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
 
 %.o: %.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
 	rm -rf $(OBJS)

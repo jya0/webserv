@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 01:21:28 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 13:24:00 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 # REMEMBER TO REMOVE REMOVE REMOVE REMOVE REMOVE TEST FILES.CPP FROM LIBS!!!!!
 
-NAME		:=	libconfparser.a
+NAME		:=	libconfparser.so
 # NAME		:=	parserTEST
 HTTP_DIR	:=	../http/
 MESSAGE_DIR	=	$(HTTP_DIR)Message/
@@ -32,13 +32,12 @@ FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
 OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	ar -rvs $@ $(OBJS)
-
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<

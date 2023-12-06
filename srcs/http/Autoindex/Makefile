@@ -6,13 +6,13 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 01:21:28 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 13:22:26 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Autoindex -*-
 
-NAME		:=	libautoindex.a
+NAME		:=	libautoindex.so
 # NAME		:=	autoIndexTest
 
 MESSAGE_DIR		:=	../Message/
@@ -33,12 +33,12 @@ RM			:=	rm
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
 OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	ar -rvs $@ $(OBJS)
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
 #$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
 %.o: %.cpp $(HEADERS)
