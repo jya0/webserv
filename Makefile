@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 13:33:49 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/06 13:48:48 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ SERVER_LIB		=	$(SERVER_DIR)libserver.so
 
 LIBS			=	$(MESSAGE_LIB) $(CGI_LIB) $(AUTOINDEX_LIB) $(CONFIG_LIB) $(SERVER_LIB)
 
-INCLUDES		:=	-I$(SRCS_DIR) -I$(HTTP_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(CONFIG_DIR) -I$(SERVER_DIR) -I$(MESSAGE_DIR)
+INCLUDES		=	-I$(SRCS_DIR) -I$(HTTP_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(CONFIG_DIR) -I$(SERVER_DIR) -I$(MESSAGE_DIR)
 
 CXX				=	c++
 RM				=	rm
@@ -42,12 +42,13 @@ CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all:	$(NAME)
 
-%.o: %.cpp $(INCLUDES)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 $(NAME): | $(LIBS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LIBS) $(OBJS) -o $@
 #c++ -shared -o libwebserv.so $(MESSAGE_DIR)*.o $(CGI_DIR)*.o $(AUTOINDEX_DIR)*.o $(CONFIG_DIR)*.o $(SERVER_DIR)*.o
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 $(MESSAGE_LIB):
 	make -C $(MESSAGE_DIR)
