@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/06 05:07:36 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/06 11:11:29 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int	ADirective::parseDirective(void) {
 	std::vector< std::string >::const_iterator	dveNameITR;
 	std::stringstream							ss;
 
+	ServerParser::loadLineNo++;
 	colonLoc = _dveName.find_first_of(":", 0);
 	if (colonLoc == std::string::npos || (colonLoc + 1) != _dveName.length())
 	{
@@ -86,7 +87,7 @@ int	ADirective::parseDirective(void) {
 	if (((_dveType == SERVER) != _dveValues.empty())
 		|| ((_dveType >= AUTOINDEX && _dveType <= SERVER_NAME) != (dynamic_cast<DirectiveBlock *>(this) == NULL)))
 	{
-		ss << "Error " << ServerParser::ERROR_DVE_VALUE << " what missing or extra directive values: " << "\"" << _dveName << "\"" << std::endl;
+		ss << "Error " << ServerParser::ERROR_DVE_TYPE << " incompatible directive type: " << "\"" << _dveName << "\"" << std::endl;
 		throw (ServerParser::ParseErrorException(ss.str(), ServerParser::loadLineNo));
 	}
 	return (0);
@@ -202,7 +203,7 @@ int		ADirective::checkDirective(const e_directiveType &dveContextREF) const {
 	}
 	if (checkValues(_dveType, _dveValues) == false)
 	{
-		ss << "Error " << ServerParser::ERROR_DVE_VALUE << " here missing or extra directive values: " << "\"" << _dveName << "\"" << std::endl;
+		ss << "Error " << ServerParser::ERROR_DVE_VALUE << " missing or extra directive values: " << "\"" << _dveName << "\"" << std::endl;
 		throw (ServerParser::ParseErrorException(ss.str(), ServerParser::checkLineNo));
 	}
 	return (0);

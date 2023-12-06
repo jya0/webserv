@@ -26,6 +26,7 @@ namespace	ServerParser {
 		ERROR_COLON			= 1,
 		ERROR_DVE_NAME,
 		ERROR_DVE_VALUE,
+		ERROR_DVE_TYPE,
 		ERROR_BAD_CONTEXT
 	};
     std::vector< ServerConfig >				parseConfigFile(const std::string &filename);
@@ -44,7 +45,7 @@ class ServerParser::ParseErrorException: public std::exception {
 			virtual ~ParseErrorException() throw () {};
 			ParseErrorException(const std::string &errorMsg, const size_t &lineNo) {
 				_errorMsg = errorMsg;
-				_errorMsg += "Error is at line " + http::toString(lineNo);
+				_errorMsg += "Error is at non-space line " + http::toString(lineNo);
 			};
 			virtual const char *what() const throw()
 			{

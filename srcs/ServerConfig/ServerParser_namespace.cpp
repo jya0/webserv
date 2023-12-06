@@ -18,8 +18,8 @@
 #include	<cstdlib>
 
 const std::vector<std::string>	ServerParser::dveNames = ServerParser::tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
-size_t							ServerParser::loadLineNo = 0;
-size_t							ServerParser::checkLineNo = 0;
+size_t							ServerParser::loadLineNo = 1;
+size_t							ServerParser::checkLineNo = 1;
 
 static ADirective	*tokenToDirective(std::vector<std::string> &tokens) {
 	DirectiveSimple	*directive;
@@ -48,7 +48,6 @@ std::ifstream &configIF, std::string &lineREF) {
 
 	do {
 		befParesableLine = configIF.tellg();
-		ServerParser::loadLineNo++;
 	} while (getline(configIF, tmpLine) && tmpLine.find_first_not_of(SPACE_CHARSET) == std::string::npos);
 	lineREF = tmpLine;
 	return (befParesableLine);
