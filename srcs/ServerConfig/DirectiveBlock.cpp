@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/06 01:18:31 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/06 04:56:29 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ std::vector<std::string>	DirectiveBlock::readDirectiveSimple(const std::string &
 	dveITR = _dvesMap.find(dveName);
 	if (dveITR == _dvesMap.end())
 	{
-		throw (ServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!"));
+		throw (ServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!", ServerParser::loadLineNo));
 	}
 	else
 		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
@@ -115,13 +115,23 @@ void	DirectiveBlock::printDirective(void) const {
 }
 
 int	DirectiveBlock::parseDirective(void) {
-	int															errorReturn;
 	std::multimap< std::string, ADirective * >::const_iterator	it;
 
-	errorReturn = this->ADirective::parseDirective();
-	for (it = _dvesMap.begin(); (it != _dvesMap.end() && !errorReturn); ++it)
+	this->ADirective::parseDirective();
+	for (it = _dvesMap.begin(); it != _dvesMap.end(); ++it)
 	{
-		errorReturn = it->second->parseDirective();
+		it->second->parseDirective();
 	}
-	return (errorReturn);
+	return (0);
+}
+
+int	DirectiveBlock::checkDirective(const e_directiveType &dveContextREF) const {
+	std::multimap< std::string, ADirective * >::const_iterator	it;
+
+	this->ADirective::checkDirective(dveContextREF);
+	for (it = _dvesMap.begin(); it != _dvesMap.end(); ++it)
+	{
+		it->second->checkDirective(_dveType);
+	}
+	return (0);
 }

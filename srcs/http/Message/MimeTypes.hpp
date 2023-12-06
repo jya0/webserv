@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 02:15:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 12:20:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/06 04:13:41 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ namespace	http {
 			IsMimeTypeUnary(const std::string &mimeType);
 			bool	operator()(const t_mime_pair &mimePairREF);
 	};
+typedef http::IsMimeTypeUnary	IsStringInVec;
 	std::string	checkMimeType(const std::string &uriREF);
 	t_mime_map	loadMimeFile(void);
 }

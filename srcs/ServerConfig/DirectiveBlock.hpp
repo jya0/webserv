@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/06 01:18:18 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/06 05:02:19 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class DirectiveBlock : public ADirective {
 			operator[](const std::string &key); */
 		void	printDirective(void) const;
 		int		parseDirective(void);
+		int		checkDirective(const e_directiveType &dveContextREF) const;
 };
 
 #endif

@@ -18,7 +18,8 @@
 #include	<cstdlib>
 
 const std::vector<std::string>	ServerParser::dveNames = ServerParser::tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
-size_t							ServerParser::lineNo = 0;
+size_t							ServerParser::loadLineNo = 0;
+size_t							ServerParser::checkLineNo = 0;
 
 static ADirective	*tokenToDirective(std::vector<std::string> &tokens) {
 	DirectiveSimple	*directive;
@@ -47,7 +48,7 @@ std::ifstream &configIF, std::string &lineREF) {
 
 	do {
 		befParesableLine = configIF.tellg();
-		ServerParser::lineNo++;
+		ServerParser::loadLineNo++;
 	} while (getline(configIF, tmpLine) && tmpLine.find_first_not_of(SPACE_CHARSET) == std::string::npos);
 	lineREF = tmpLine;
 	return (befParesableLine);
@@ -139,7 +140,7 @@ std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &fil
 	dveBlock = NULL;
 	configIF.open(filename.c_str(), std::ios::in);
 	if (!configIF.is_open())
-		throw (ServerParser::ParseErrorException("Could not open config file!"));
+		throw (ServerParser::ParseErrorException("Could not open config file!", ServerParser::loadLineNo));
 	while (configIF.peek() != EOF)
 	{
 		dveBlock = getNextDirectiveBlock(configIF);
@@ -153,6 +154,7 @@ std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &fil
 			try {
 				dveBlock->printDirective();
 				dveBlock->parseDirective();
+				dveBlock->checkDirective(HTTP);
 				serverBlocks.push_back(ServerConfig(dveBlock));
 			}
 			catch (std::exception &e)

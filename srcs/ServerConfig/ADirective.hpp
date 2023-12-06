@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/05 22:36:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/06 04:16:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 								DVE_LOCATION			" "		\
 								DVE_SERVER				" "
 
-typedef enum	DirectiveType {
+enum	e_directiveType {
 	INIT = -1,
 	AUTOINDEX,
 	CLIENT_MAX_BODY_SIZE,
@@ -59,14 +59,15 @@ typedef enum	DirectiveType {
 	SERVER_NAME,
 	LOCATION,
 	SERVER,
-}	DirectiveType;
+	HTTP
+};
 
 /**
  * @brief The abstract class inherited by DirectiveBlock and DirectiveSimple
  *
  * @field _dveName	used as the key for the map of Directive
  * @field _dveValues used as the key for the map of Directive
- * @field _dveType enum DirectiveType is declared in the serverConfig namespace
+ * @field _dveType enum e_directiveType is declared in the serverConfig namespace
  *
  * @method
  */
@@ -74,7 +75,7 @@ class ADirective {
 	protected:
 		std::string	_dveName;
 		std::vector< std::string >	_dveValues;
-		DirectiveType 				_dveType;
+		e_directiveType 			_dveType;
 		ADirective(void);
 	public:
 		ADirective(ADirective const	&dveREF);
@@ -83,12 +84,12 @@ class ADirective {
 
 		std::string	getName(void) const;
 		std::vector< std::string >	getValues(void) const;
-		DirectiveType				getType(void) const;
+		e_directiveType				getType(void) const;
 		void	setName(std::string const	&strREF);
 		void	setValues(std::vector< std::string > const	&strsREF);
 		virtual void	printDirective(void) const;
 		virtual int		parseDirective(void);
-		// virtual int		checkDirective(const DirectiveType &dveTypeREF) const;
+		virtual int		checkDirective(const e_directiveType &dveContextREF) const;
 };
 
 #endif
