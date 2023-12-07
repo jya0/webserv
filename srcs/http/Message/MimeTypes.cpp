@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MimeTypes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 13:09:10 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/07 16:07:59 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,10 @@ http::t_mime_map	http::loadMimeFile(void) {
 	char temp[1024];
 	std::string dir = getcwd(temp, sizeof(temp)) ? std::string(temp) : std::string("");
 	std::cerr<<dir;
+	std::cerr<<DEFAULT_MIME_FILE<<std::endl;
 	infile.open(DEFAULT_MIME_FILE, std::ios::in);
-	if (infile.good())
+	std::cerr << infile.rdstate() << std::endl;
+	if (infile.is_open())
 	{
 		std::cerr<<"IT OPENED!****************************\n";
 		while (std::getline(infile, line, MIME_FILE_DELIM))

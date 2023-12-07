@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 02:15:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/06 04:13:41 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 16:08:50 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include	<sstream>
 # include	<algorithm>
 
-# define	DEFAULT_MIME_FILE		"./srcs/http/default_mimes.txt"
+# define	DEFAULT_MIME_FILE		"./srcs/http/Message/default_mimes.txt"
 # define	MIME_FILE_DELIM			'\n'
 
 namespace	http {

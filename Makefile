@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/07 15:56:46 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/07 16:45:50 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,21 +50,22 @@ CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all:	$(NAME)
 
-
 $(NAME): | $(LIBS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LIBS) $(OBJS) -o $@
-#c++  -shared -o libwebserv.so $(MESSAGE_DIR)*.o $(CGI_DIR)*.o $(AUTOINDEX_DIR)*.o $(CONFIG_DIR)*.o $(SERVER_DIR)*.o
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
+WEBSERV:
+	$(CXX) $(CXXFLAGS) $(LIBS) $(OBJS) -o $(NAME)
+
 $(CGI_LIB):
 	make -C $(CGI_DIR)
-
-$(AUTOINDEX_LIB):
+	
+$(AUTOINDEX_LIB): 
 	make -C $(AUTOINDEX_DIR)
-
-$(MESSAGE_LIB):
+	
+$(MESSAGE_LIB): 
 	make -C $(MESSAGE_DIR)
 
 $(CONFIG_LIB):
@@ -91,6 +92,6 @@ fclean:	clean
 
 re:		fclean all
 
-.PHONY: all clean fclean re $(LIBS)
+.PHONY: all clean fclean re WEBSERV $(LIBS)
 
 # c++  -std=c++98 -Isrcs/ServerConfig -Isrcs/server -Isrcs/http/Autoindex -Isrcs/http/CGIhandler -Isrcs/http/Message -Isrcs/http  srcs/*.cpp srcs/ServerConfig/*.cpp srcs/http/Autoindex/*.cpp srcs/http/CGIhandler/*.cpp srcs/http/Message/*.cpp srcs/server/*.cpp -std=c++98
