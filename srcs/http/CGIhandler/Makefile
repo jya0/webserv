@@ -6,13 +6,26 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 13:22:49 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/07 15:42:48 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile CGI -*-
 
-NAME		:=	libcgi.so
+CXX			:=	c++ 
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98 -fPIC
+
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+LIB_SUFFIX	:=	.so
+LIB_COMPILE	:=	$(CXX) $(CXXFLAGS) -shared -o
+endif
+ifeq ($(UNAME), Darwin)
+LIB_SUFFIX	:=	.a
+LIB_COMPILE	:=	ar -rvs
+endif
+
+NAME		=	$(addsuffix $(LIB_SUFFIX), libcgi)
 # NAME		:=	cgiTest
 
 HTTP_DIR	:=	../
@@ -24,19 +37,16 @@ INCLUDES	:=	-I.	-I$(MESSAGE_DIR) -I$(CONFIG_DIR) -I$(HTTP_DIR)
 HEADERS		:=	CGIhandler.hpp
 
 FILES		:=	CGIhandler
-
-CXX			:=	c++
 RM			:=	rm
 
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
 OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS	=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98 -fPIC
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
+	$(LIB_COMPILE) $@ $(OBJS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<

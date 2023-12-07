@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 13:24:00 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/07 15:41:29 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,20 @@
 
 # REMEMBER TO REMOVE REMOVE REMOVE REMOVE REMOVE TEST FILES.CPP FROM LIBS!!!!!
 
-NAME		:=	libconfparser.so
+CXX			:=	c++ 
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+LIB_SUFFIX	:=	.so
+LIB_COMPILE	:=	$(CXX) $(CXXFLAGS) -shared -o
+endif
+ifeq ($(UNAME), Darwin)
+LIB_SUFFIX	:=	.a
+LIB_COMPILE	:=	ar -rvs
+endif
+
+NAME		=	$(addsuffix $(LIB_SUFFIX), libconfparser)
 # NAME		:=	parserTEST
 HTTP_DIR	:=	../http/
 MESSAGE_DIR	=	$(HTTP_DIR)Message/
@@ -24,7 +37,7 @@ INCLUDES	:=	-I. -I$(MESSAGE_DIR) -I$(HTTP_DIR)
 HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
 				ServerParser_namespace.hpp				ServerConfig.hpp
 
-CXX			:=	c++
+
 RM			:=	rm
 FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
 				ServerParser_namespace			ServerConfig	
@@ -32,12 +45,11 @@ FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
 OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
+	$(LIB_COMPILE) $@ $(OBJS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES)  -o $@ -c $<

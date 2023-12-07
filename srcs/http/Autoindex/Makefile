@@ -6,13 +6,26 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 13:22:26 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/07 15:41:38 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Autoindex -*-
 
-NAME		:=	libautoindex.so
+CXX			:=	c++ 
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+LIB_SUFFIX	:=	.so
+LIB_COMPILE	:=	$(CXX) $(CXXFLAGS) -shared -o
+endif
+ifeq ($(UNAME), Darwin)
+LIB_SUFFIX	:=	.a
+LIB_COMPILE	:=	ar -rvs
+endif
+
+NAME		=	$(addsuffix $(LIB_SUFFIX), libautoindex)
 # NAME		:=	autoIndexTest
 
 MESSAGE_DIR		:=	../Message/
@@ -27,18 +40,17 @@ HEADERS		:=	Autoindex_namespace.hpp
 
 FILES		:=	Autoindex
 
-CXX			:=	c++
+
 RM			:=	rm
 
 SRCS		=	$(addsuffix .cpp, $(FILES))
 
 OBJS		=	$(SRCS:.cpp=.o)
-CXXFLAGS	=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
+	$(LIB_COMPILE) $@ $(OBJS)
 #$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
 %.o: %.cpp $(HEADERS)

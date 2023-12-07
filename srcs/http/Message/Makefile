@@ -6,13 +6,26 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 13:23:30 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/07 15:44:11 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Message -*-
 
-NAME			:=	libmessage.so
+CXX				:=	c++ 
+CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+LIB_SUFFIX	:=	.so
+LIB_COMPILE	:=	$(CXX) $(CXXFLAGS) -shared -o
+endif
+ifeq ($(UNAME), Darwin)
+LIB_SUFFIX	:=	.a
+LIB_COMPILE	:=	ar -rvs
+endif
+
+NAME		=	$(addsuffix $(LIB_SUFFIX), libmessage)
 
 HEADERS			:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
 				Request.hpp		Response.hpp
@@ -21,17 +34,15 @@ CGI_DIR			:=	../CGIhandler/
 CONFIG_DIR		:=	../../ServerConfig/
 AUTOINDEX_DIR	:=	../Autoindex/
 INCLUDES		:=	-I.	-I$(CONFIG_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(HTTP_DIR)
-CXX				=	c++
 FILES			:=	AMessage	Header	Request	Response	MimeTypes
 SRCS			=	$(addsuffix .cpp, $(FILES))
 
 OBJS			=	${SRCS:.cpp=.o}
-CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
+	$(LIB_COMPILE) $@ $(OBJS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<

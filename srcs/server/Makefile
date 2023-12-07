@@ -6,13 +6,26 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/03 13:29:44 by jyao              #+#    #+#              #
-#    Updated: 2023/12/06 13:23:46 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/07 15:44:45 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile server
 
-NAME			=	libserver.so
+CXX				:=	c++ 
+CXXFLAGS		:=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+LIB_SUFFIX	:=	.so
+LIB_COMPILE	:=	$(CXX) $(CXXFLAGS) -shared -o
+endif
+ifeq ($(UNAME), Darwin)
+LIB_SUFFIX	:=	.a
+LIB_COMPILE	:=	ar -rvs
+endif
+
+NAME			=	$(addsuffix $(LIB_SUFFIX), libserver)
 
 HTTP_DIR		:=	../http/
 HTTP_LIB		=	$(HTTP_DIR)libhttp.a
@@ -29,7 +42,6 @@ LIBS			=	$(HTTP_LIB) $(CONFIG_LIB)
 
 INCLUDES		:=	-I.	-I$(HTTP_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(CONFIG_DIR) -I$(MESSAGE_DIR)
 
-CXX				=	c++
 RM				=	rm
 
 FILES			:=	PollManager		ServerSocket	\
@@ -39,12 +51,11 @@ SRCS			=	$(addsuffix .cpp, $(FILES))
 
 OBJS			=	$(addsuffix .o, $(FILES))
 
-CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 all:	$(NAME)
 
 $(NAME): $(HEADERS) $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS)
+	$(LIB_COMPILE) $@ $(OBJS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
