@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 22:06:38 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/07 22:48:31 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,24 +246,10 @@ static Response handleGet(const std::string &filePathREF, const Request &request
 //     return (response);
 // }
 
-// static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
-// 	Response response(200);
-// 	// @todo
-// 	return (response);
-// }
+static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+	Response response(200);
 
-static int fileExists(const std::string &path)
-{
-	struct stat file;
-	if (stat(path.c_str(), &file))
-	{
-		if (file.st_mode & S_IFDIR)
-			return 0;
-		else if (file.st_mode & S_IFREG)
-			return 1;
-		return 0;
-	}
-	return (0);
+	return (response);
 }
 
 static Response handleDelete(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
@@ -271,17 +257,15 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 	(void) requestREF;
 	(void) servConfREF;
 	(void) locREF;
-	int status = 200;
-	if (fileExists(filePathREF)) {
+
+	if (Autoindex::isPathFolder(filePathREF) > 0 || Autoindex::isPathReg(filePathREF) > 0) {
 		if (remove(filePathREF.c_str()) == 0)
-			status = 204; //no content
+			return (Response(204));
 		else
-			status = 403; // error page
+			return (Response(403));
 	}
 	else
-		status = 404;
-	if (status == 403 || status == 404)
-		std::cout << "IMPLEMENT HERE!\n";//display error page
+		return (Response(404));
 	return (Response(status, "<html><body><h1>File deleted.</h1></body></html>"));
 }
 
