@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/07 16:45:50 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/07 17:02:22 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ LIBS			=	$(CGI_LIB) $(AUTOINDEX_LIB) $(MESSAGE_LIB) $(CONFIG_LIB) $(SERVER_LIB)
 
 INCLUDES		=	-I$(SRCS_DIR) -I$(HTTP_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(CONFIG_DIR) -I$(SERVER_DIR) -I$(MESSAGE_DIR)
 
-CXX				=	c++ 
+CXX				=	c++
 RM				=	rm
 
 FILES			=	main
@@ -46,7 +46,7 @@ SRCS			=	$(addsuffix .cpp, $(addprefix $(SRCS_DIR), $(FILES)))
 
 OBJS			=	$(SRCS:.cpp=.o)
 
-CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC -g3
 
 all:	$(NAME)
 
@@ -61,11 +61,11 @@ WEBSERV:
 
 $(CGI_LIB):
 	make -C $(CGI_DIR)
-	
-$(AUTOINDEX_LIB): 
+
+$(AUTOINDEX_LIB):
 	make -C $(AUTOINDEX_DIR)
-	
-$(MESSAGE_LIB): 
+
+$(MESSAGE_LIB):
 	make -C $(MESSAGE_DIR)
 
 $(CONFIG_LIB):

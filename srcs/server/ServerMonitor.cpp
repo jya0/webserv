@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/06 00:50:41 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 18:01:50 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,40 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered) {
 	return (-1);
 }
 
+void ServerMonitor::monitorCGI(int server) {
+	std::clock_t curr_time;
+	std::map<int, CGIhandler>::iterator itr;
+
+	int status = 0;
+	for (itr = _cgiScripts.begin(); itr != _cgiScripts.end();)
+	{
+		curr_time = std::clock();
+		if ((curr_time - itr->second.getStartTime()) >= (CLOCKS_PER_SEC * 10))
+		{
+			kill(itr->second.getChildPid(), SIGKILL);
+			_servers.at((itr->first))->closeCGI(itr->second);
+			int sock = itr->second.getClientSocket();
+			_cgiScripts.erase(itr++);
+			*_servers.at(server)->responses[sock] = Response(408);
+		}
+		else
+		{
+			status = 0;
+			waitpid(itr->second.getChildPid(), &status, WNOHANG);
+			if (status == -1 || status == 1)
+				throw(http::CGIhandler::CGIexception("CGI failed to run!"));
+			if (WIFEXITED(status) == 0)
+			{
+				_servers.at((itr->first))->closeCGI(itr->second);
+				_cgiScripts.erase(itr++);
+			}
+		}
+		if (itr == _cgiScripts.end())
+			break;
+		itr++;
+	}
+}
+
 void ServerMonitor::startServers()
 {
 
@@ -51,10 +85,8 @@ void ServerMonitor::startServers()
 	int triggered;
 	int client;
 	int server;
-	int status;
-	std::clock_t curr_time;
-	std::map<int, CGIhandler>::iterator itr;
-		i = 0;
+
+	i = 0;
 	while (2)
 	{
 		rc = _sockets.callPoll();
@@ -114,28 +146,6 @@ void ServerMonitor::startServers()
 				_servers.at(server)->responses.erase(itr);
 			}
 		}
-		status = 0;
-		for (itr = _cgiScripts.begin(); itr != _cgiScripts.end();) {
-			curr_time = std::clock();
-			if ((curr_time - itr->second.getStartTime()) >= (CLOCKS_PER_SEC * 10))
-			{
-				kill(itr->second.getChildPid(), SIGTERM);
-				_servers.at((itr->first))->closeCGI(itr->second);
-				_cgiScripts.erase(itr++);
-				*_servers.at(server)->responses[itr->second.getClientSocket()] = Response(408);
-			}
-			else
-			{
-				waitpid(itr->second.getChildPid(), &status, WNOHANG);
-				if (status == -1 || status == 1)
-					throw(http::CGIhandler::CGIexception("CGI failed to run!"));
-				// if (WIFEXITED(status) != 0) {
-				// 	_servers.at((itr->first))->closeCGI(itr->second);
-				// 	itr = _cgiScripts.erase(itr);
-				// }
-			}
-			if (itr != _cgiScripts.end())
-				itr++;
-		}
+		monitorCGI(server);
 	}
 }

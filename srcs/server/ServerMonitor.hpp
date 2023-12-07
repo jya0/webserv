@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/06 01:16:59 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 18:00:36 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class ServerMonitor {
 	public:
 		void startServers();
 		int retrieveClientHandlerSocket(int);
-
+		void monitorCGI(int server);
 		ServerMonitor(std::map<int, WebServer *> servers) ;
 		ServerMonitor(const std::vector<ServerConfig> &configsREF);
 		~ServerMonitor();
