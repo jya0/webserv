@@ -3,54 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   PollManager.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 05:03:53 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/03 13:54:02 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 21:30:57 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PollManager.hpp"
 
-
-PollManager::PollManager(size_t n) : nfds(n){
+PollManager::PollManager(size_t n) : nfds(n)
+{
 }
 
-PollManager::~PollManager() {
+PollManager::~PollManager()
+{
 }
 
-int PollManager::callPoll() {
+int PollManager::callPoll()
+{
 	return (poll(&_sockets[0], nfds, -1));
 }
 
-pollfd &PollManager::operator[](int index) {
+pollfd &PollManager::operator[](int index)
+{
 	return (_sockets[index]);
 }
 
-int PollManager::getNfds() {
+int PollManager::getNfds()
+{
 	return (nfds);
 }
 
-
-void PollManager::addFd(size_t fd, short events) {
+void PollManager::addFd(size_t fd, short events)
+{
 	_sockets[nfds].fd = fd;
 	_sockets[nfds].events = events;
 	_sockets[nfds].revents = 0;
 	nfds++;
 }
 
-void PollManager::removeFd(size_t fd) {
-	//1. find index of fd to remove
-	size_t	i = 0;
+void PollManager::removeFd(size_t fd)
+{
+	size_t i = 0;
 	for (i = 0; i < nfds; i++)
 		if (_sockets[i].fd == (int)fd)
-			break ;
-	//2. skip element and copy bacwards until the end
+			break;
 	if (i == nfds)
-		return ;
+		return;
 	i++;
-	while (i < nfds) {
-		_sockets[i] = _sockets[i+1];
+	while (i < nfds)
+	{
+		_sockets[i] = _sockets[i + 1];
 		i++;
 	}
 	_sockets[i].fd = 0;

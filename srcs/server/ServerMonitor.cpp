@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/07 18:01:50 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/07 21:58:58 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
-	WebServer					*server;
+	WebServer *server;
 	size_t i = 0;
 
 	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++, i++)
@@ -25,11 +25,12 @@ ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _soc
 	_sockets = PollManager(_servers.size());
 }
 
-ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers): _servers(servers), _sockets(_servers.size()) {};
+ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : _servers(servers), _sockets(_servers.size()){};
 
-ServerMonitor::~ServerMonitor() {};
+ServerMonitor::~ServerMonitor(){};
 
-int ServerMonitor::retrieveClientHandlerSocket(int triggered) {
+int ServerMonitor::retrieveClientHandlerSocket(int triggered)
+{
 	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
 	{
 		if (itr->second->connectedClient(triggered))
@@ -38,7 +39,8 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered) {
 	return (-1);
 }
 
-void ServerMonitor::monitorCGI(int server) {
+void ServerMonitor::monitorCGI(int server)
+{
 	std::clock_t curr_time;
 	std::map<int, CGIhandler>::iterator itr;
 
@@ -102,7 +104,7 @@ void ServerMonitor::startServers()
 			server = retrieveClientHandlerSocket(triggered);
 			if (_sockets[i].revents == 0)
 				continue;
-			else if ( server != -1 && ((_sockets[i].revents & POLLHUP) || (_sockets[i].revents & POLLERR)))
+			else if (server != -1 && ((_sockets[i].revents & POLLHUP) || (_sockets[i].revents & POLLERR)))
 			{
 				_servers.at(server)->closeClientConnection(triggered);
 				_sockets.removeFd(triggered);
@@ -120,7 +122,8 @@ void ServerMonitor::startServers()
 					_servers.at(server)->recieveData(triggered);
 					if (triggered == -1)
 						continue;
-					else {
+					else
+					{
 						if (_servers.at(server)->requestReady(triggered))
 						{
 							try

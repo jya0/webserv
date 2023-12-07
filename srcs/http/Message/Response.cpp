@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 16:00:40 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/07 22:06:38 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,27 +215,12 @@ Response readContent(const std::string &filePathREF, const Request &requestREF, 
 static void	callCGI(const std::string &filePathREF, const Request &requestREF, const ServerConfig::Location &locREF) {
 	CGIhandler	cgiHandler(requestREF, locREF);
 
-	for (http::t_mime_map::const_iterator itc = http::mimeTypes.begin(); itc != http::mimeTypes.end(); ++itc)
-	{
-		for (std::vector < std::string >::const_iterator itc2 = itc->first.begin(); itc2 != itc->first.end(); ++itc2)
-		{
-			std::cout << *itc2 << " ";
-		}
-		std::cout << ":" << itc->second << std::endl;
-	}
 	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
-	{
 		cgiHandler.executeCGI(filePathREF);
-	}
-	std::cerr << "I DIDN'T RUN CGI" << std::endl;
 }
 
 static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
     Response	response(200);
-	// CGIhandler	cgiHandler(requestREF, locREF);
-
-	//@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
-	// request data (they shouldn't include data).
 
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	response.setMessageBody("");
@@ -245,12 +230,7 @@ static Response handleHead(const std::string &filePathREF, const Request &reques
 static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
 {
 	Response response(200);
-	//@todo: The HTTP GET method requests a representation of the specified resource. Requests using GET should only be used to
-	// request data (they shouldn't include data).
 
-	// Flow:
-	// code for CGI checking function
-	// if (locREF.locationUri )
 	callCGI(filePathREF, requestREF, locREF);
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);

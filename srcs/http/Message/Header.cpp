@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Header.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 11:19:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/07 15:56:01 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 22:05:01 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,5 @@ Header::IsHeaderKeyUnary::IsHeaderKeyUnary(const std::string &headerKeyToFind): 
 
 bool	Header::IsHeaderKeyUnary::operator()(const Header &headerREF)
 {
-	std::cerr << "I am called! HEADER!\n";
 	return (headerREF.getKey() == _headerKeyToFind);
 };
