@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/05 16:16:08 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 21:29:08 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@
 #include	"ServerSocket.hpp"
 #include	"ServerParser_namespace.hpp"
 
-int main(int argc, char **argv) {
-	(void) argc;
-	(void) argv;
+int main(int argc, char **argv)
+{
 	if (argc != 2)
 	{
 		std::cout<<"Invalid Paramaters!\n";
@@ -31,17 +30,9 @@ int main(int argc, char **argv) {
 	{
 		monitor.startServers();
 	}
-	// catch (ServerParser::ParseError &e)
-	// {
-	// 	// handle parse error
-	// }
 	catch(ServerSocket::SocketIOError &e)
 	{
-		// handle socket IO error
-	}
-	catch (...)
-	{
-
+		std::cerr<<e.what()<<std::endl;
 	}
 	return (0);
 }
