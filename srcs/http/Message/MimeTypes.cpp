@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 14:50:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/09 01:12:16 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ std::string	http::checkMimeType(const std::string &uriREF) {
 	std::string							suffix;
 
 	lastDot = uriREF.rfind('.');
-	if (lastDot == std::string::npos || (lastDot + 1) >= uriREF.length())
+	if (lastDot == std::string::npos || (lastDot + 1) >= uriREF.size())
 		return ("");
 	suffix = uriREF.substr(lastDot + 1, std::string::npos);
 	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), http::IsMimeTypeUnary(suffix));

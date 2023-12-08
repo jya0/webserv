@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:53:05 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/06 05:02:19 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 23:43:24 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@ class DirectiveBlock : public ADirective {
 		void	clearDvesMap(void);
 		void	insertMapDirective(ADirective *dvePTR);
 		const std::multimap<std::string, ADirective *>	*getDvesMap(void) const;
-		std::vector<std::string>	readDirectiveSimple(const std::string &dveName);
-		DirectiveBlock				*readDirectiveBlock(const std::string &dveName, const std::string &dveValue);
-		DirectiveBlock				*readDirectiveBlock(const std::string &dveName);
+		std::vector< std::string >					readDirectiveSimple(const std::string &dveName) const;
+		std::vector< std::vector< std::string > >	readDirectivesSimple(const std::string &dveName) const;
+		DirectiveBlock								*readDirectiveBlock(const std::string &dveName, const std::string &dveValue) const;
+		DirectiveBlock								*readDirectiveBlock(const std::string &dveName) const;
 /* 		std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \
 			operator[](const std::string &key); */
 		void	printDirective(void) const;

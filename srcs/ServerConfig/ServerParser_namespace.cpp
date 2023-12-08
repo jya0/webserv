@@ -17,11 +17,11 @@
 #include	<sstream>
 #include	<cstdlib>
 
-const std::vector<std::string>	ServerParser::dveNames = ServerParser::tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
+const std::vector< std::string >	ServerParser::dveNames = ServerParser::tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
 size_t							ServerParser::loadLineNo = 1;
 size_t							ServerParser::checkLineNo = 1;
 
-static ADirective	*tokenToDirective(std::vector<std::string> &tokens) {
+static ADirective	*tokenToDirective(std::vector< std::string > &tokens) {
 	DirectiveSimple	*directive;
 
 	directive = new DirectiveSimple();
@@ -53,8 +53,8 @@ std::ifstream &configIF, std::string &lineREF) {
 	return (befParesableLine);
 }
 
-std::vector<std::string>	ServerParser::tokenize(const std::string &lineREF) {
-	std::vector<std::string>	tmpTokens;
+std::vector< std::string >	ServerParser::tokenize(const std::string &lineREF) {
+	std::vector< std::string >	tmpTokens;
 	std::istringstream			stringStream;
 	std::string					token;
 
@@ -70,7 +70,7 @@ std::vector<std::string>	ServerParser::tokenize(const std::string &lineREF) {
 
 static DirectiveBlock	*initDirectiveBlock(std::ifstream &configIF, int &tabBlockCountREF) {
 	std::string						line;
-	std::vector<std::string>		tokens;
+	std::vector< std::string >		tokens;
 	DirectiveBlock					*dveBlock;
 	ADirective						*dveBlockInfo;
 
@@ -91,7 +91,7 @@ static DirectiveBlock	*getNextDirectiveBlock(std::ifstream &configIF) {
 	std::string						lineNxt;
 	std::streampos					befCnt;
 	std::streampos					befNxt;
-	std::vector<std::string>		tokens;
+	std::vector< std::string >		tokens;
 	ADirective						*dveToInsert;
 
 	dveBlock = initDirectiveBlock(configIF, tabBlockCount);
