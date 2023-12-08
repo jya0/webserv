@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:02 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/06 00:05:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 21:32:38 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ namespace	http {
 		int			isPathRead(const std::string &path);
 		int			isPathWrite(const std::string &path);
 		int			isPathExec(const std::string &path);
+		int			isPathExist(const std::string &path);
 	};
 }
 

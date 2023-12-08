@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 17:04:32 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 13:09:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,23 +180,23 @@ static void header_GetHead(Response &response, const std::string &fileStr)
 	response.addHeader(type);
 }
 
-Response readContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+static Response readContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
 {
 	Response response(200);
 	std::string result;
 	std::ifstream infile;
 
-	if (Autoindex::isPathFolder(filePathREF) > 0)
+	if (Autoindex::isPathFolder(filePathREF) == true)
 	{
 		if (locREF.getAutoIndex() == true)
 			result = Autoindex::genPage(filePathREF.c_str(), requestREF, servConfREF);
 		else
-			return (Response(403));
+			return (Response(403)); // forbidden
 	}
-	else if (Autoindex::isPathReg(filePathREF) > 0)
+	else if (Autoindex::isPathReg(filePathREF) == true)
 	{
 		infile.open(filePathREF.c_str(), std::ios::in);
-		if (infile.good())
+		if (infile.is_open())
 		{
 			result = std::string((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
 			infile.close();
@@ -205,7 +205,7 @@ Response readContent(const std::string &filePathREF, const Request &requestREF, 
 	else
 	{
 		if (errno == EACCES)
-			return (Response(403));
+			return (Response(403)); //forbidden
 	}
 	header_GetHead(response, result);
 	response.setMessageBody(result);
@@ -223,7 +223,7 @@ static void	callCGI(const std::string &filePathREF, const Request &requestREF, c
 		}
 		std::cout << ":" << itc->second << std::endl;
 	}
-	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
+	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) == true && Autoindex::isPathExec(filePathREF) == true)
 	{
 		cgiHandler.executeCGI(filePathREF);
 	}
@@ -256,20 +256,42 @@ static Response handleGet(const std::string &filePathREF, const Request &request
 	return (response);
 }
 
-// static Response handlePut(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
-//     Response response(200);
-//     // @todo
-// 	/*
-// 		Flow:
+static Response handlePut(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+	std::ofstream	ofile;
+	int				status;
 
-// 	*/
-//     return (response);
-// }
+	(void)servConfREF;
+	(void)locREF;
+	status = 201; //created
+	if (Autoindex::isPathExist(filePathREF) == true)
+		status = 204; //no content
+	ofile.open(filePathREF, std::ios::trunc);
+	if (ofile.is_open())
+	{
+		ofile << requestREF.getMessageBody();
+		ofile.close();
+	}
+	else
+		status = 304; // not modified
+    return (Response(status));
+}
 
 static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
-	Response response(200);
+	std::ofstream	ofile;
 
-	return (response);
+	(void)servConfREF;
+	(void)locREF;
+	if (Autoindex::isPathExist(filePathREF) < 0)
+	{
+		ofile.open(filePathREF, std::ios::trunc);
+		if (ofile.is_open())
+		{
+			ofile << requestREF.getMessageBody();
+			ofile.close();
+		}
+		return (Response(201)); //created
+	}
+    return (Response(304)); // not modified
 }
 
 static Response handleDelete(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
@@ -278,15 +300,14 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 	(void) servConfREF;
 	(void) locREF;
 
-	if (Autoindex::isPathFolder(filePathREF) > 0 || Autoindex::isPathReg(filePathREF) > 0) {
+	if (Autoindex::isPathExist(filePathREF))
+	{
 		if (remove(filePathREF.c_str()) == 0)
-			return (Response(204));
+			return (Response(204)); //no content
 		else
-			return (Response(403));
+			return (Response(403)); 
 	}
-	else
-		return (Response(404));
-	return (Response(status, "<html><body><h1>File deleted.</h1></body></html>"));
+	return (Response(404));
 }
 
 /**
@@ -312,22 +333,33 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	filePath = getFilePath(requestREF, servConfREF, *locItc);
 	switch (requestREF.getHttpMethodEnum())
 	{
-	case HEAD:
-		*this = handleHead(filePath, requestREF, servConfREF, *locItc);
-		break;
-	case GET:
-		*this = handleGet(filePath, requestREF, servConfREF, *locItc);
-		break;
-	// case PUT:
-	// 	*this = handlePut();
-	// case POST:
-	// 	*this = handlePost();
-	case DELETE:
-		*this = handleDelete(filePath, requestREF, servConfREF, *locItc);
-		break ;
-	default:
-		*this = Response(501);
-		break;
+		case HEAD:
+		{
+			*this = handleHead(filePath, requestREF, servConfREF, *locItc);
+			break;
+		}
+		case GET:
+		{
+			*this = handleGet(filePath, requestREF, servConfREF, *locItc);
+			break;
+		}
+		case PUT:
+		{
+			*this = handlePut(filePath, requestREF, servConfREF, *locItc);
+			break ;
+		}
+		case POST:
+		{
+			*this = handlePost(filePath, requestREF, servConfREF, *locItc);
+			break ;
+		}
+		case DELETE:
+		{
+			*this = handleDelete(filePath, requestREF, servConfREF, *locItc);
+			break ;
+		}
+		default:
+			*this = Response(501);
 	}
 	return (*this);
 };

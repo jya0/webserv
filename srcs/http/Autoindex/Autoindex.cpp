@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 03:52:55 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/07 21:35:15 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,4 +107,12 @@ int	Autoindex::isPathWrite(const std::string &path) {
 	if (stat(path.c_str(), &pathStat) < 0)
 		return (-1);
 	return (pathStat.st_mode & S_IWUSR);
+};
+
+int	Autoindex::isPathExist(const std::string &path) {
+	struct stat	pathStat;
+
+	if (stat(path.c_str(), &pathStat) < 0)
+		return (-1);
+	return (true);
 };
