@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/07 21:31:53 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/08 14:53:18 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <sys/wait.h>
 #include "PollManager.hpp"
 #include "WebServer.hpp"
+
+#define TIME_OUT_SEC	5
 
 class ServerMonitor
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MimeTypes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 22:40:56 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/08 14:50:30 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include	"MimeTypes.hpp"
 #include	<unistd.h>
 
-std::string	http::checkMimeType(const std::string &uriREF) {
+/* std::string	http::checkMimeType(const std::string &uriREF) {
 	http::t_mime_map::const_iterator	itc;
 	std::stringstream					ss;
 	std::string							suffix;
@@ -25,6 +25,22 @@ std::string	http::checkMimeType(const std::string &uriREF) {
 	ss >> suffix;
 	http::IsMimeTypeUnary	mimeUnary(suffix);
 	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), mimeUnary);
+	if (itc != mimeTypes.end())
+		return (itc->second);
+	return ("");
+};
+ */
+
+std::string	http::checkMimeType(const std::string &uriREF) {
+	http::t_mime_map::const_iterator	itc;
+	size_t								lastDot;
+	std::string							suffix;
+
+	lastDot = uriREF.rfind('.');
+	if (lastDot == std::string::npos || (lastDot + 1) >= uriREF.length())
+		return ("");
+	suffix = uriREF.substr(lastDot + 1, std::string::npos);
+	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), http::IsMimeTypeUnary(suffix));
 	if (itc != mimeTypes.end())
 		return (itc->second);
 	return ("");

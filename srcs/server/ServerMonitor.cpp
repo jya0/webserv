@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/07 21:58:58 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/08 14:53:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void ServerMonitor::monitorCGI(int server)
 	for (itr = _cgiScripts.begin(); itr != _cgiScripts.end();)
 	{
 		curr_time = std::clock();
-		if ((curr_time - itr->second.getStartTime()) >= (CLOCKS_PER_SEC * 10))
+		if ((curr_time - itr->second.getStartTime()) >= (CLOCKS_PER_SEC * TIME_OUT_SEC))
 		{
 			kill(itr->second.getChildPid(), SIGKILL);
 			_servers.at((itr->first))->closeCGI(itr->second);

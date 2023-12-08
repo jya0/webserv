@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 13:15:25 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 14:38:06 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,14 +186,14 @@ static Response readContent(const std::string &filePathREF, const Request &reque
 	std::string result;
 	std::ifstream infile;
 
-	if (Autoindex::isPathFolder(filePathREF) == true)
+	if (Autoindex::isPathFolder(filePathREF) > 0)
 	{
 		if (locREF.getAutoIndex() == true)
 			result = Autoindex::genPage(filePathREF.c_str(), requestREF, servConfREF);
 		else
 			return (Response(403)); // forbidden
 	}
-	else if (Autoindex::isPathReg(filePathREF) == true)
+	else if (Autoindex::isPathReg(filePathREF) > 0)
 	{
 		infile.open(filePathREF.c_str(), std::ios::in);
 		if (infile.is_open())
@@ -242,7 +242,7 @@ static Response handlePut(const std::string &filePathREF, const Request &request
 	(void)servConfREF;
 	(void)locREF;
 	status = 201; //created
-	if (Autoindex::isPathExist(filePathREF) == true)
+	if (Autoindex::isPathExist(filePathREF) > 0)
 		status = 204; //no content
 	ofile.open(filePathREF, std::ios::trunc);
 	if (ofile.is_open())
@@ -260,7 +260,7 @@ static Response handlePost(const std::string &filePathREF, const Request &reques
 
 	(void)servConfREF;
 	(void)locREF;
-	if (Autoindex::isPathExist(filePathREF) < 0)
+	if (Autoindex::isPathExist(filePathREF) > 0)
 	{
 		ofile.open(filePathREF, std::ios::trunc);
 		if (ofile.is_open())
@@ -279,7 +279,7 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 	(void) servConfREF;
 	(void) locREF;
 
-	if (Autoindex::isPathExist(filePathREF))
+	if (Autoindex::isPathExist(filePathREF) > 0)
 	{
 		if (remove(filePathREF.c_str()) == 0)
 			return (Response(204)); //no content

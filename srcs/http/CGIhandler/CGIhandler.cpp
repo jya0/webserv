@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 21:35:13 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/08 14:24:21 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,16 @@ CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outF
 	_cgiEnv["SERVER_SOFTWARE"]		= SERVER_SOFTWARE;
 };
 
+/* static std::string	getQueryString(const http::Request &requestREF)
+{
+	std::string	queryString;
+
+	if (requestREF.getHttpMethodEnum() == GET)
+	{
+		
+	}
+}
+ */
 CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF) {
 	*this = CGIhandler();
 	(void)locationREF;
