@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 13:11:34 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 13:15:25 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,11 +202,10 @@ static Response readContent(const std::string &filePathREF, const Request &reque
 			infile.close();
 		}
 	}
+	else if (errno == EACCES)
+		return (Response(403)); //forbidden
 	else
-	{
-		if (errno == EACCES)
-			return (Response(403)); //forbidden
-	}
+		return (Response(404));
 	header_GetHead(response, result);
 	response.setMessageBody(result);
 	return (response);
