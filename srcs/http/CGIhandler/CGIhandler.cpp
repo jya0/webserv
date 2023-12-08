@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 14:24:21 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 15:34:42 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,27 @@ CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outF
 	_cgiEnv["SERVER_SOFTWARE"]		= SERVER_SOFTWARE;
 };
 
-/* static std::string	getQueryString(const http::Request &requestREF)
+static std::string	getQueryString(const http::Request &requestREF)
 {
-	std::string	queryString;
+	size_t		queryDelimPos;
 
-	if (requestREF.getHttpMethodEnum() == GET)
+	switch	(requestREF.getHttpMethodEnum())
 	{
-		
+		case (HEAD):
+		case (GET):
+		{
+			queryDelimPos = requestREF.getUri().find(QUERY_DELIM);
+			if (queryDelimPos == std::string::npos || (queryDelimPos + 1) >= requestREF.getUri().length())
+				return ("");
+			return (requestREF.getUri().substr(queryDelimPos, std::string::npos));
+		}
+		case (POST):
+			return (requestREF.getMessageBody());
+		default :
+			return ("");
 	}
 }
- */
+
 CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF) {
 	*this = CGIhandler();
 	(void)locationREF;
@@ -72,12 +83,12 @@ CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Loca
 	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
 	// _cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
 	// _cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
-	// _cgiEnv["QUERY_STRING"]			= requestREF.getHeaderValue(requestREF.getQuery());
+	_cgiEnv["QUERY_STRING"]			= getQueryString(requestREF);
 	// _cgiEnv["REMOTE_ADDR"]			= requestREF.getHeaderValue();
 	// _cgiEnv["REMOTE_HOST"]			= requestREF.getHeaderValue();
 	// _cgiEnv["REMOTE_IDENT"]			= requestREF.getHeaderValue();
 	// _cgiEnv["REMOTE_USER"]			= requestREF.getHeaderValue();
-	_cgiEnv["REQUEST_METHOD"] = requestREF.getHttpMethod();
+	_cgiEnv["REQUEST_METHOD"]		= requestREF.getHttpMethod();
 	// _cgiEnv["SCRIPT_NAME"]			= requestREF.getHeaderValue();
 	// _cgiEnv["SERVER_PORT"]			= requestREF.getHeaderValue();
 };

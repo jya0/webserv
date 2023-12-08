@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/04 14:57:55 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/08 15:24:12 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # define	GATEWAY_INTERFACE	"CGI/1.1"
 # define	SERVER_PROTOCOL		"HTTP/1.1"
 # define	SERVER_SOFTWARE		"42-webserv-team-kry/0.1"
+# define	QUERY_DELIM			'?'
 
 # define	READ_BUF_SIZE		424242
 

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 14:38:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 15:30:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ static Response handlePut(const std::string &filePathREF, const Request &request
 	status = 201; //created
 	if (Autoindex::isPathExist(filePathREF) > 0)
 		status = 204; //no content
-	ofile.open(filePathREF, std::ios::trunc);
+	ofile.open(filePathREF.c_str(), std::ios::trunc);
 	if (ofile.is_open())
 	{
 		ofile << requestREF.getMessageBody();
@@ -262,7 +262,7 @@ static Response handlePost(const std::string &filePathREF, const Request &reques
 	(void)locREF;
 	if (Autoindex::isPathExist(filePathREF) > 0)
 	{
-		ofile.open(filePathREF, std::ios::trunc);
+		ofile.open(filePathREF.c_str(), std::ios::trunc);
 		if (ofile.is_open())
 		{
 			ofile << requestREF.getMessageBody();
