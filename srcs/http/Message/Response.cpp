@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 15:30:08 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 16:17:16 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,9 @@ static Response handlePut(const std::string &filePathREF, const Request &request
 	}
 	else
 		status = 304; // not modified
-    return (Response(status));
+	Response response (status);
+	response.addHeader(Header("Content-Type", "text/html"));
+	return (response);
 }
 
 static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
@@ -260,7 +262,7 @@ static Response handlePost(const std::string &filePathREF, const Request &reques
 
 	(void)servConfREF;
 	(void)locREF;
-	if (Autoindex::isPathExist(filePathREF) > 0)
+	if (Autoindex::isPathExist(filePathREF) == 0)
 	{
 		ofile.open(filePathREF.c_str(), std::ios::trunc);
 		if (ofile.is_open())
@@ -284,7 +286,7 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 		if (remove(filePathREF.c_str()) == 0)
 			return (Response(204)); //no content
 		else
-			return (Response(403)); 
+			return (Response(403));
 	}
 	return (Response(404));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 14:37:56 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 16:00:10 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,5 @@ int	Autoindex::isPathWrite(const std::string &path) {
 int	Autoindex::isPathExist(const std::string &path) {
 	struct stat	pathStat;
 
-	return ((stat(path.c_str(), &pathStat) < 0) ? -1 : 1);
+	return ((stat(path.c_str(), &pathStat) == 0) ? 1 : 0);
 };
