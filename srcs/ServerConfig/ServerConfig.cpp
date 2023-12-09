@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 16:37:54 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/09 03:00:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 /* class ServerConfig */
 ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
 									_autoIndex(DEFAULT_AUTO_INDEX), 
-									_sizeCMB(DEFAULT_CMB_SIZE), 
-									_errorPage(DEFAULT_ERROR_PAGE), 
+									_sizeCMB(DEFAULT_CMB_SIZE),
 									_index(std::vector< std::string >(1, DEFAULT_INDEX)), 
 									_return(std::make_pair(DEFAULT_RETURN_CODE, DEFAULT_RETURN_URI)),
 									_root(DEFAULT_ROOT) {};
@@ -32,10 +31,6 @@ static std::pair< std::string, int >	parseListenDirective(std::string listenDve)
 	std::string			portStr;
 	int					port;
 
-	{
-		if (std::count(listenDve.begin(), listenDve.end(), ':') > 1)
-			std::cout << "DO YOU REMEMBER?" << std::endl;
-	}
 	ssListen.str(listenDve);
 	std::getline(ssListen, ipStr, ':');
 	ssListen >> portStr;
@@ -56,6 +51,27 @@ static std::pair< int, std::string >	parseReturnDirective(std::string returnDve)
 	returnCode = (returnCodeStr.empty()) ? DEFAULT_RETURN_CODE : std::atoi(returnCodeStr.c_str());
 	returnUriStr = (returnUriStr.empty()) ? DEFAULT_RETURN_URI : returnUriStr;
 	return (std::make_pair(returnCode, returnUriStr));
+};
+
+static std::vector< t_errorPage >	parseErrorPages(const std::vector< std::vector< std::string > > &errorPages) {
+	std::vector< t_errorPage >	parsedErrorPages;
+	t_errorPage					parsedErrorPage;
+	std::stringstream			ss;
+	int							code;
+
+	for (std::vector< std::vector< std::string > >::const_iterator itc1 = errorPages.begin(); itc1 != errorPages.end(); ++itc1)
+	{
+		parsedErrorPage.second = itc1->back();
+		for (std::vector< std::string >::const_iterator itc2 = itc1->begin(); itc2 != (itc1->end() - 1); ++itc2)
+		{
+			ss.str(*itc2);
+			ss.clear();
+			ss >> code;
+			parsedErrorPage.first.push_back(code);
+		};
+		parsedErrorPages.push_back(parsedErrorPage);
+	};
+	return (parsedErrorPages);
 };
 
 ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
@@ -85,7 +101,7 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			_sizeCMB = std::atof(serverDve->readDirectiveSimple(DVE_CMB_SIZE).front().c_str());
 		} catch (std::exception &e) {};
 		try {
-			_errorPage = serverDve->readDirectiveSimple(DVE_ERROR_PAGE).front();
+			_errorPages = parseErrorPages(serverDve->readDirectivesSimple(DVE_ERROR_PAGE));
 		} catch (std::exception &e) {};
 		try {
 			_index = serverDve->readDirectiveSimple(DVE_INDEX);
@@ -111,7 +127,7 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
 		_locations		= serverConfigREF.getLocations();
 		_autoIndex		= serverConfigREF.getAutoIndex();
 		_sizeCMB		= serverConfigREF.getSizeCMB();
-		_errorPage		= serverConfigREF.getErrorPage();
+		_errorPages		= serverConfigREF.getErrorPages();
 		_index			= serverConfigREF.getIndex();
 		_return			= serverConfigREF.getReturn();
 		_root			= serverConfigREF.getRoot();
@@ -150,8 +166,20 @@ const std::size_t										&ServerConfig::getSizeCMB(void) const {
 	return (_sizeCMB);
 };
 
-const std::string										&ServerConfig::getErrorPage(void) const {
-	return (_errorPage);
+const std::vector< t_errorPage >						&ServerConfig::getErrorPages(void) const {
+	return (_errorPages);
+};
+
+std::string												ServerConfig::getErrorPage(const int &statusCode) const {
+	for (std::vector< t_errorPage >::const_iterator itc1 = _errorPages.begin(); itc1 != _errorPages.end(); ++itc1)
+	{
+		for (std::vector< int >::const_iterator itc2 = itc1->first.begin(); itc2 != itc1->first.end(); ++itc2)
+		{
+			if (statusCode == *itc2)
+				return (itc1->second);
+		}
+	}
+	return ("");
 };
 
 const std::pair< int, std::string >						&ServerConfig::getReturn(void) const {

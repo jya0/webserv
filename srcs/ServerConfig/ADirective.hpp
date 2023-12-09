@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 09:50:31 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/06 04:16:22 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/08 23:47:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ class ADirective {
 		virtual	~ADirective(void);
 		ADirective	&operator=(ADirective const	&dveREF);
 
-		std::string	getName(void) const;
-		std::vector< std::string >	getValues(void) const;
-		e_directiveType				getType(void) const;
+		const std::string					&getName(void) const;
+		const std::vector< std::string >	&getValues(void) const;
+		const e_directiveType				&getType(void) const;
 		void	setName(std::string const	&strREF);
 		void	setValues(std::vector< std::string > const	&strsREF);
 		virtual void	printDirective(void) const;

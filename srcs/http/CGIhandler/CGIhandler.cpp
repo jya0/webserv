@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 04:50:38 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/09 04:51:48 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static std::string	getQueryString(const http::Request &requestREF)
 		case (GET):
 		{
 			queryDelimPos = requestREF.getUri().find(QUERY_DELIM);
-			if (queryDelimPos == std::string::npos || (queryDelimPos + 1) >= requestREF.getUri().length())
+			if (queryDelimPos == std::string::npos || (queryDelimPos + 1) >= requestREF.getUri().size())
 				return ("");
 			return (requestREF.getUri().substr(queryDelimPos, std::string::npos));
 		}

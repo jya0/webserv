@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 16:35:00 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/09 03:00:53 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 # define	DEFAULT_AUTO_INDEX				false
 # define	DEFAULT_CGI_BIN					"CGI/"
 # define	DEFAULT_CMB_SIZE				42424242ul
-# define	DEFAULT_ERROR_PAGE				"error_page"
 # define	DEFAULT_INDEX					"index.html"
 # define	DEFAULT_LISTEN_IP				"127.0.0.1"
 # define	DEFAULT_LISTEN_PORT				8000
@@ -34,20 +33,22 @@
 # define	DEFAULT_LIMIT_EXCEPT_METHODS	0xffffff
 # define	DEFAULT_LOCATION_URI			"" //not defined by NGINX
 
+typedef std::pair< std::vector< int >, std::string >	t_errorPage;
+
 class	ServerConfig {
 	public:
 		class	Location;
 	private:
-		std::pair< std::string, int >		_listen;
-		std::vector< std::string >			_serverNames;
-		std::vector< Location >				_locations;
+		std::pair< std::string, int >	_listen;
+		std::vector< std::string >		_serverNames;
+		std::vector< Location >			_locations;
 	protected:
-		bool								_autoIndex;
-		std::size_t							_sizeCMB;
-		std::string							_errorPage;
-		std::vector< std::string >			_index;
-		std::pair< int, std::string >		_return;
-		std::string							_root;
+		bool							_autoIndex;
+		std::size_t						_sizeCMB;
+		std::vector< t_errorPage >		_errorPages;
+		std::vector< std::string >		_index;
+		std::pair< int, std::string >	_return;
+		std::string						_root;
 	public:
 		ServerConfig(void);
 		ServerConfig(DirectiveBlock *serverDveBlock);
@@ -62,7 +63,8 @@ class	ServerConfig {
 		std::vector< Location >::const_iterator	getLocation(const std::string &uriREF) const;
 		const bool								&getAutoIndex(void) const;
 		const std::size_t						&getSizeCMB(void) const;
-		const std::string						&getErrorPage(void) const;
+		const std::vector< t_errorPage >		&getErrorPages(void) const;
+		std::string								getErrorPage(const int &statusCode) const;
 		const std::pair< int, std::string >		&getReturn(void) const;
 		const std::string						&getRoot(void) const;
 };

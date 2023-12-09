@@ -33,7 +33,7 @@ namespace	ServerParser {
 	extern const std::vector< std::string >	dveNames;
 	extern size_t							loadLineNo;
 	extern size_t							checkLineNo;
-	std::vector<std::string>				tokenize(const std::string &lineREF);
+	std::vector< std::string >				tokenize(const std::string &lineREF);
 
 	class ParseErrorException;
 };
