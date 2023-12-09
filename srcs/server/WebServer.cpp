@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/09 00:34:15 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/09 18:20:17 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ int WebServer::acceptConnection()
 	int	client;
 
 	client = connection.acceptConnection();
-	clients.push_back(client);
+	if (client >= 0)
+		clients.push_back(client);
 	return (client);
 }
 

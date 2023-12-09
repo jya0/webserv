@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/09 04:15:29 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/09 18:13:35 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void ServerMonitor::monitorCGI()
 	for (size_t i = 0; i < _cgiScripts.size(); i++)
 	{
 		curr_time = std::clock();
-		if ((curr_time - _cgiScripts[i].getStartTime()) >= ((size_t)(CLOCKS_PER_SEC) * TIME_OUT_SEC))
+		if ((size_t)(curr_time - _cgiScripts[i].getStartTime()) >= ((size_t)(CLOCKS_PER_SEC) * TIME_OUT_SEC))
 		{
 			kill(_cgiScripts[i].getChildPid(), SIGKILL);
 			clientSock = _cgiScripts[i].getClientSocket();
@@ -83,10 +83,10 @@ void ServerMonitor::startServers()
 		_sockets.addFd(itr->second->getConnection().getPassiveSocket(), POLLIN | POLLOUT);
 		itr->second->startListening();
 	}
-	int rc;
-	int triggered;
-	int client;
-	int server;
+	int rc = 0;
+	int triggered = 0;
+	int client = 0;
+	int server = 0;
 
 	i = 0;
 	while (2)

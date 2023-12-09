@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 04:51:48 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/09 17:56:40 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,26 @@ static std::string	getQueryString(const http::Request &requestREF)
 	}
 }
 
-CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF) {
+// static std::string getCgiPathInfo(const http::Request &requestREF)
+// {
+// 	size_t pathDelimPos;
+
+// 	pathDelimPos = requestREF.getUri().find(PATH);
+// 	if (pathDelimPos == std::string::npos || (pathDelimPos + 1) >= requestREF.getUri().size())
+// 		return ("");
+// 	return (requestREF.getUri().substr(pathDelimPos, std::string::npos));
+// 	return ("");
+// }
+
+CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF)
+{
+	(void) locationREF;
 	*this = CGIhandler();
-	(void)locationREF;
 	_cgiRequest = requestREF;
 	_cgiEnv["AUTH_TYPE"] 			= requestREF.getHeaderValue(HEADER_KEY_AUTH);
 	_cgiEnv["CONTENT_LENGTH"]		= http::toString(requestREF.getMessageBody().size());
 	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
-	// _cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
+	// _cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(getCgiPathInfo(locationREF));
 	// _cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
 	_cgiEnv["QUERY_STRING"]			= getQueryString(requestREF);
 	// _cgiEnv["REMOTE_ADDR"]			= requestREF.getHeaderValue();
@@ -155,11 +167,6 @@ static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF) {
 			++i;
 		}
 		envArr[i] = NULL;
-		std::cout<<"\n\n\nENV VARS!!!***********************************\n";
-		for (int i = 0; envArr[i]; i++)
-		{
-			std::cout << envArr[i] << std::endl;
-		}
 	}
 	catch (std::exception &e)
 	{
@@ -224,9 +231,7 @@ std::string CGIhandler::executeCGI(const std::string &scriptName)
 	if (pid < 0)
 		throw(CGIexception("CGI failed to create fork!"));
 	if (pid == 0)
-	{
 		CGIchild(inFileFd, outFileFd, mapToArr(_cgiEnv), scriptName);
-	}
 	else
 	{
 		_childPid = pid;
@@ -296,7 +301,6 @@ int	CGIhandler::getClientSocket() {
 	return (_clientSocket);
 }
 
-
 int CGIhandler::getServerSocket() {
 	return (_serverSocket);
 }
@@ -305,6 +309,7 @@ void CGIhandler::setServerSocket(int serverSocket)
 {
 	_serverSocket = serverSocket;
 }
+
 void CGIhandler::setClientSocket(int clientSocket)
 {
 	_clientSocket = clientSocket;

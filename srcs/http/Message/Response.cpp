@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 04:52:02 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/09 17:57:54 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,23 +216,48 @@ static void	callCGI(const std::string &filePathREF, const Request &requestREF, c
 
 	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
 		cgiHandler.executeCGI(filePathREF);
-	std::cerr<<"\n\n\n*********** I DIDNT UN CGI BRO**********\n\n\n";
 }
 
 static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
     Response	response(200);
 
+	response.setResponseStatus(false);
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	response.setMessageBody("");
 	return (response);
 }
 
-static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+static bool resourceRequestedCGI(const std::string &filePathREF, const ServerConfig::Location &locREF)
+{
+	size_t pos = filePathREF.find(".") + 1;
+	if (pos == filePathREF.size())
+		return (false);
+	std::string fileExtension = filePathREF.substr(pos, filePathREF.size());
+	if (locREF.getLocation(fileExtension) != locREF.getLocations().end())
+		return false;
+	return true;
+}
+
+static std::string getScriptPath(const std::string &filePathREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+{
+	std::string scriptPath = filePathREF;
+
+	if (locREF.getRoot().empty())
+		if (!servConfREF.getRoot().empty())
+			scriptPath = servConfREF.getRoot() + filePathREF;
+	return (scriptPath);
+}
+
+static Response	handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
 {
 	Response response(200);
-
+	std::string scriptPath;
 	response.setResponseStatus(false);
-	callCGI(filePathREF, requestREF, locREF);
+	if (resourceRequestedCGI(filePathREF, locREF))
+	{
+		scriptPath = getScriptPath(filePathREF, servConfREF, locREF);
+		callCGI(scriptPath, requestREF, locREF);
+	}
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
 }
