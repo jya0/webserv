@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/07 15:41:29 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/09 22:21:42 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,8 @@
 
 # REMEMBER TO REMOVE REMOVE REMOVE REMOVE REMOVE TEST FILES.CPP FROM LIBS!!!!!
 
-CXX			:=	c++ 
-CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+CXX			:=	c++
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3  -fsanitize=address -std=c++98 -fPIC
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
@@ -40,7 +40,7 @@ HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
 
 RM			:=	rm
 FILES		:=	ADirective	DirectiveBlock	DirectiveSimple	\
-				ServerParser_namespace			ServerConfig	
+				ServerParser_namespace			ServerConfig
 
 SRCS		=	$(addsuffix .cpp, $(FILES))
 

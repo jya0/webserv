@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/07 15:41:38 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/09 22:21:31 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Autoindex -*-
 
-CXX			:=	c++ 
-CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+CXX			:=	c++
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3  -fsanitize=address -std=c++98 -fPIC
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
