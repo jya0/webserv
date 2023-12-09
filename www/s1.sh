@@ -1,6 +1,6 @@
 #!/bin/bash
-while true
-do
-	echo "Press [CTRL+C] to stop.."
-	sleep 1
-done
+echo "HELLO\n"
+echo $$
+echo "\n"
+echo "Press [CTRL+C] to stop..."
+echo $SERVER_PROTOCOL

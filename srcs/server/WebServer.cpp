@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/07 21:34:25 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/09 00:34:15 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void WebServer::closeCGI(CGIhandler &cgiREF)
 	ssize_t readReturn;
 	try
 	{
-		readBuf = new char[READ_BUF_SIZE];
+		readBuf = new char[READ_BUF_SIZE + 1];
 	}
 	catch (std::exception &e)
 	{
@@ -147,7 +147,7 @@ void WebServer::closeCGI(CGIhandler &cgiREF)
 	lseek(cgiREF.getOutFileFd(), 0, SEEK_SET);
 	do
 	{
-		std::memset(readBuf, 0, READ_BUF_SIZE);
+		std::memset(readBuf, 0, READ_BUF_SIZE + 1);
 		readReturn = read(cgiREF.getOutFileFd(), readBuf, READ_BUF_SIZE);
 		cgiResult += readBuf;
 	} while (readReturn > 0);

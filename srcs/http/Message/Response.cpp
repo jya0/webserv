@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 16:17:16 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/09 00:17:52 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,6 +216,7 @@ static void	callCGI(const std::string &filePathREF, const Request &requestREF, c
 
 	if (!http::checkMimeType(requestREF.getUri()).empty() && Autoindex::isPathReg(filePathREF) > 0 && Autoindex::isPathExec(filePathREF) > 0)
 		cgiHandler.executeCGI(filePathREF);
+	std::cerr<<"\n\n\n*********** I DIDNT UN CGI BRO**********\n\n\n";
 }
 
 static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
@@ -230,6 +231,7 @@ static Response handleGet(const std::string &filePathREF, const Request &request
 {
 	Response response(200);
 
+	response.setResponseStatus(false);
 	callCGI(filePathREF, requestREF, locREF);
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
@@ -281,12 +283,11 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 	(void) servConfREF;
 	(void) locREF;
 
-	if (Autoindex::isPathExist(filePathREF) > 0)
+	if (Autoindex::isPathExist(filePathREF) > 0 )
 	{
-		if (remove(filePathREF.c_str()) == 0)
-			return (Response(204)); //no content
-		else
-			return (Response(403));
+		if (Autoindex::isPathReg(filePathREF) > 0 && remove(filePathREF.c_str()) == 0)
+			return (Response(200)); //no content
+		return (Response(403)); //forbidden
 	}
 	return (Response(404));
 }

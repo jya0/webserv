@@ -75,6 +75,7 @@
 		"stack": "cpp",
 		"map": "cpp",
 		"__tree": "cpp",
-		"filesystem": "cpp"
+		"filesystem": "cpp",
+		"*.tpp": "cpp"
 	}
 }
