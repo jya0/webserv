@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 01:12:16 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 20:40:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,21 @@
 };
  */
 
-std::string	http::checkMimeType(const std::string &uriREF) {
-	http::t_mime_map::const_iterator	itc;
+std::string	http::getSuffix(const std::string &fileREF) {
 	size_t								lastDot;
 	std::string							suffix;
 
-	lastDot = uriREF.rfind('.');
-	if (lastDot == std::string::npos || (lastDot + 1) >= uriREF.size())
+	lastDot = fileREF.rfind('.');
+	if (lastDot == std::string::npos || (lastDot + 1) >= fileREF.size())
 		return ("");
-	suffix = uriREF.substr(lastDot + 1, std::string::npos);
-	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), http::IsMimeTypeUnary(suffix));
+	suffix = fileREF.substr(lastDot + 1, std::string::npos);
+	return (suffix);
+};
+
+std::string	http::checkMimeType(const std::string &uriREF) {
+	http::t_mime_map::const_iterator	itc;
+
+	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), http::IsMimeTypeUnary(getSuffix(uriREF)));
 	if (itc != mimeTypes.end())
 		return (itc->second);
 	return ("");

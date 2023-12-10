@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 18:14:20 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 21:58:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include	<limits>
 # include	<vector>
 # include	"DirectiveBlock.hpp"
+# include	"MimeTypes.hpp"
 
 # define	DEFAULT_AUTO_INDEX				false
 # define	DEFAULT_CMB_SIZE				42424242ul
@@ -116,6 +117,10 @@ class	ServerConfig::Location::IsLocationUnary {
 		IsLocationUnary(const std::string &uri): _uri(uri) {};
 		bool	operator()(const Location &locationREF)
 		{
+			if (_uri.empty())
+				return (false);
+			if (http::checkMimeType(_uri) == MIME_CGI)
+				return (('.' + http::getSuffix(_uri)) == locationREF.locationUri);
 			return (_uri.compare(0, locationREF.locationUri.size(), locationREF.locationUri) == 0);
 		};
 };
