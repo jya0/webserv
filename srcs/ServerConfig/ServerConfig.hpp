@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 21:58:22 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 00:50:14 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@
 # include	"MimeTypes.hpp"
 
 # define	DEFAULT_AUTO_INDEX				false
-# define	DEFAULT_CMB_SIZE				42424242ul
+# define	DEFAULT_CMB_SIZE				-1
 # define	DEFAULT_INDEX					"index.html"
 # define	DEFAULT_LISTEN_IP				"127.0.0.1"
-# define	DEFAULT_LISTEN_PORT				8000
-# define	DEFAULT_RETURN_CODE				302	//not defined by NGINX
+# define	DEFAULT_LISTEN_PORT				80
+# define	DEFAULT_RETURN_CODE				301	//not defined by NGINX
 # define	DEFAULT_RETURN_URI				""	//not defined by NGINX
 # define	DEFAULT_ROOT					""	//will be cwd if not specified
 # define	DEFAULT_SERVER_NAMES			""
@@ -56,7 +56,7 @@ class	ServerConfig {
 		std::vector< Location >			_locations;
 	protected:
 		bool							_autoIndex;
-		std::size_t						_sizeCMB;
+		ssize_t							_sizeCMB;
 		std::vector< t_errorPage >		_errorPages;
 		std::vector< std::string >		_index;
 		Return							_return;
@@ -74,7 +74,7 @@ class	ServerConfig {
 		const std::vector< Location >			&getLocations(void) const;
 		std::vector< Location >::const_iterator	getLocation(const std::string &uriREF) const;
 		const bool								&getAutoIndex(void) const;
-		const std::size_t						&getSizeCMB(void) const;
+		const ssize_t							&getSizeCMB(void) const;
 		const std::vector< t_errorPage >		&getErrorPages(void) const;
 		std::string								getErrorPage(const int &statusCode) const;
 		const Return							&getReturn(void) const;

@@ -34,6 +34,7 @@ namespace	ServerParser {
 	extern size_t							loadLineNo;
 	extern size_t							checkLineNo;
 	std::vector< std::string >				tokenize(const std::string &lineREF);
+	std::pair< std::string, std::string >	splitByTwo(const std::string &strREF, const char &delimREF);
 
 	class ParseErrorException;
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 17:56:40 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/11 00:35:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include 	"CGIhandler.hpp"
 #include 	"Header.hpp"
 #include	"ToString.tpp"
+#include	"ServerParser_namespace.hpp"
 #include	<cstring>
 #include	<cstdlib>
 
@@ -55,18 +56,14 @@ CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outF
 
 static std::string	getQueryString(const http::Request &requestREF)
 {
-	size_t		queryDelimPos;
+	std::pair< std::string, std::string >	queryPair;
 
+	queryPair = ServerParser::splitByTwo(requestREF.getUri(), QUERY_DELIM);
 	switch	(requestREF.getHttpMethodEnum())
 	{
 		case (HEAD):
 		case (GET):
-		{
-			queryDelimPos = requestREF.getUri().find(QUERY_DELIM);
-			if (queryDelimPos == std::string::npos || (queryDelimPos + 1) >= requestREF.getUri().size())
-				return ("");
-			return (requestREF.getUri().substr(queryDelimPos, std::string::npos));
-		}
+			return (queryPair.second);
 		case (POST):
 			return (requestREF.getMessageBody());
 		default :

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/10 17:58:55 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 23:13:50 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ namespace http {
 	class	Response: public AMessage
 	{
 		private:
+		protected:
 			std::string		_httpVersion;
 			unsigned short	_httpStatusCode;
 			bool			_ready;
-		protected:
 		public:
 			Response(void);
 			Response(const Response &responseREF);

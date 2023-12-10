@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 22:20:33 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 00:50:42 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include	<algorithm>
 #include	"ServerConfig.hpp"
 #include	"Response.hpp"
+#include	"ServerParser_namespace.hpp"
 
 /* class ServerConfig */
 ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
@@ -26,15 +27,15 @@ ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFA
 ServerConfig::~ServerConfig(void) {};
 
 static std::pair< std::string, int >	parseListenDirective(std::string listenDve) {
-	std::stringstream	ssListen;
-	std::string			ipStr;
-	std::string			portStr;
-	int					port;
+	std::pair< std::string, std::string >	listenPair;
+	std::string								ipStr;
+	std::string								portStr;
+	int										port;
 
-	ssListen.str(listenDve);
-	std::getline(ssListen, ipStr, ':');
-	ssListen >> portStr;
+	listenPair = ServerParser::splitByTwo(listenDve, ':');
+	ipStr = listenPair.first;
 	ipStr = (ipStr.empty()) ? DEFAULT_LISTEN_IP : ipStr;
+	portStr = listenPair.second;
 	port = (portStr.empty()) ? DEFAULT_LISTEN_PORT : strtol(portStr.c_str(), NULL, 10);
 	return (std::make_pair(ipStr, port));
 };
@@ -160,7 +161,7 @@ const bool												&ServerConfig::getAutoIndex(void) const {
 	return (_autoIndex);
 };
 
-const std::size_t										&ServerConfig::getSizeCMB(void) const {
+const ssize_t											&ServerConfig::getSizeCMB(void) const {
 	return (_sizeCMB);
 };
 

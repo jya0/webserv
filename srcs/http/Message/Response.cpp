@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 20:27:16 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 02:05:52 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include	<sstream>
 #include	<cstdlib>
 #include	"Http_namespace.hpp"
+#include	"ServerParser_namespace.hpp"
 
 using namespace http;
 
@@ -22,8 +23,10 @@ using namespace http;
  */
 Response::Response(void) : AMessage()
 {
+	this->addHeader(Header("Content-Type", "text/html"));
+	this->addHeader(Header("Server", SERVER_SOFTWARE));
 	_ready = false;
-	return;
+	return ;
 }
 
 /**
@@ -40,7 +43,6 @@ Response::Response(int status)
 	ss << this->_httpVersion << " " << status << " " << this->getHttpStatusString(status) << CR_LF;
 	this->_startLine = ss.str();
 	this->setMessageBody(this->getHttpStatusString(status));
-	this->addHeader(Header("Content-Type", "text/html"));
 	this->addHeader(Header("Content-Length", http::toString(this->getMessageBody().size())));
 	_ready = true;
 	return;
@@ -167,6 +169,7 @@ Response::RedirectResponse	&Response::RedirectResponse::operator=(const Redirect
 
 Response::RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
 	ServerConfig::Return	returnObj;
+	std::string				indexPath;
 
 	if (locPTR != NULL)
 		returnObj = locPTR->getReturn();
@@ -175,7 +178,19 @@ Response::RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, co
 	if (returnObj.isInit)
 		this->Response::operator=(Response(returnObj.code, "Location: " + returnObj.uri));
 	else
-		this->Response::operator=(ErrorPageResponse(404, servConfREF, locPTR));
+	{
+		if (locPTR->locationUri == "/")
+		{
+			for (std::vector< std::string >::const_iterator itc = servConfREF.getIndex().begin(); itc != servConfREF.getIndex().end(); ++itc)
+			{
+				indexPath = servConfREF.getRoot() + *itc;
+				if (Autoindex::isPathExist(indexPath) > 0 && Autoindex::isPathReg(indexPath) > 0)
+					this->Response::operator=(Response(307, loadFile(indexPath)));
+			}
+		}
+		else
+			this->Response::operator=(Response(404));
+	}
 };
 
 /**
@@ -237,15 +252,15 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 	return (filePath);
 }
 
-static void header_GetHead(Response &response, const std::string &fileStr)
+static void header_for_GetHead(Response &response, const std::string &fileStr)
 {
-	Header length("Content-Length", http::toString(fileStr.size()));
-	Header type("Content-Type", "text/html");
-	Header server("Server", "webserv-kry");
-	// Header date("Date", getDate());
+	std::string	mimeType;
 
-	response.addHeader(length);
-	response.addHeader(type);
+	mimeType = checkMimeType(fileStr).empty();
+	if (mimeType.empty())
+		mimeType = "text/html";
+
+	response.addHeader(Header("Content-Type", mimeType));
 }
 
 static Response loadContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
@@ -266,7 +281,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		throw (403); //forbidden
 	else
 		throw (404);
-	header_GetHead(response, result);
+	header_for_GetHead(response, result);
 	response.setMessageBody(result);
 	return (response);
 };
@@ -282,47 +297,21 @@ static void	callCGI(const std::string &filePathREF, const Request &requestREF, c
 	}
 }
 
-static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
-    Response	response(200);
+static Response	handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+{
+	Response	response(200);
 
+	callCGI(filePathREF, requestREF, locREF);
 	response = loadContent(filePathREF, requestREF, servConfREF, locREF);
-	response.setMessageBody("");
+	response.addHeader(Header());
 	return (response);
 }
 
-/* static bool resourceRequestedCGI(const std::string &filePathREF, const ServerConfig &servConfigREF)
-{
-	size_t pos = filePathREF.find(".");
-	if (pos == std::string::npos)
-		return (false);
-	std::string fileExtension = filePathREF.substr(pos, filePathREF.size());
-	if (servConfigREF.getLocation(fileExtension) != servConfigREF.getLocations().end())
-		return true;
-	return false;
-}
+static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
+    Response	response(200);
 
-static std::string getScriptPath(const Request &requestREF, const ServerConfig &servConfREF)
-{
-
-	std::string uri = requestREF.getUri();
-
-	size_t pos = uri.find(".");
-	if (pos == std::string::npos)
-		return ("");
-	std::string fileExtension = uri.substr(pos, uri.size());
-	if (servConfREF.getLocation(fileExtension) != servConfREF.getLocations().end())
-		return (servConfREF.getLocation(fileExtension)->getRoot() + uri);
-
-	return ("");
-} */
-
-static Response	handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
-{
-	Response response(200);
-
-	response.setResponseStatus(false);
-	callCGI(filePathREF, requestREF, locREF);
-	response = loadContent(filePathREF, requestREF, servConfREF, locREF);
+	response = handleGet(filePathREF, requestREF, servConfREF, locREF);
+	response.setMessageBody("");
 	return (response);
 }
 
@@ -376,9 +365,33 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 	{
 		if (Autoindex::isPathReg(filePathREF) > 0 && remove(filePathREF.c_str()) == 0)
 			return (Response(200)); //no content
-		return (Response(403)); //forbidden
+		throw (403); //forbidden
 	}
-	return (Response(404));
+	throw (404);
+}
+
+static void	checkHost(const Request &requestREF, const ServerConfig &servConfREF)
+{
+	std::vector< std::string >	serverNames;
+	std::string					hostHeader;
+
+	hostHeader = ServerParser::splitByTwo(requestREF.getHeaderValue("Host"), ':').first;
+	std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << hostHeader;
+	serverNames = servConfREF.getServerNames();
+	if (hostHeader.empty() || 
+		(!serverNames.empty() && std::find(serverNames.begin(), serverNames.end(), hostHeader) == serverNames.end()))
+		throw (400);
+}
+
+static void	checkCMB(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
+{
+	ssize_t	clientBodySize;
+
+	clientBodySize = requestREF.getMessageBody().size();
+	if (locPTR->getSizeCMB() > 0 && clientBodySize > locPTR->getSizeCMB())
+		throw (413);
+	else if (servConfREF.getSizeCMB() > 0 && clientBodySize > servConfREF.getSizeCMB())
+		throw (413);
 }
 
 /**
@@ -393,16 +406,16 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	const ServerConfig::Location							*locPTR;
 	std::string												filePath;
 
-	locItc = servConfREF.getLocation(requestREF.getUri());
-	if (locItc == servConfREF.getLocations().end())
-		return (*this = RedirectResponse(servConfREF, NULL));
-	locPTR = &(*locItc);
-	// if (requestREF.getMessageBody().size() >  requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
-	// 	return (*this = ErrorPageResponse(413, servConfREF, NULL));
-	if (!(locItc->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
-		return (*this = ErrorPageResponse(405, servConfREF, locPTR));
-	filePath = getFilePath(requestREF, servConfREF, *locItc);
 	try {
+		checkHost(requestREF, servConfREF);
+		locItc = servConfREF.getLocation(requestREF.getUri());
+		if (locItc == servConfREF.getLocations().end())
+			return (*this = RedirectResponse(servConfREF, NULL));
+		locPTR = &(*locItc);
+		if (!(locItc->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
+			throw (405);
+		checkCMB(requestREF, servConfREF, locPTR);
+		filePath = getFilePath(requestREF, servConfREF, *locItc);
 		switch (requestREF.getHttpMethodEnum())
 		{
 			case (HEAD):

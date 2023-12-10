@@ -21,6 +21,18 @@ const std::vector< std::string >	ServerParser::dveNames = ServerParser::tokenize
 size_t							ServerParser::loadLineNo = 1;
 size_t							ServerParser::checkLineNo = 1;
 
+std::pair< std::string, std::string >	ServerParser::splitByTwo(const std::string &strREF, const char &delimREF)
+{
+	std::stringstream	ss;
+	std::string			first;
+	std::string			second;
+
+	ss.str(strREF);
+	std::getline(ss, first, delimREF);
+	ss >> second;
+	return (std::make_pair(first, second));
+}
+
 static ADirective	*tokenToDirective(std::vector< std::string > &tokens) {
 	DirectiveSimple	*directive;
 

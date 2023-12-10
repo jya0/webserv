@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 18:11:45 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 00:52:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ static bool	checkValues(const e_directiveType &dveTypeREF, const std::vector< st
 		}
 		case (CLIENT_MAX_BODY_SIZE):
 		{
-			return (dveValuesREF.size() == 1 && isNumber(dveValuesREF.front()));
+			return (dveValuesREF.size() == 1 && isNumber(dveValuesREF.front()) && std::atol(dveValuesREF.front().c_str()) > 0);
 		}
 		case (ERROR_PAGE):
 		{
