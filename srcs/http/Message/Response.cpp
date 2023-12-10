@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 18:40:40 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 18:53:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,7 +323,7 @@ static Response	handleGet(const std::string &filePathREF, const Request &request
 		if (!scriptPath.empty())
 			callCGI(scriptPath, requestREF, locREF);
 	}
-	response = readContent(filePathREF, requestREF, servConfREF, locREF);
+	response = loadContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
 }
 
