@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 20:27:16 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 00:27:42 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,32 +289,6 @@ static Response handleHead(const std::string &filePathREF, const Request &reques
 	response.setMessageBody("");
 	return (response);
 }
-
-/* static bool resourceRequestedCGI(const std::string &filePathREF, const ServerConfig &servConfigREF)
-{
-	size_t pos = filePathREF.find(".");
-	if (pos == std::string::npos)
-		return (false);
-	std::string fileExtension = filePathREF.substr(pos, filePathREF.size());
-	if (servConfigREF.getLocation(fileExtension) != servConfigREF.getLocations().end())
-		return true;
-	return false;
-}
-
-static std::string getScriptPath(const Request &requestREF, const ServerConfig &servConfREF)
-{
-
-	std::string uri = requestREF.getUri();
-
-	size_t pos = uri.find(".");
-	if (pos == std::string::npos)
-		return ("");
-	std::string fileExtension = uri.substr(pos, uri.size());
-	if (servConfREF.getLocation(fileExtension) != servConfREF.getLocations().end())
-		return (servConfREF.getLocation(fileExtension)->getRoot() + uri);
-
-	return ("");
-} */
 
 static Response	handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
 {

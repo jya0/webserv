@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 17:56:40 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/11 00:31:12 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,16 +74,23 @@ static std::string	getQueryString(const http::Request &requestREF)
 	}
 }
 
-// static std::string getCgiPathInfo(const http::Request &requestREF)
-// {
-// 	size_t pathDelimPos;
+static std::string getCgiPathInfo(const http::Request &requestREF)
+{
+	std::string uri = requestREF.getUri();
 
-// 	pathDelimPos = requestREF.getUri().find(PATH);
-// 	if (pathDelimPos == std::string::npos || (pathDelimPos + 1) >= requestREF.getUri().size())
-// 		return ("");
-// 	return (requestREF.getUri().substr(pathDelimPos, std::string::npos));
-// 	return ("");
-// }
+	// Find the position of '?' to separate the URI and query string
+	size_t queryPos = uri.find('?');
+	std::string pathInfo;
+
+		// Extract PATH_INFO from URI before '?'
+	if (queryPos != std::string::npos)
+		pathInfo = uri.substr(0, queryPos);
+	// No query string, use the whole URI as PATH_INFO
+	else
+		pathInfo = uri;
+	// Perform additional processing if needed (e.g., URL decoding)
+	return pathInfo;
+}
 
 CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF)
 {
@@ -93,7 +100,7 @@ CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Loca
 	_cgiEnv["AUTH_TYPE"] 			= requestREF.getHeaderValue(HEADER_KEY_AUTH);
 	_cgiEnv["CONTENT_LENGTH"]		= http::toString(requestREF.getMessageBody().size());
 	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
-	// _cgiEnv["PATH_INFO"]			= requestREF.getHeaderValue(getCgiPathInfo(locationREF));
+	_cgiEnv["PATH_INFO"]			= getCgiPathInfo(requestREF);
 	// _cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
 	_cgiEnv["QUERY_STRING"]			= getQueryString(requestREF);
 	// _cgiEnv["REMOTE_ADDR"]			= requestREF.getHeaderValue();
