@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/09 04:18:52 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/11 02:00:13 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,12 @@ public:
 	void	startServers();
 	int		retrieveClientHandlerSocket(int);
 	void	monitorCGI();
+	void	startListeningFromServers();
+	bool	incomingConnectiontoServer(int triggered);
+	void	acceptIncomingConnection(int triggered);
+	void	closeClientConenction(int server, int triggered);
+	void	serveClientRequest(int server, int triggered);
+	void	serveClientResponse(int server, int client);
 };
 
 #endif
