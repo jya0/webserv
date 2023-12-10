@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 03:00:53 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 18:14:20 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,15 @@
 # include	<limits>
 # include	<vector>
 # include	"DirectiveBlock.hpp"
-# include	"Response.hpp"
 
 # define	DEFAULT_AUTO_INDEX				false
-# define	DEFAULT_CGI_BIN					"CGI/"
 # define	DEFAULT_CMB_SIZE				42424242ul
 # define	DEFAULT_INDEX					"index.html"
 # define	DEFAULT_LISTEN_IP				"127.0.0.1"
 # define	DEFAULT_LISTEN_PORT				8000
-# define	DEFAULT_RETURN_CODE				-1	//not defined by NGINX
+# define	DEFAULT_RETURN_CODE				302	//not defined by NGINX
 # define	DEFAULT_RETURN_URI				""	//not defined by NGINX
-# define	DEFAULT_ROOT					"./"	//will be cwd if not specified
+# define	DEFAULT_ROOT					""	//will be cwd if not specified
 # define	DEFAULT_SERVER_NAMES			""
 # define	DEFAULT_LIMIT_EXCEPT_METHODS	0xffffff
 # define	DEFAULT_LOCATION_URI			"" //not defined by NGINX
@@ -37,6 +35,19 @@ typedef std::pair< std::vector< int >, std::string >	t_errorPage;
 
 class	ServerConfig {
 	public:
+		class	Return {
+			private:
+			protected:
+			public:
+				bool		isInit;
+				int			code;
+				std::string	uri;
+
+				Return(void);
+				~Return(void);
+				Return(const Return &returnREF);
+				Return	&operator=(const Return &returnREF);
+		};
 		class	Location;
 	private:
 		std::pair< std::string, int >	_listen;
@@ -47,7 +58,7 @@ class	ServerConfig {
 		std::size_t						_sizeCMB;
 		std::vector< t_errorPage >		_errorPages;
 		std::vector< std::string >		_index;
-		std::pair< int, std::string >	_return;
+		Return							_return;
 		std::string						_root;
 	public:
 		ServerConfig(void);
@@ -65,7 +76,7 @@ class	ServerConfig {
 		const std::size_t						&getSizeCMB(void) const;
 		const std::vector< t_errorPage >		&getErrorPages(void) const;
 		std::string								getErrorPage(const int &statusCode) const;
-		const std::pair< int, std::string >		&getReturn(void) const;
+		const Return							&getReturn(void) const;
 		const std::string						&getRoot(void) const;
 };
 

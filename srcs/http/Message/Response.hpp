@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/04 05:00:03 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/10 17:58:55 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@
 # include	<sys/types.h>
 # include	<sys/stat.h>
 # include	<unistd.h>
-
-class	ServerConfig;
 
 namespace http {
 	/**
@@ -45,7 +43,7 @@ namespace http {
 		public:
 			Response(void);
 			Response(const Response &responseREF);
-			~Response(void);
+			virtual ~Response(void);
 			Response	&operator=(const Response &responseREF);
 			Response(int status);
 			Response(int status, const std::string &responseBody);
@@ -60,7 +58,32 @@ namespace http {
 			void			setResponseStatus(bool status);
 
 			class	ResponseException;
+		private:
+			class	ErrorPageResponse;
+			class	RedirectResponse;
 	};
+};
+
+class	http::Response::ErrorPageResponse: public Response {
+	private:
+	protected:
+	public:
+		ErrorPageResponse(void);
+		virtual ~ErrorPageResponse(void);
+		ErrorPageResponse(const ErrorPageResponse &eprREF);
+		ErrorPageResponse &operator=(const ErrorPageResponse &eprREF);
+		ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR);
+};
+
+class	http::Response::RedirectResponse: public Response {
+	private:
+	protected:
+	public:
+		RedirectResponse(void);
+		virtual ~RedirectResponse(void);
+		RedirectResponse(const RedirectResponse &rrREF);
+		RedirectResponse &operator=(const RedirectResponse &rrREF);
+		RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR);
 };
 
 class	http::Response::ResponseException: public std::exception {

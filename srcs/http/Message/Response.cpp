@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 03:03:51 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 18:31:03 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,74 @@ Response::Response(std::string httpRaw) : AMessage(httpRaw)
 	_ready = true;
 }
 
+Response::ErrorPageResponse::ErrorPageResponse(void): Response() {};
+
+Response::ErrorPageResponse::~ErrorPageResponse(void) {};
+
+Response::ErrorPageResponse::ErrorPageResponse(const ErrorPageResponse &eprREF): Response(eprREF) {};
+
+Response::ErrorPageResponse	&Response::ErrorPageResponse::operator=(const ErrorPageResponse &eprREF) {
+	this->Response::operator=(eprREF);
+	return (*this);
+};
+
+static std::string	loadFile(const std::string &filePathREF)
+{
+	std::ifstream	infile;
+	std::string		result;
+
+	infile.open(filePathREF.c_str(), std::ios::in);
+	if (infile.is_open())
+	{
+		result = std::string((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
+		infile.close();
+		return (result);
+	}
+	return ("");
+}
+
+Response::ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR): Response(status) {
+	std::string	epFile;
+	std::string	root;
+	std::string	epFilePath;
+
+	if (locPTR != NULL && !locPTR->getErrorPages().empty())
+		epFile = locPTR->getErrorPage(status);
+	else if (!servConfREF.getErrorPages().empty())
+		epFile = servConfREF.getErrorPage(status);
+	if (locPTR != NULL && !locPTR->getRoot().empty())
+		root = locPTR->getRoot();
+	else if (!servConfREF.getRoot().empty())
+		root = servConfREF.getRoot();
+	epFilePath = root + epFile;
+	if (Autoindex::isPathExist(epFilePath) > 0 && Autoindex::isPathReg(epFilePath) > 0)
+		setMessageBody(loadFile(epFilePath));
+};
+
+Response::RedirectResponse::RedirectResponse(void): Response() {};
+
+Response::RedirectResponse::~RedirectResponse(void) {};
+
+Response::RedirectResponse::RedirectResponse(const RedirectResponse &rrREF): Response(rrREF) {};
+
+Response::RedirectResponse	&Response::RedirectResponse::operator=(const RedirectResponse &rrREF) {
+	this->Response::operator=(rrREF);
+	return (*this);
+};
+
+Response::RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
+	ServerConfig::Return	returnObj;
+
+	if (locPTR != NULL)
+		returnObj = locPTR->getReturn();
+	if (!returnObj.isInit)
+		returnObj = servConfREF.getReturn();
+	if (returnObj.isInit)
+		this->Response::operator=(Response(returnObj.code, "Location: " + returnObj.uri));
+	else
+		this->Response::operator=(ErrorPageResponse(404, servConfREF, locPTR));
+};
+
 /**
  * @brief Return the HTTP version of the response.
  *
@@ -180,32 +248,24 @@ static void header_GetHead(Response &response, const std::string &fileStr)
 	response.addHeader(type);
 }
 
-static Response readContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+static Response loadContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
 {
 	Response response(200);
 	std::string result;
-	std::ifstream infile;
 
 	if (Autoindex::isPathFolder(filePathREF) > 0)
 	{
 		if (locREF.getAutoIndex() == true)
 			result = Autoindex::genPage(filePathREF.c_str(), requestREF, servConfREF);
 		else
-			return (Response(403)); // forbidden
+			throw (403); // forbidden
 	}
 	else if (Autoindex::isPathReg(filePathREF) > 0)
-	{
-		infile.open(filePathREF.c_str(), std::ios::in);
-		if (infile.is_open())
-		{
-			result = std::string((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
-			infile.close();
-		}
-	}
+		result = loadFile(filePathREF);
 	else if (errno == EACCES)
-		return (Response(403)); //forbidden
+		throw (403); //forbidden
 	else
-		return (Response(404));
+		throw (404);
 	header_GetHead(response, result);
 	response.setMessageBody(result);
 	return (response);
@@ -221,7 +281,7 @@ static void	callCGI(const std::string &filePathREF, const Request &requestREF, c
 static Response handleHead(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF) {
     Response	response(200);
 
-	response = readContent(filePathREF, requestREF, servConfREF, locREF);
+	response = loadContent(filePathREF, requestREF, servConfREF, locREF);
 	response.setMessageBody("");
 	return (response);
 }
@@ -231,7 +291,7 @@ static Response handleGet(const std::string &filePathREF, const Request &request
 	Response response(200);
 
 	callCGI(filePathREF, requestREF, locREF);
-	response = readContent(filePathREF, requestREF, servConfREF, locREF);
+	response = loadContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
 }
 
@@ -299,48 +359,53 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
  */
 Response Response::buildResponse(const Request &requestREF, const ServerConfig &servConfREF)
 {
-	std::vector<ServerConfig::Location>::const_iterator locItc;
-	std::string filePath;
+	std::vector< ServerConfig::Location >::const_iterator	locItc;
+	const ServerConfig::Location							*locPTR;
+	std::string												filePath;
 
-	// if (requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
-	// 	return (*this = Response(413));
 	locItc = servConfREF.getLocation(requestREF.getUri());
-	// if (!(locItc->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
-	// 	return (*this = Response(405));
-	// if (locItc == servConfREF.getLocations().end() && !locItc->getReturn().second.empty())
-	// 	return (*this = Response(locItc->getReturn().first, "Location: " + locItc->getReturn().second));
-	// else
-	// 	return (*this = Response(404));
+	if (locItc == servConfREF.getLocations().end())
+		return (*this = RedirectResponse(servConfREF, NULL));
+	locPTR = &(*locItc);
+	// if (requestREF.getMessageBody().size() >  requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
+	// 	return (*this = ErrorPageResponse(413, servConfREF, NULL));
+	if (!(locItc->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
+		return (*this = ErrorPageResponse(405, servConfREF, locPTR));
 	filePath = getFilePath(requestREF, servConfREF, *locItc);
-	switch (requestREF.getHttpMethodEnum())
-	{
-		case (HEAD):
+	try {
+		switch (requestREF.getHttpMethodEnum())
 		{
-			*this = handleHead(filePath, requestREF, servConfREF, *locItc);
-			break;
+			case (HEAD):
+			{
+				*this = handleHead(filePath, requestREF, servConfREF, *locItc);
+				break;
+			}
+			case (GET):
+			{
+				*this = handleGet(filePath, requestREF, servConfREF, *locItc);
+				break;
+			}
+			case (PUT):
+			{
+				*this = handlePut(filePath, requestREF, servConfREF, *locItc);
+				break ;
+			}
+			case (POST):
+			{
+				*this = handlePost(filePath, requestREF, servConfREF, *locItc);
+				break ;
+			}
+			case (DELETE):
+			{
+				*this = handleDelete(filePath, requestREF, servConfREF, *locItc);
+				break ;
+			}
+			default:
+				throw (501);
 		}
-		case (GET):
-		{
-			*this = handleGet(filePath, requestREF, servConfREF, *locItc);
-			break;
-		}
-		case (PUT):
-		{
-			*this = handlePut(filePath, requestREF, servConfREF, *locItc);
-			break ;
-		}
-		case (POST):
-		{
-			*this = handlePost(filePath, requestREF, servConfREF, *locItc);
-			break ;
-		}
-		case (DELETE):
-		{
-			*this = handleDelete(filePath, requestREF, servConfREF, *locItc);
-			break ;
-		}
-		default:
-			*this = Response(501);
+	}
+	catch (int &errorCode) {
+		return (this->Response::operator=(ErrorPageResponse(errorCode, servConfREF, locPTR)));
 	}
 	return (*this);
 };

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 23:51:21 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/09 04:35:16 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ std::vector< std::vector< std::string > >	DirectiveBlock::readDirectivesSimple(c
 	std::vector< std::vector< std::string > >	allValues;
 
 	if (_dvesMap.count(dveName) == 0)
-		return (std::vector< std::vector< std::string > >());
+		throw (ServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!", ServerParser::loadLineNo));
 	dveITRS = _dvesMap.equal_range(dveName);
 	while (dveITRS.first != dveITRS.second)
 	{
@@ -96,8 +96,7 @@ DirectiveBlock	*DirectiveBlock::readDirectiveBlock(const std::string &dveName) c
 	dveITR = _dvesMap.find(dveName);
 	if (dveITR == _dvesMap.end())
 	{
-		std::cerr << "Directive not found: " << dveName << "\n";
-		return (NULL);
+		throw (ServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!", ServerParser::loadLineNo));
 	}
 	else
 		std::cout << "Found " << _dvesMap.count(dveName) << " " << dveName << std::endl;
@@ -108,7 +107,7 @@ DirectiveBlock	*DirectiveBlock::readDirectiveBlock(const std::string &dveName, c
 	std::pair< std::multimap< std::string, ADirective * >::const_iterator, std::multimap< std::string, ADirective * >::const_iterator>	dveITRS;
 
 	if (_dvesMap.count(dveName) == 0)
-		return (NULL);
+		throw (ServerParser::ParseErrorException("DIRECTIVE NOT IN CONFIG FILE!", ServerParser::loadLineNo));
 	dveITRS = _dvesMap.equal_range(dveName);
 	while (dveITRS.first != dveITRS.second)
 	{

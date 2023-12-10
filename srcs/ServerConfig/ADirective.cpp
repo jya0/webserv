@@ -6,13 +6,14 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 01:41:10 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 18:11:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<sstream>
 #include	<algorithm>
 #include	"ADirective.hpp"
+#include	"Request.hpp"
 #include	"ServerParser_namespace.hpp"
 
 /**

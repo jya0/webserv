@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 03:00:45 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 18:12:02 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 #include	<cstdlib>
 #include	<algorithm>
 #include	"ServerConfig.hpp"
+#include	"Response.hpp"
 
 /* class ServerConfig */
 ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
 									_autoIndex(DEFAULT_AUTO_INDEX), 
 									_sizeCMB(DEFAULT_CMB_SIZE),
 									_index(std::vector< std::string >(1, DEFAULT_INDEX)), 
-									_return(std::make_pair(DEFAULT_RETURN_CODE, DEFAULT_RETURN_URI)),
 									_root(DEFAULT_ROOT) {};
 
 ServerConfig::~ServerConfig(void) {};
@@ -39,18 +39,13 @@ static std::pair< std::string, int >	parseListenDirective(std::string listenDve)
 	return (std::make_pair(ipStr, port));
 };
 
-static std::pair< int, std::string >	parseReturnDirective(std::string returnDve) {
-	std::stringstream	ssReturn;
-	std::string			returnCodeStr;
-	int					returnCode;
-	std::string			returnUriStr;
+static ServerConfig::Return	parseReturnDirective(std::vector< std::string > returnDve) {
+	ServerConfig::Return	returnObj;
 
-	ssReturn.str(returnDve);
-	ssReturn >> returnCodeStr;
-	ssReturn >> returnUriStr;
-	returnCode = (returnCodeStr.empty()) ? DEFAULT_RETURN_CODE : std::atoi(returnCodeStr.c_str());
-	returnUriStr = (returnUriStr.empty()) ? DEFAULT_RETURN_URI : returnUriStr;
-	return (std::make_pair(returnCode, returnUriStr));
+	returnObj.isInit = true;
+	returnObj.code = (returnDve.size() > 1) ? DEFAULT_RETURN_CODE : std::atoi(returnDve.front().c_str());
+	returnObj.uri = returnDve.back();
+	return (returnObj);
 };
 
 static std::vector< t_errorPage >	parseErrorPages(const std::vector< std::vector< std::string > > &errorPages) {
@@ -98,7 +93,7 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			_autoIndex = (serverDve->readDirectiveSimple(DVE_AUTO_INDEX).front() == "on") ? true : false;
 		} catch (std::exception &e) {};
 		try {
-			_sizeCMB = std::atof(serverDve->readDirectiveSimple(DVE_CMB_SIZE).front().c_str());
+			_sizeCMB = std::atol(serverDve->readDirectiveSimple(DVE_CMB_SIZE).front().c_str());
 		} catch (std::exception &e) {};
 		try {
 			_errorPages = parseErrorPages(serverDve->readDirectivesSimple(DVE_ERROR_PAGE));
@@ -107,7 +102,7 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			_index = serverDve->readDirectiveSimple(DVE_INDEX);
 		} catch (std::exception &e) {};
 		try {
-			_return = parseReturnDirective(serverDve->readDirectiveSimple(DVE_RETURN).front());
+			_return = parseReturnDirective(serverDve->readDirectiveSimple(DVE_RETURN));
 		} catch (std::exception &e) {};
 		try {
 			_root = serverDve->readDirectiveSimple(DVE_ROOT).front();
@@ -182,7 +177,7 @@ std::string												ServerConfig::getErrorPage(const int &statusCode) const {
 	return ("");
 };
 
-const std::pair< int, std::string >						&ServerConfig::getReturn(void) const {
+const ServerConfig::Return								&ServerConfig::getReturn(void) const {
 	return (_return);
 };
 
@@ -221,10 +216,29 @@ ServerConfig::Location &ServerConfig::Location::operator=(const Location &locati
 	return (*this);
 };
 
+ServerConfig::Return::Return(void): isInit(false), code(DEFAULT_RETURN_CODE), uri(DEFAULT_RETURN_URI) {};
+
+ServerConfig::Return::~Return(void) {};
+
+ServerConfig::Return::Return(const Return &returnREF) {
+	this->operator=(returnREF);
+};
+
+ServerConfig::Return	&ServerConfig::Return::operator=(const Return &returnREF) {
+	if (this != &returnREF)
+	{
+		isInit = returnREF.isInit;
+		code = returnREF.code;
+		uri = returnREF.uri;
+	}
+	return (*this);
+};
+
 /* class ServerConfig::Location::LimitExcept */
 ServerConfig::Location::LimitExcept::LimitExcept(void): acceptedMethods(DEFAULT_LIMIT_EXCEPT_METHODS) {};
 
 ServerConfig::Location::LimitExcept::LimitExcept(const std::vector< std::string > &methodStrs) {
+	acceptedMethods = 0;
 	if (!methodStrs.empty())
 	{
 		for (std::vector< std::string >::const_iterator itr = methodStrs.begin(); itr != methodStrs.end(); ++itr)
