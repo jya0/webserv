@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MimeTypes.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 02:15:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 16:08:50 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 19:08:29 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 # define	DEFAULT_MIME_FILE		"./srcs/http/Message/default_mimes.txt"
 # define	MIME_FILE_DELIM			'\n'
+# define	MIME_CGI				"cgi/response"
 
 namespace	http {
 	typedef std::pair< std::vector< std::string >, std::string >	t_mime_pair;
