@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 20:21:18 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/10 18:18:59 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 
 	filePath = locREF.getRoot();
 	filePath = filePath.empty() ? servConfREF.getRoot() : filePath;
-	filePath += requestREF.getUri();
+	filePath += requestREF.getUri();;
 	return (filePath);
 }
 
@@ -229,8 +229,8 @@ static Response handleHead(const std::string &filePathREF, const Request &reques
 
 static bool resourceRequestedCGI(const std::string &filePathREF, const ServerConfig &servConfigREF)
 {
-	size_t pos = filePathREF.find(".") + 1;
-	if (pos == filePathREF.size())
+	size_t pos = filePathREF.find(".");
+	if (pos == std::string::npos)
 		return (false);
 	std::string fileExtension = filePathREF.substr(pos, filePathREF.size());
 	if (servConfigREF.getLocation(fileExtension) != servConfigREF.getLocations().end())
@@ -238,18 +238,19 @@ static bool resourceRequestedCGI(const std::string &filePathREF, const ServerCon
 	return false;
 }
 
-static std::string getScriptPath(const std::string &filePathREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+static std::string getScriptPath(const Request &requestREF, const ServerConfig &servConfREF)
 {
-	(void)locREF;
-	size_t pos = filePathREF.find(".") + 1;
-	if (pos == filePathREF.size())
-		return (filePathREF);
-	std::string fileExtension = filePathREF.substr(pos, filePathREF.size());
-	if (servConfREF.getLocation(fileExtension) != servConfREF.getLocations().end())
-		return (servConfREF.getLocation(fileExtension)->getRoot() + filePathREF);
-		if (!servConfREF.getRoot().empty()) return (servConfREF.getRoot() + filePathREF);
 
-	return (filePathREF);
+	std::string uri = requestREF.getUri();
+
+	size_t pos = uri.find(".");
+	if (pos == std::string::npos)
+		return ("");
+	std::string fileExtension = uri.substr(pos, uri.size());
+	if (servConfREF.getLocation(fileExtension) != servConfREF.getLocations().end())
+		return (servConfREF.getLocation(fileExtension)->getRoot() + uri);
+
+	return ("");
 }
 
 static Response	handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
@@ -259,8 +260,9 @@ static Response	handleGet(const std::string &filePathREF, const Request &request
 	response.setResponseStatus(false);
 	if (resourceRequestedCGI(filePathREF, servConfREF))
 	{
-		scriptPath = getScriptPath(filePathREF, servConfREF, locREF);
-		callCGI(scriptPath, requestREF, locREF);
+		scriptPath = getScriptPath(requestREF, servConfREF);
+		if (!scriptPath.empty())
+			callCGI(scriptPath, requestREF, locREF);
 	}
 	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
@@ -334,7 +336,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 
 	// if (requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
 	// 	return (*this = Response(413));
-	locItc = servConfREF.getLocation(requestREF.getUri());
+	locItc = servConfREF.getLocation(requestREF.getUri());;
 	// if (!(locItc->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
 	// 	return (*this = Response(405));
 	// if (locItc == servConfREF.getLocations().end() && !locItc->getReturn().second.empty())
