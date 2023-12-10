@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 18:18:59 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/10 18:33:18 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,7 +336,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 
 	// if (requestREF.getMessageBody().size() > servConfREF.getSizeCMB())
 	// 	return (*this = Response(413));
-	locItc = servConfREF.getLocation(requestREF.getUri());;
+	// locItc = servConfREF.getLocation(requestREF.getUri());;
 	// if (!(locItc->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
 	// 	return (*this = Response(405));
 	// if (locItc == servConfREF.getLocations().end() && !locItc->getReturn().second.empty())
