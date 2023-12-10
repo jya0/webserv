@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/08 14:53:22 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/09 18:13:35 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,38 +39,38 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 	return (-1);
 }
 
-void ServerMonitor::monitorCGI(int server)
+void ServerMonitor::monitorCGI()
 {
 	std::clock_t curr_time;
-	std::map<int, CGIhandler>::iterator itr;
+	int clientSock = 0;
+	int serverSock = 0;
 
 	int status = 0;
-	for (itr = _cgiScripts.begin(); itr != _cgiScripts.end();)
+	for (size_t i = 0; i < _cgiScripts.size(); i++)
 	{
 		curr_time = std::clock();
-		if ((curr_time - itr->second.getStartTime()) >= (CLOCKS_PER_SEC * TIME_OUT_SEC))
+		if ((size_t)(curr_time - _cgiScripts[i].getStartTime()) >= ((size_t)(CLOCKS_PER_SEC) * TIME_OUT_SEC))
 		{
-			kill(itr->second.getChildPid(), SIGKILL);
-			_servers.at((itr->first))->closeCGI(itr->second);
-			int sock = itr->second.getClientSocket();
-			_cgiScripts.erase(itr++);
-			*_servers.at(server)->responses[sock] = Response(408);
+			kill(_cgiScripts[i].getChildPid(), SIGKILL);
+			clientSock = _cgiScripts[i].getClientSocket();
+			serverSock = _cgiScripts[i].getServerSocket();
+			_cgiScripts.erase(_cgiScripts.begin() + i);
+			* _servers.at(serverSock)->responses[clientSock] = Response(408);
+			return ;
 		}
 		else
 		{
 			status = 0;
-			waitpid(itr->second.getChildPid(), &status, WNOHANG);
+			int sup = waitpid(_cgiScripts[i].getChildPid(), &status, WNOHANG);
 			if (status == -1 || status == 1)
 				throw(http::CGIhandler::CGIexception("CGI failed to run!"));
-			if (WIFEXITED(status) == 0)
+			if (sup == _cgiScripts[i].getChildPid() || sup == -1)
 			{
-				_servers.at((itr->first))->closeCGI(itr->second);
-				_cgiScripts.erase(itr++);
+				_servers.at((_cgiScripts[i].getServerSocket()))->closeCGI(_cgiScripts[i]);
+				_cgiScripts.erase(_cgiScripts.begin() + i);
+				return ;
 			}
 		}
-		if (itr == _cgiScripts.end())
-			break;
-		itr++;
 	}
 }
 
@@ -83,10 +83,10 @@ void ServerMonitor::startServers()
 		_sockets.addFd(itr->second->getConnection().getPassiveSocket(), POLLIN | POLLOUT);
 		itr->second->startListening();
 	}
-	int rc;
-	int triggered;
-	int client;
-	int server;
+	int rc = 0;
+	int triggered = 0;
+	int client = 0;
+	int server = 0;
 
 	i = 0;
 	while (2)
@@ -130,11 +130,12 @@ void ServerMonitor::startServers()
 							{
 								_servers.at(server)->buildResponse(triggered);
 							}
-							catch (http::CGIhandler &cgi)
+							catch (http::CGIhandler cgi)
 							{
 								cgi.setServerSocket(server);
 								cgi.setClientSocket(triggered);
-								_cgiScripts.insert(std::make_pair<int, CGIhandler>(server, cgi));
+								_cgiScripts.push_back(cgi);
+								_servers.at(server)->responses[triggered]->setResponseStatus(false);
 							}
 							std::map<int, Request *>::iterator itr = _servers.at(server)->requests.find(triggered);
 							_servers.at(server)->requests.erase(itr);
@@ -144,11 +145,12 @@ void ServerMonitor::startServers()
 			}
 			else if (server != -1 && (_sockets[i].revents & POLLOUT) && _servers.at(server)->responseReady(triggered))
 			{
+				std::cerr<<"\n\n*************************************************SENDING RESPONSE NOW!!\n\n";
 				_servers.at(server)->sendResponse(triggered, *(_servers.at(server)->responses[triggered]));
 				std::map<int, Response *>::iterator itr = _servers.at(server)->responses.find(triggered);
 				_servers.at(server)->responses.erase(itr);
 			}
 		}
-		monitorCGI(server);
+		monitorCGI();
 	}
 }

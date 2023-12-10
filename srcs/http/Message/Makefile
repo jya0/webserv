@@ -6,13 +6,13 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/10 18:26:00 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/10 18:38:50 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Message -*-
 
-CXX				:=	c++ 
+CXX				:=	c++
 CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98 -fPIC
 
 UNAME := $(shell uname)

@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/10 18:26:37 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/10 18:36:40 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ SRCS			=	$(addsuffix .cpp, $(addprefix $(SRCS_DIR), $(FILES)))
 
 OBJS			=	$(SRCS:.cpp=.o)
 
-CXXFLAGS		=	-g3 -fsanitize=address -Wall -Wextra -Werror -g3 -std=c++98 -fPIC -g3
+CXXFLAGS		=	-g3 -Wall -Wextra -Werror -g3 -std=c++98 -fPIC -g3  -fsanitize=address
 
 all:	$(NAME)
 

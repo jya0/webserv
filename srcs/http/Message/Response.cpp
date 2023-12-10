@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 18:31:03 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/10 18:40:40 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 
 	filePath = locREF.getRoot();
 	filePath = filePath.empty() ? servConfREF.getRoot() : filePath;
-	filePath += requestREF.getUri();
+	filePath += requestREF.getUri();;
 	return (filePath);
 }
 
@@ -286,12 +286,44 @@ static Response handleHead(const std::string &filePathREF, const Request &reques
 	return (response);
 }
 
-static Response handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
+static bool resourceRequestedCGI(const std::string &filePathREF, const ServerConfig &servConfigREF)
+{
+	size_t pos = filePathREF.find(".");
+	if (pos == std::string::npos)
+		return (false);
+	std::string fileExtension = filePathREF.substr(pos, filePathREF.size());
+	if (servConfigREF.getLocation(fileExtension) != servConfigREF.getLocations().end())
+		return true;
+	return false;
+}
+
+static std::string getScriptPath(const Request &requestREF, const ServerConfig &servConfREF)
+{
+
+	std::string uri = requestREF.getUri();
+
+	size_t pos = uri.find(".");
+	if (pos == std::string::npos)
+		return ("");
+	std::string fileExtension = uri.substr(pos, uri.size());
+	if (servConfREF.getLocation(fileExtension) != servConfREF.getLocations().end())
+		return (servConfREF.getLocation(fileExtension)->getRoot() + uri);
+
+	return ("");
+}
+
+static Response	handleGet(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location &locREF)
 {
 	Response response(200);
-
-	callCGI(filePathREF, requestREF, locREF);
-	response = loadContent(filePathREF, requestREF, servConfREF, locREF);
+	std::string scriptPath;
+	response.setResponseStatus(false);
+	if (resourceRequestedCGI(filePathREF, servConfREF))
+	{
+		scriptPath = getScriptPath(requestREF, servConfREF);
+		if (!scriptPath.empty())
+			callCGI(scriptPath, requestREF, locREF);
+	}
+	response = readContent(filePathREF, requestREF, servConfREF, locREF);
 	return (response);
 }
 
@@ -341,12 +373,11 @@ static Response handleDelete(const std::string &filePathREF, const Request &requ
 	(void) servConfREF;
 	(void) locREF;
 
-	if (Autoindex::isPathExist(filePathREF) > 0)
+	if (Autoindex::isPathExist(filePathREF) > 0 )
 	{
-		if (remove(filePathREF.c_str()) == 0)
-			return (Response(204)); //no content
-		else
-			return (Response(403));
+		if (Autoindex::isPathReg(filePathREF) > 0 && remove(filePathREF.c_str()) == 0)
+			return (Response(200)); //no content
+		return (Response(403)); //forbidden
 	}
 	return (Response(404));
 }

@@ -13,7 +13,7 @@
 #include    <sstream>
 #include	<algorithm>
 #include	"AMessage.hpp"
-
+#include	"ToString.tpp"
 using namespace http;
 
 /**
@@ -186,6 +186,7 @@ void AMessage::addHeader(Header header) {
 
 void AMessage::setMessageBody(std::string messageBody) {
     this->_messageBody = messageBody;
+	addHeader(Header("Content-Length",http::toString(_messageBody.size())));
 }
 
 void AMessage::setStartLine(std::string startLine) {

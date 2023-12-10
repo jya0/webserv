@@ -6,14 +6,14 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/10 18:25:42 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/10 18:38:30 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Autoindex -*-
 
-CXX			:=	c++ 
-CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98 -fPIC
+CXX			:=	c++
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3  -fsanitize=address -std=c++98 -fPIC
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)

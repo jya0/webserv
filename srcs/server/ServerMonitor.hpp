@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/08 14:53:18 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/09 04:18:52 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class ServerMonitor
 private:
 	std::map<int, WebServer *>	_servers;
 	PollManager					_sockets;
-	std::map<int, CGIhandler>	_cgiScripts;
+	std::vector<http::CGIhandler>	_cgiScripts;
 
 public:
 
@@ -37,7 +37,7 @@ public:
 
 	void	startServers();
 	int		retrieveClientHandlerSocket(int);
-	void	monitorCGI(int server);
+	void	monitorCGI();
 };
 
 #endif
