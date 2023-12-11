@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:02 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/07 21:32:38 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 17:56:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 namespace	http {
 	namespace	Autoindex {
-		std::string	genPage(const char *path, const Request &requestREF, const ServerConfig &servConfREF);
+		std::string	genPage(std::string path, const Request &requestREF, const ServerConfig &servConfREF);
 		int			isPathFolder(const std::string &path);
 		int			isPathReg(const std::string &path);
 		int			isPathRead(const std::string &path);

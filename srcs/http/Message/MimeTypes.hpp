@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 02:15:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 20:40:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 17:13:25 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 namespace	http {
 	std::string	getSuffix(const std::string &fileREF);
+	std::string	getFileResource(const std::string &uri);
 	typedef std::pair< std::vector< std::string >, std::string >	t_mime_pair;
 	typedef	std::vector< t_mime_pair >								t_mime_map;
 	extern const t_mime_map	mimeTypes;

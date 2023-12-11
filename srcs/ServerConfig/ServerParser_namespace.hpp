@@ -30,6 +30,7 @@ namespace	ServerParser {
 		ERROR_BAD_CONTEXT
 	};
     std::vector< ServerConfig >				parseConfigFile(const std::string &filename);
+	std::string								appendSlashes(std::string uri);
 	extern const std::vector< std::string >	dveNames;
 	extern size_t							loadLineNo;
 	extern size_t							checkLineNo;

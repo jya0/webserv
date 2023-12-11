@@ -6,14 +6,15 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/10 20:40:32 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 17:13:34 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<iostream>
 #include	<sstream>
-#include	"MimeTypes.hpp"
 #include	<unistd.h>
+#include	"MimeTypes.hpp"
+#include	"CGIhandler.hpp"
 
 /* std::string	http::checkMimeType(const std::string &uriREF) {
 	http::t_mime_map::const_iterator	itc;
@@ -40,6 +41,18 @@ std::string	http::getSuffix(const std::string &fileREF) {
 		return ("");
 	suffix = fileREF.substr(lastDot + 1, std::string::npos);
 	return (suffix);
+};
+
+std::string	http::getFileResource(const std::string &uri) {
+	size_t				lastSlash;
+	std::string			fileResource;
+	std::stringstream	ss;
+
+	lastSlash = uri.rfind('/');
+	if ((lastSlash + 1) >= uri.size())
+		return ("");
+	fileResource = uri.substr(lastSlash + 1, std::string::npos);
+	return (fileResource);
 };
 
 std::string	http::checkMimeType(const std::string &uriREF) {

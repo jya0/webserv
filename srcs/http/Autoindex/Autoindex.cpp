@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/08 16:00:10 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/11 18:06:50 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,14 @@
 #include	<iostream>
 #include	<sstream>
 #include	"Autoindex_namespace.hpp"
+#include	"ServerParser_namespace.hpp"
 
 using namespace http;
 
-static std::string	direntLink(const std::string &dirName, const std::string &dirent, const std::string &hostREF, const int &portREF) {
+static std::string	direntLink(const std::string &uri, const std::string &dirent, const std::string &hostREF, const int &portREF) {
 	std::stringstream	ssDirentLink;
-	std::string			slash("/");
 
-	if (!dirName.empty())
-		slash = (dirName[dirName.size() - 1] == '/' ? "" : "/");
-	ssDirentLink << "\t\t<p><a href=\"http://" + hostREF + ":" << portREF << dirName + (slash) + dirent + "\">" + dirent + "</a></p>\n";
+	ssDirentLink << "\t\t<p><a href=\"http://" + hostREF + ":" << portREF << uri + dirent + "\">" + dirent + "</a></p>\n";
 	return (ssDirentLink.str());
 };
 
@@ -45,13 +43,17 @@ static void	pageAddClosing(std::string &pageREF) {
     			"</html>\n";
 };
 
-std::string	Autoindex::genPage(const char *path, const Request &requestREF, const ServerConfig &servConfREF) {
+std::string	Autoindex::genPage(std::string path, const Request &requestREF, const ServerConfig &servConfREF) {
 	DIR			*dirPTR;
 	std::string	page;
+	std::string	direntName;
+	std::string	uri;
 
-	if (path == NULL)
+	if (path.empty())
 		return (page);
-	dirPTR = opendir(path);
+	path = ServerParser::appendSlashes(path);
+	uri = ServerParser::appendSlashes(requestREF.getUri());
+	dirPTR = opendir(path.c_str());
 	if (dirPTR == NULL)
 	{
 		std::cerr	<< "Couldn't open directory: "
@@ -63,7 +65,10 @@ std::string	Autoindex::genPage(const char *path, const Request &requestREF, cons
 	pageAddOpening(page, requestREF.getUri());
 	for (struct dirent *dirent = readdir(dirPTR); dirent != NULL; dirent = readdir(dirPTR))
 	{
-		page += direntLink(requestREF.getUri(), std::string(dirent->d_name), servConfREF.getListen().first, servConfREF.getListen().second);
+		direntName = dirent->d_name;
+		if (isPathFolder(path + direntName) > 0)
+			direntName += "/";
+		page += direntLink(uri, direntName, servConfREF.getListen().first, servConfREF.getListen().second);
 	}
 	pageAddClosing(page);
 	return (page);

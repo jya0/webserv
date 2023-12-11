@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 00:52:43 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 02:53:12 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ static bool	isNumber(const std::string &strREF)
 
 	ss.str(strREF);
 	ss >> test;
-	return (ss.good() && ss.rdbuf()->in_avail() == 0);
+	return (!ss.fail() && ss.rdbuf()->in_avail() == 0);
 }
 
 static bool isValidCode(const std::string &strREF)
@@ -173,7 +173,7 @@ static bool	checkValues(const e_directiveType &dveTypeREF, const std::vector< st
 				return (false);
 			for (itc = dveValuesREF.begin(); itc != dveValuesREF.end(); ++itc)
 			{
-				if (!isValidCode(*itc) && (itc + 1 != dveValuesREF.end()))
+				if (!isValidCode(*itc) && ((itc + 1) != dveValuesREF.end()))
 					return (false);
 			}
 			return (dveValuesREF.size() > 1);

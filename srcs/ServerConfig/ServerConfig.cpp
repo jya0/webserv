@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 00:50:42 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 17:58:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static ServerConfig::Return	parseReturnDirective(std::vector< std::string > retu
 	ServerConfig::Return	returnObj;
 
 	returnObj.isInit = true;
-	returnObj.code = (returnDve.size() > 1) ? DEFAULT_RETURN_CODE : std::atoi(returnDve.front().c_str());
+	returnObj.code = (returnDve.size() > 1) ? std::atoi(returnDve.front().c_str()) : DEFAULT_RETURN_CODE;
 	returnObj.uri = returnDve.back();
 	return (returnObj);
 };
@@ -198,6 +198,7 @@ ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_
 	if (locationDve != NULL)
 	{
 		locationUri	= locationDve->getValues().front();
+		locationUri = ServerParser::appendSlashes(locationUri);
 		try {
 			dveBlockPTR = dynamic_cast<DirectiveBlock *>(locationDve);
 			limitExcept = (dveBlockPTR == NULL) ? LimitExcept() : LimitExcept(dveBlockPTR->readDirectiveSimple(DVE_LIMIT_EXECPT));

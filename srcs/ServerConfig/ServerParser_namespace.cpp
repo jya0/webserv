@@ -33,6 +33,24 @@ std::pair< std::string, std::string >	ServerParser::splitByTwo(const std::string
 	return (std::make_pair(first, second));
 }
 
+/**
+ * @brief To get any uri to the form /uri/
+ * 
+ * @param uri 
+ * @return std::string 
+ */
+std::string	ServerParser::appendSlashes(std::string uri)
+{
+	if (*(uri.begin()) != '.' && uri.size() > 1)
+	{
+		if (*(uri.begin()) != '/')
+			uri = "/" + uri;
+		if (*(uri.rbegin()) != '/')
+			uri += "/";
+	}
+	return (uri);
+}
+
 static ADirective	*tokenToDirective(std::vector< std::string > &tokens) {
 	DirectiveSimple	*directive;
 

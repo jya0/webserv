@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/10 18:38:30 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/11 18:00:46 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,11 +30,12 @@ NAME		=	$(addsuffix $(LIB_SUFFIX), libautoindex)
 
 MESSAGE_DIR		:=	../Message/
 CONFIG_DIR		:=	../../ServerConfig/
+HTTP_DIR		:=	../
 
 HEADERS			:=	PollManager.hpp	ServerMonitor.hpp	ServerSocket.hpp	\
 					WebServer.hpp
 
-INCLUDES		:=	-I.	-I$(MESSAGE_DIR) -I$(CONFIG_DIR)
+INCLUDES		:=	-I.	-I$(MESSAGE_DIR) -I$(CONFIG_DIR) -I$(HTTP_DIR)
 
 HEADERS		:=	Autoindex_namespace.hpp
 
