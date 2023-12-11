@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/10 18:36:40 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/11 02:19:58 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,7 +56,7 @@ $(NAME): | $(LIBS) $(OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
-WEBSERV:
+WEBSERV: $(LIBS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LIBS) $(OBJS) -o $(NAME)
 
 $(CGI_LIB):

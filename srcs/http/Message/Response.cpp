@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 02:12:29 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 04:42:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ Response::Response(int status)
 	ss << this->_httpVersion << " " << status << " " << this->getHttpStatusString(status) << CR_LF;
 	this->_startLine = ss.str();
 	this->setMessageBody(this->getHttpStatusString(status));
-	this->addHeader(Header("Content-Length", http::toString(this->getMessageBody().size())));
 	_ready = true;
 	return;
 }
@@ -176,7 +175,13 @@ Response::RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, co
 	if (!returnObj.isInit)
 		returnObj = servConfREF.getReturn();
 	if (returnObj.isInit)
-		this->Response::operator=(Response(returnObj.code, "Location: " + returnObj.uri));
+	{
+		Response	test(returnObj.code);
+		
+		test.addHeader(Header("Location", returnObj.uri));
+		this->Response::operator=(test);
+	}
+		// this->Response::operator=(Response("HTTP/1.1 " + toString(301) + " Moved Permanantly" + CR_LF + "Location: " + returnObj.uri));
 	else
 	{
 		if (locPTR->locationUri == "/")
@@ -256,6 +261,7 @@ static void header_for_GetHead(Response &response, const std::string &fileStr)
 {
 	std::string	mimeType;
 
+	(void)response;
 	mimeType = checkMimeType(fileStr).empty();
 	if (mimeType.empty())
 		mimeType = "text/html";

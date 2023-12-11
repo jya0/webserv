@@ -108,6 +108,7 @@ AMessage::AMessage(std::string rawMessage) {
 			std::istringstream iss2(line);
 			std::getline(iss2, key, ':');
 			std::getline(iss2, value, '\r');
+			value = value.substr(1, value.size());
 			this->_headers.push_back(Header(key, value));
 		}
 	}
