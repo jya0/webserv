@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 02:12:04 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 21:10:03 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,9 @@ static std::string getCgiPathInfo(const http::Request &requestREF)
 	return pathInfo;
 }
 
-CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF)
+CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Location *locationPTR)
 {
-	(void) locationREF;
+	(void) locationPTR;
 	*this = CGIhandler();
 	_cgiRequest = requestREF;
 	_cgiEnv["AUTH_TYPE"] 			= requestREF.getHeaderValue(HEADER_KEY_AUTH);

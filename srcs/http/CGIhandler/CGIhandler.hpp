@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 17:55:53 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/11 21:09:42 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ namespace	http {
 			CGIhandler(const CGIhandler &cgiREF);
 			~CGIhandler(void);
 			CGIhandler	&operator=(const  CGIhandler &cgiREF);
-			CGIhandler(const http::Request &requestREF, const ServerConfig::Location &locationREF);
+			CGIhandler(const http::Request &requestREF, const ServerConfig::Location *locationPTR);
 
 			const std::map< std::string, std::string >	&getCgiEnv(void) const;
 			const http::Request							&getCgiRequest(void) const;

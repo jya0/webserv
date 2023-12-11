@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 17:40:12 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 21:05:30 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class	ServerConfig {
 		const std::pair< std::string, int >		&getListen(void) const;
 		const std::vector< std::string >		&getServerNames(void) const;
 		const std::vector< Location >			&getLocations(void) const;
-		std::vector< Location >::const_iterator	getLocation(const std::string &uriREF) const;
+		const Location							*getLocation(const std::string &uriREF) const;
 		const bool								&getAutoIndex(void) const;
 		const ssize_t							&getSizeCMB(void) const;
 		const std::vector< t_errorPage >		&getErrorPages(void) const;

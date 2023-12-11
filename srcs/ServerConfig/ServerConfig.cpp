@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 17:58:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 21:11:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,14 +147,13 @@ const std::vector< ServerConfig::Location >				&ServerConfig::getLocations(void)
 	return (_locations);
 };
 
-std::vector< ServerConfig::Location >::const_iterator	ServerConfig::getLocation(const std::string &uriREF) const {
+const ServerConfig::Location	*ServerConfig::getLocation(const std::string &uriREF) const {
 	std::vector< Location >::const_iterator	itc;
-
 
 	itc = std::find_if(_locations.begin(), _locations.end(), Location::IsLocationUnary(uriREF));
 	if (itc == _locations.end() && http::checkMimeType(uriREF) == MIME_CGI)
 		itc = std::find_if(_locations.begin(), _locations.end(), Location::IsLocationUnary(uriREF.substr(0, uriREF.rfind('.'))));
-	return (itc);
+	return ((itc == _locations.end()) ? NULL : &(*itc));
 };
 
 const bool												&ServerConfig::getAutoIndex(void) const {
