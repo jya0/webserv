@@ -6,12 +6,13 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/04 12:40:15 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 17:13:09 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"Request.hpp"
 #include	<cstdlib>
+#include	<sstream>
+#include	"Request.hpp"
 
 using namespace http;
 
@@ -54,20 +55,40 @@ Request &Request::operator=(Request const &RequestREF) {
 	return (*this);
 }
 
+static std::string	decodeUri(const std::string &encoded)
+{
+	std::ostringstream	decoded;
+	int					hexValue;
+	std::istringstream	hexStream;
+
+    for (std::size_t i = 0; i < encoded.length(); ++i) {
+        if (encoded[i] == '%' && i + 2 < encoded.length()) {
+            hexStream.str(encoded.substr(i + 1, 2));
+            hexStream >> std::hex >> hexValue;
+            decoded << static_cast<char>(hexValue);
+            i += 2;
+        } else {
+            decoded << encoded[i];
+        }
+    }
+    return (decoded.str());
+};
+
 /**
  * @brief Construct a new Request object
  *
  * @param httpRaw The raw HTTP request to be parsed
  */
 Request::Request(std::string httpRaw) : AMessage(httpRaw) {
-	std::string method = this->_startLine.substr(0, this->_startLine.find(' '));
-	this->_httpMethod = this->methodEnum(method);
-	this->_uri = this->_startLine.substr(this->_startLine.find(' ') + 1,
-										 this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
-											 this->_startLine.find(' ') - 1);
-	this->_httpVersion = this->_startLine.substr(this->_startLine.find(' ',
-																	   this->_startLine.find(' ') + 1) +
-												 1);
+	std::string method = _startLine.substr(0, _startLine.find(' '));
+	_httpMethod = methodEnum(method);
+	_uri = _startLine.substr(_startLine.find(' ') + 1, 
+								_startLine.find(' ', 
+									_startLine.find(' ') + 1) - 
+										_startLine.find(' ') - 1);
+	_uri = decodeUri(_uri);
+	_httpVersion = _startLine.substr(_startLine.find(' ', 
+										_startLine.find(' ') + 1) + 1);
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
 		parseMessageBody();
 	if (getHeaderValue("Content-Length") != "")
@@ -80,7 +101,7 @@ Request::Request(std::string httpRaw) : AMessage(httpRaw) {
  * @return std::string The HTTP method of the request.
  */
 std::string Request::getHttpMethod(void) const {
-	return (Request::methodName(this->_httpMethod));
+	return (Request::methodName(_httpMethod));
 }
 
 const e_httpMethod &Request::getHttpMethodEnum(void) const {
@@ -93,7 +114,7 @@ const e_httpMethod &Request::getHttpMethodEnum(void) const {
  * @return std::string The HTTP version of the request.
  */
 const std::string &Request::getHttpVersion(void) const {
-	return (this->_httpVersion);
+	return (_httpVersion);
 }
 
 /**

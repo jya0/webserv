@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 04:42:01 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 17:55:38 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,7 +277,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 	if (Autoindex::isPathFolder(filePathREF) > 0)
 	{
 		if (locREF.getAutoIndex() == true)
-			result = Autoindex::genPage(filePathREF.c_str(), requestREF, servConfREF);
+			result = Autoindex::genPage(filePathREF, requestREF, servConfREF);
 		else
 			throw (403); // forbidden
 	}

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 04:50:58 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/11 17:40:12 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,13 @@ class	ServerConfig::Location::IsLocationUnary {
 		IsLocationUnary(const std::string &uri): _uri(uri) {};
 		bool	operator()(const Location &locationREF)
 		{
+			std::string	file;
+
 			if (_uri.empty())
 				return (false);
-			if (http::checkMimeType(_uri) == MIME_CGI)
-				return (('.' + http::getSuffix(_uri)) == locationREF.locationUri);
+			file = http::getFileResource(_uri);
+			if (http::checkMimeType(file) == MIME_CGI)
+				return (('.' + http::getSuffix(file)) == locationREF.locationUri);
 			return (_uri.compare(0, locationREF.locationUri.size(), locationREF.locationUri) == 0);
 		};
 };
