@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/11 02:00:13 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/11 02:17:02 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@
 #include "PollManager.hpp"
 #include "WebServer.hpp"
 
-#define TIME_OUT_SEC	5
+#define TIME_OUT_SEC	10
 
 class ServerMonitor
 {
 private:
-	std::map<int, WebServer *>	_servers;
-	PollManager					_sockets;
+	std::map<int, WebServer *>		_servers;
+	PollManager						_sockets;
 	std::vector<http::CGIhandler>	_cgiScripts;
 
 public:

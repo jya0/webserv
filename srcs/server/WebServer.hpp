@@ -36,13 +36,13 @@ class DirectiveBlock;
 class WebServer
 {
 protected:
-	ServerSocket		connection;
-	std::vector<int>	clients;
-	ServerConfig		_config;
+	ServerSocket				connection;
+	std::vector<int>			clients;
+	ServerConfig				_config;
 
 public:
-	std::map<int, Response *> responses;
-	std::map<int, Request *> requests;
+	std::map<int, Response *>	responses;
+	std::map<int, Request *>	requests;
 
 	WebServer();
 	WebServer(std::string ip, int port);
