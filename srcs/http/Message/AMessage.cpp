@@ -88,6 +88,7 @@ void AMessage::parseMessageBody() {
 }
 
 /**
+ *
  * @brief Construct a new AMessage object
  *
  * @param rawMessage The raw message to be parsed
