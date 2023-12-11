@@ -87,7 +87,27 @@ void AMessage::parseMessageBody() {
 	_messageBody = head + "\r\n\r\n" + body + "\r\n\r\n";
 }
 
+bool AMessage::isValid() const
+{
+	// Check if start line is not empty
+	if (_startLine.empty())
+		return false;
+
+	// Check if there is at least one header
+	if (_headers.empty())
+		return false;
+
+	// Check if each header has a non-empty key and value
+	for (std::list<Header>::const_iterator header = _headers.begin(); header != _headers.end(); header++)
+	{
+		if (header->getKey().empty() || header->getValue().empty())
+			return false;
+	}
+	return true;
+}
+
 /**
+ *
  * @brief Construct a new AMessage object
  *
  * @param rawMessage The raw message to be parsed
@@ -111,6 +131,12 @@ AMessage::AMessage(std::string rawMessage) {
 			value = value.substr(1, value.size());
 			this->_headers.push_back(Header(key, value));
 		}
+	}
+	if (!isValid())
+	{
+		// Handle the case where the message is not valid (throw an exception, log an error, etc.)
+		// For example, you can throw an exception:
+		throw std::invalid_argument("Invalid HTTP message");
 	}
 	this->_messageBody = iss.str().substr(iss.tellg());
 }
