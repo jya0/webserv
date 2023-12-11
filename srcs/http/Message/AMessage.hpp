@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 21:33:20 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/11 22:14:43 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ namespace http {
 			void setMessageBody(std::string messageBody);
 			void setStartLine(std::string startLine);
 			void parseMessageBody();
-			bool isValid() const;
 
 	};
 }
