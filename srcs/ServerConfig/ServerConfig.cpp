@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/12 20:22:50 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/12 21:33:12 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,9 @@ const std::vector< t_errorPage >						&ServerConfig::getErrorPages(void) const {
 std::string												ServerConfig::getErrorPage(const int &statusCode) const {
 	for (std::vector< t_errorPage >::const_iterator itc1 = _errorPages.begin(); itc1 != _errorPages.end(); ++itc1)
 	{
-		for (std::vector< int >::const_iterator itc2 = itc1->first.begin(); itc2 != itc1->first.end(); ++itc2)
+		if (itc1->first.empty())
+			continue ;
+		for (std::vector<int>::const_iterator itc2 = itc1->first.begin(); itc2 != itc1->first.end(); ++itc2)
 		{
 			if (statusCode == *itc2)
 				return (itc1->second);

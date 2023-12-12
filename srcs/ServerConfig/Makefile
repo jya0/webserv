@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/10 18:39:34 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/12 21:28:34 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 # REMEMBER TO REMOVE REMOVE REMOVE REMOVE REMOVE TEST FILES.CPP FROM LIBS!!!!!
 
 CXX			:=	c++
-CXXFLAGS	:=	-Wall -Wextra -Werror -g3  -fsanitize=address -std=c++98 -fPIC
+CXXFLAGS	:=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)

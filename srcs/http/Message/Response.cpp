@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/12 20:42:01 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/12 21:22:42 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,7 +290,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		else if (!indexPages.empty() && requestREF.getUri() == locPTR->locationUri)
 			result = loadIndex(indexPages, servConfREF, locPTR);
 		else
-			throw (403); // forbidden
+			throw (404); // forbidden
 	}
 	else if (Autoindex::isPathReg(filePathREF) > 0)
 		result = loadFile(filePathREF);
