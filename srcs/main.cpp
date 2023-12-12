@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/12 23:27:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 02:57:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int main(int argc, char **argv)
 		return (0);
 	}
 	std::vector<ServerConfig> configs = ServerParser::parseConfigFile(argv[1]);
+	ServerParser::parseConfigFile(std::string(argv[1]));
 	ServerMonitor monitor(configs);
-	// std::string sup = configs.front().getErrorPage(100);
 	try
 	{
 		monitor.startServers();
