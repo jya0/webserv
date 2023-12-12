@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 22:40:36 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 01:28:12 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,11 @@
 #include	"ServerParser_namespace.hpp"
 
 /* class ServerConfig */
-ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
-									_autoIndex(DEFAULT_AUTO_INDEX), 
-									_sizeCMB(DEFAULT_CMB_SIZE),
-									_root(DEFAULT_ROOT) {};
+ServerConfig::ServerConfig(void) : _listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)),
+								   _autoIndex(DEFAULT_AUTO_INDEX),
+								   _sizeCMB(DEFAULT_CMB_SIZE),
+								   _index(std::vector<std::string>(1, DEFAULT_INDEX)),
+								   _root(DEFAULT_ROOT){};
 
 ServerConfig::~ServerConfig(void) {};
 
@@ -46,27 +47,6 @@ static ServerConfig::Return	parseReturnDirective(std::vector< std::string > retu
 	returnObj.code = (returnDve.size() > 1) ? std::atoi(returnDve.front().c_str()) : DEFAULT_RETURN_CODE;
 	returnObj.uri = returnDve.back();
 	return (returnObj);
-};
-
-static std::vector< t_errorPage >	parseErrorPages(const std::vector< std::vector< std::string > > &errorPages) {
-	std::vector< t_errorPage >	parsedErrorPages;
-	t_errorPage					parsedErrorPage;
-	std::stringstream			ss;
-	int							code;
-
-	for (std::vector< std::vector< std::string > >::const_iterator itc1 = errorPages.begin(); itc1 != errorPages.end(); ++itc1)
-	{
-		parsedErrorPage.second = itc1->back();
-		for (std::vector< std::string >::const_iterator itc2 = itc1->begin(); itc2 != (itc1->end() - 1); ++itc2)
-		{
-			ss.str(*itc2);
-			ss.clear();
-			ss >> code;
-			parsedErrorPage.first.push_back(code);
-		};
-		parsedErrorPages.push_back(parsedErrorPage);
-	};
-	return (parsedErrorPages);
 };
 
 ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
@@ -96,7 +76,11 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			_sizeCMB = std::atol(serverDve->readDirectiveSimple(DVE_CMB_SIZE).front().c_str());
 		} catch (std::exception &e) {};
 		try {
-			_errorPages = parseErrorPages(serverDve->readDirectivesSimple(DVE_ERROR_PAGE));
+			std::vector< std::vector< std::string > > errorPages;
+
+			errorPages = serverDve->readDirectivesSimple(DVE_ERROR_PAGE);
+			for (std::vector<std::vector<std::string> >::const_iterator itc = errorPages.begin(); itc != errorPages.end(); ++itc)
+				_errorPages.push_back(ServerConfig::ErrorPage(*itc));
 		} catch (std::exception &e) {};
 		try {
 			_index = serverDve->readDirectiveSimple(DVE_INDEX);
@@ -105,7 +89,7 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			_return = parseReturnDirective(serverDve->readDirectiveSimple(DVE_RETURN));
 		} catch (std::exception &e) {};
 		try {
-			_root = serverDve->readDirectiveSimple(DVE_ROOT).front();
+			_root = ServerParser::appendSlashes(serverDve->readDirectiveSimple(DVE_ROOT).front());
 		} catch (std::exception &e) {};
 	};
 };
@@ -163,17 +147,19 @@ const ssize_t											&ServerConfig::getSizeCMB(void) const {
 	return (_sizeCMB);
 };
 
-const std::vector< t_errorPage >						&ServerConfig::getErrorPages(void) const {
+const std::vector< ServerConfig::ErrorPage >							&ServerConfig::getErrorPages(void) const {
 	return (_errorPages);
 };
 
 std::string												ServerConfig::getErrorPage(const int &statusCode) const {
-	for (std::vector< t_errorPage >::const_iterator itc1 = _errorPages.begin(); itc1 != _errorPages.end(); ++itc1)
+	if (_errorPages.empty())
+		return ("");
+	for (std::vector< ErrorPage >::const_iterator itc1 = _errorPages.begin(); itc1 != _errorPages.end(); ++itc1)
 	{
-		for (std::vector< int >::const_iterator itc2 = itc1->first.begin(); itc2 != itc1->first.end(); ++itc2)
+		for (std::vector<int>::const_iterator itc2 = itc1->codes.begin(); itc2 != itc1->codes.end(); ++itc2)
 		{
 			if (statusCode == *itc2)
-				return (itc1->second);
+				return (itc1->page);
 		}
 	}
 	return ("");
@@ -261,6 +247,37 @@ ServerConfig::Location::LimitExcept &ServerConfig::Location::LimitExcept::operat
 	if (this != &limitExceptREF)
 	{
 		acceptedMethods = limitExceptREF.acceptedMethods;
+	}
+	return (*this);
+};
+
+ServerConfig::ErrorPage::ErrorPage(void) {};
+
+ServerConfig::ErrorPage::ErrorPage(const std::vector< std::string > &errorPage) {
+	std::stringstream ss;
+	int code;
+
+	this->page = errorPage.back();
+	for (std::vector<std::string>::const_iterator itc = errorPage.begin(); itc != (errorPage.end() - 1); ++itc)
+	{
+		ss.str(*itc);
+		ss.clear();
+		ss >> code;
+		this->codes.push_back(code);
+	};
+};
+
+ServerConfig::ErrorPage::~ErrorPage(void) {};
+
+ServerConfig::ErrorPage::ErrorPage(const ErrorPage &errorPageREF) {
+	this->operator=(errorPageREF);
+};
+
+ServerConfig::ErrorPage &ServerConfig::ErrorPage::operator=(const ErrorPage &errorPageREF) {
+	if (this != &errorPageREF)
+	{
+		this->codes = errorPageREF.codes;
+		this->page = errorPageREF.page;
 	}
 	return (*this);
 };

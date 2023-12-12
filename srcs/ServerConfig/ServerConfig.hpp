@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 21:05:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 01:10:35 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 # define	DEFAULT_AUTO_INDEX				false
 # define	DEFAULT_CMB_SIZE				-1
-# define	DEFAULT_INDEX					"index.html"
+# define	DEFAULT_INDEX					""
 # define	DEFAULT_LISTEN_IP				"127.0.0.1"
 # define	DEFAULT_LISTEN_PORT				80
 # define	DEFAULT_RETURN_CODE				301	//not defined by NGINX
@@ -31,8 +31,6 @@
 # define	DEFAULT_SERVER_NAMES			""
 # define	DEFAULT_LIMIT_EXCEPT_METHODS	0xffffff
 # define	DEFAULT_LOCATION_URI			"" //not defined by NGINX
-
-typedef std::pair< std::vector< int >, std::string >	t_errorPage;
 
 class	ServerConfig {
 	public:
@@ -50,6 +48,7 @@ class	ServerConfig {
 				Return	&operator=(const Return &returnREF);
 		};
 		class	Location;
+		class	ErrorPage;
 	private:
 		std::pair< std::string, int >	_listen;
 		std::vector< std::string >		_serverNames;
@@ -57,7 +56,7 @@ class	ServerConfig {
 	protected:
 		bool							_autoIndex;
 		ssize_t							_sizeCMB;
-		std::vector< t_errorPage >		_errorPages;
+		std::vector< ErrorPage > 		_errorPages;
 		std::vector< std::string >		_index;
 		Return							_return;
 		std::string						_root;
@@ -75,7 +74,7 @@ class	ServerConfig {
 		const Location							*getLocation(const std::string &uriREF) const;
 		const bool								&getAutoIndex(void) const;
 		const ssize_t							&getSizeCMB(void) const;
-		const std::vector< t_errorPage >		&getErrorPages(void) const;
+		const std::vector< ErrorPage >			&getErrorPages(void) const;
 		std::string								getErrorPage(const int &statusCode) const;
 		const Return							&getReturn(void) const;
 		const std::string						&getRoot(void) const;
@@ -126,6 +125,21 @@ class	ServerConfig::Location::IsLocationUnary {
 				return (('.' + http::getSuffix(file)) == locationREF.locationUri);
 			return (_uri.compare(0, locationREF.locationUri.size(), locationREF.locationUri) == 0);
 		};
+};
+
+class ServerConfig::ErrorPage
+{
+	private:
+	protected:
+	public:
+		std::vector<int> codes;
+		std::string page;
+
+		ErrorPage(void);
+		ErrorPage(const std::vector<std::string> &errorPage);
+		~ErrorPage(void);
+		ErrorPage(const ErrorPage &errorPageREF);
+		ErrorPage &operator=(const ErrorPage &errorPageREF);
 };
 
 #endif

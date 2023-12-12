@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 01:22:07 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/13 01:27:59 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,9 @@
 # REMEMBER TO REMOVE REMOVE REMOVE REMOVE REMOVE TEST FILES.CPP FROM LIBS!!!!!
 
 CXX			:=	c++
-CXXFLAGS	:=	-Wall -Wextra -Werror    -std=c++98 -fPIC
+# CXXFLAGS	:=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)

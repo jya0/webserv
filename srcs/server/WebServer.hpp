@@ -41,8 +41,8 @@ protected:
 	ServerConfig				_config;
 
 public:
-	std::map<int, Response *>	responses;
-	std::map<int, Request *>	requests;
+	std::map<int, Response >	responses;
+	std::map<int, Request >		requests;
 
 	WebServer();
 	WebServer(std::string ip, int port);

@@ -4,19 +4,20 @@
 #include <vector>
 #include <iostream>
 #include <sys/poll.h>
+#include <cstring>
+
+#define MAX_SOCKETS 200
 
 class PollManager {
 private:
 	size_t					nfds;
-	struct pollfd			_sockets[2000];
+	struct pollfd			_sockets[MAX_SOCKETS];
 
 public:
 	PollManager(size_t);
 	~PollManager();
 
 	pollfd	&operator[](int);
-	void	operator++(int);
-	void	operator--(int);
 
 
 	void	addFd(size_t fd, short events);

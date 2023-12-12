@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/12 19:07:44 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 01:27:23 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,13 +111,13 @@ Response::Response(std::string httpRaw) : AMessage(httpRaw)
 	_ready = true;
 }
 
-Response::ErrorPageResponse::ErrorPageResponse(void): Response() {};
+ErrorPageResponse::ErrorPageResponse(void): Response() {};
 
-Response::ErrorPageResponse::~ErrorPageResponse(void) {};
+ErrorPageResponse::~ErrorPageResponse(void) {};
 
-Response::ErrorPageResponse::ErrorPageResponse(const ErrorPageResponse &eprREF): Response(eprREF) {};
+ErrorPageResponse::ErrorPageResponse(const ErrorPageResponse &eprREF): Response(eprREF) {};
 
-Response::ErrorPageResponse	&Response::ErrorPageResponse::operator=(const ErrorPageResponse &eprREF) {
+ErrorPageResponse	&ErrorPageResponse::operator=(const ErrorPageResponse &eprREF) {
 	this->Response::operator=(eprREF);
 	return (*this);
 };
@@ -137,7 +137,7 @@ static std::string	loadFile(const std::string &filePathREF)
 	return ("");
 }
 
-Response::ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR): Response(status) {
+ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR): Response(status) {
 	std::string	epFile;
 	std::string	root;
 	std::string	epFilePath;
@@ -154,18 +154,18 @@ Response::ErrorPageResponse::ErrorPageResponse(const int &status, const ServerCo
 		setMessageBody(loadFile(epFilePath));
 };
 
-Response::RedirectResponse::RedirectResponse(void): Response() {};
+RedirectResponse::RedirectResponse(void): Response() {};
 
-Response::RedirectResponse::~RedirectResponse(void) {};
+RedirectResponse::~RedirectResponse(void) {};
 
-Response::RedirectResponse::RedirectResponse(const RedirectResponse &rrREF): Response(rrREF) {};
+RedirectResponse::RedirectResponse(const RedirectResponse &rrREF): Response(rrREF) {};
 
-Response::RedirectResponse	&Response::RedirectResponse::operator=(const RedirectResponse &rrREF) {
+RedirectResponse	&RedirectResponse::operator=(const RedirectResponse &rrREF) {
 	this->Response::operator=(rrREF);
 	return (*this);
 };
 
-Response::RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
+RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
 	ServerConfig::Return	returnObj;
 	std::string				indexPath;
 
@@ -236,8 +236,9 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 	std::string filePath;
 
 	filePath = locPTR->getRoot();
-	filePath = filePath.empty() ? servConfREF.getRoot() : filePath;
-	filePath += requestREF.getUri();;
+	if (filePath.empty())
+		filePath = servConfREF.getRoot();
+	filePath += requestREF.getUri().substr(locPTR->locationUri.size(), std::string::npos);
 	return (filePath);
 }
 
@@ -250,7 +251,7 @@ static void header_for_GetHead(Response &response, const std::string &fileStr)
 	if (mimeType.empty())
 		mimeType = "text/html";
 
-	response.addHeader(Header("Content-Type", mimeType));
+	response.addHeader(Header("Content-Type", "text/html"));
 }
 
 static std::string	loadIndex(const std::vector< std::string > &indexPages, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
@@ -289,7 +290,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		else if (!indexPages.empty() && requestREF.getUri() == locPTR->locationUri)
 			result = loadIndex(indexPages, servConfREF, locPTR);
 		else
-			throw (404);
+			throw (404); // forbidden
 	}
 	else if (Autoindex::isPathReg(filePathREF) > 0)
 		result = loadFile(filePathREF);
@@ -393,7 +394,7 @@ static void	checkHost(const Request &requestREF, const ServerConfig &servConfREF
 	hostHeader = ServerParser::splitByTwo(requestREF.getHeaderValue("Host"), ':').first;
 	std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << hostHeader;
 	serverNames = servConfREF.getServerNames();
-	if (hostHeader.empty() || 
+	if (hostHeader.empty() ||
 		(!serverNames.empty() && std::find(serverNames.begin(), serverNames.end(), hostHeader) == serverNames.end()))
 		throw (400);
 }
