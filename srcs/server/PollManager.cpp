@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 05:03:53 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/07 21:30:57 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 00:31:13 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 PollManager::PollManager(size_t n) : nfds(n)
 {
+	memset(&_sockets, 0, MAX_SOCKETS * sizeof(struct pollfd));
 }
 
 PollManager::~PollManager()
