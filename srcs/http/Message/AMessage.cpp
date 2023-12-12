@@ -10,17 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include    <sstream>
-#include	<algorithm>
-#include	"AMessage.hpp"
-#include	"ToString.tpp"
+#include <sstream>
+#include <algorithm>
+#include "AMessage.hpp"
+#include "ToString.tpp"
 using namespace http;
 
 /**
  * @brief Construct a new AMessage object (default constructor)
  */
-AMessage::AMessage(void) {
-    return ;
+AMessage::AMessage(void)
+{
+	return;
 }
 
 /**
@@ -28,16 +29,18 @@ AMessage::AMessage(void) {
  *
  * @param aMessageREF Message to copy
  */
-AMessage::AMessage(const AMessage &aMessageREF) {
-    *this = aMessageREF;
-    return ;
+AMessage::AMessage(const AMessage &aMessageREF)
+{
+	*this = aMessageREF;
+	return;
 }
 
 /**
  * @brief Destroy the AMessage object
  */
-AMessage::~AMessage(void) {
-    return ;
+AMessage::~AMessage(void)
+{
+	return;
 }
 
 /**
@@ -46,13 +49,15 @@ AMessage::~AMessage(void) {
  * @param aMessageREF Message to copy
  * @return AMessage& Reference to the copied message
  */
-AMessage	&AMessage::operator=(const AMessage &aMessageREF) {
-    if (this != &aMessageREF) {
-        this->_startLine = aMessageREF._startLine;
-        this->_headers = aMessageREF._headers;
-        this->_messageBody = aMessageREF._messageBody;
-    }
-    return (*this);
+AMessage &AMessage::operator=(const AMessage &aMessageREF)
+{
+	if (this != &aMessageREF)
+	{
+		this->_startLine = aMessageREF._startLine;
+		this->_headers = aMessageREF._headers;
+		this->_messageBody = aMessageREF._messageBody;
+	}
+	return (*this);
 }
 
 /**
@@ -62,29 +67,38 @@ AMessage	&AMessage::operator=(const AMessage &aMessageREF) {
  * @param headers The list of headers of the message
  * @param messageBody The body of the message
  */
-AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string messageBody) {
-    this->_startLine = startLine;
-    this->_headers = headers;
-    this->_messageBody = messageBody;
-    return ;
+AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string messageBody)
+{
+	this->_startLine = startLine;
+	this->_headers = headers;
+	this->_messageBody = messageBody;
+	return;
 }
 
-void AMessage::parseMessageBody() {
-	std::string	head = _messageBody.substr(0, _messageBody.find("\r\n\r\n"));
-	std::string	chunks = _messageBody.substr(_messageBody.find("\r\n\r\n") + 4, _messageBody.size() - 1);
-	std::string	subchunk = chunks.substr(0, 20);
-	std::string	body = "";
-	int			chunksize = strtol(subchunk.c_str(), NULL, 16);
-	size_t		i = 0;
+void AMessage::parseMessageBody()
+{
+	_messageBody = "";
+	std::string head = _messageBody.substr(0, _messageBody.find("\r\n\r\n"));
+	if (head.empty())
+		return ;
+	std::string chunks = _messageBody.substr(_messageBody.find("\r\n\r\n") + 4, _messageBody.size() - 1);
+	if (chunks.empty())
+		return;
+	std::string subchunk = chunks.substr(0, 20);
+	std::string body = "";
+	int chunksize = strtol(subchunk.c_str(), NULL, 16);
+	size_t i = 0;
 
-	do {
+	while (chunksize)
+	{
 		i = chunks.find("\r\n", i) + 2;
 		body += chunks.substr(i, chunksize);
 		i += chunksize + 2;
 		subchunk = chunks.substr(i, 20);
 		chunksize = strtol(subchunk.c_str(), NULL, 16);
-	} while (chunksize);
-	_messageBody = head + "\r\n\r\n" + body + "\r\n\r\n";
+	}
+	// _messageBody = head + "\r\n\r\n" + body + "\r\n\r\n";
+	_messageBody = body;
 }
 
 /**
@@ -93,17 +107,20 @@ void AMessage::parseMessageBody() {
  *
  * @param rawMessage The raw message to be parsed
  */
-AMessage::AMessage(std::string rawMessage) {
+AMessage::AMessage(std::string rawMessage)
+{
 	std::istringstream iss(rawMessage);
-    std::string line;
+	std::string line;
 
-	while(std::getline(iss, line, '\r')) {
+	while (std::getline(iss, line, '\r'))
+	{
 		iss.ignore();
 		if (this->_startLine == "")
 			this->_startLine = line;
 		else if (line == "")
-			break ;
-		else {
+			break;
+		else
+		{
 			std::string key;
 			std::string value;
 			std::istringstream iss2(line);
@@ -121,8 +138,9 @@ AMessage::AMessage(std::string rawMessage) {
  *
  * @return std::string The start line of the message
  */
-std::string	AMessage::getStartLine(void) {
-    return (this->_startLine);
+std::string AMessage::getStartLine(void)
+{
+	return (this->_startLine);
 }
 
 /**
@@ -130,8 +148,9 @@ std::string	AMessage::getStartLine(void) {
  *
  * @return std::list<Header> A list containing the headers of the message
  */
-std::list<Header>	AMessage::getHeaders(void) const {
-    return (this->_headers);
+std::list<Header> AMessage::getHeaders(void) const
+{
+	return (this->_headers);
 }
 
 /**
@@ -139,8 +158,9 @@ std::list<Header>	AMessage::getHeaders(void) const {
  *
  * @return std::string the header value if it finds anything
  */
-std::string	AMessage::getHeaderValue(const std::string &headerKey) const {
-	std::list<Header>::const_iterator	itc;
+std::string AMessage::getHeaderValue(const std::string &headerKey) const
+{
+	std::list<Header>::const_iterator itc;
 
 	itc = std::find_if(_headers.begin(), _headers.end(), Header::IsHeaderKeyUnary(headerKey));
 	if (itc == _headers.end())
@@ -153,8 +173,9 @@ std::string	AMessage::getHeaderValue(const std::string &headerKey) const {
  *
  * @return std::string The body of the message
  */
-std::string	AMessage::getMessageBody(void) const {
-    return (this->_messageBody);
+std::string AMessage::getMessageBody(void) const
+{
+	return (this->_messageBody);
 }
 
 /**
@@ -162,35 +183,40 @@ std::string	AMessage::getMessageBody(void) const {
  *
  * @return std::string The raw message
  */
-std::string	AMessage::getRawMessage(void) const {
+std::string AMessage::getRawMessage(void) const
+{
 	std::string rawMessage = this->_startLine;
-    for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++) {
+	for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
+	{
 		if (rawMessage.size() == 0)
 			rawMessage = it->getKey() + ": " + it->getValue() + CR_LF;
 		else
 			rawMessage += it->getKey() + ": " + it->getValue() + CR_LF;
-    }
-    rawMessage += CR_LF + this->_messageBody;
-	if (_messageBody.find(CR_LF CR_LF) == std::string::npos)
-		rawMessage += CR_LF CR_LF;
-    return (rawMessage);
+	}
+	rawMessage += CR_LF + this->_messageBody;
+	// if (_messageBody.find(CR_LF CR_LF) == std::string::npos)
+	// 	rawMessage += CR_LF CR_LF;
+	return (rawMessage);
 }
 
-void AMessage::addHeader(Header header) {
-	std::list<Header>::iterator	it;
+void AMessage::addHeader(Header header)
+{
+	std::list<Header>::iterator it;
 
 	it = std::find_if(_headers.begin(), _headers.end(), Header::IsHeaderKeyUnary(header.getKey()));
 	if (it != _headers.end())
 		it->setValue(header.getValue());
 	else
-    	this->_headers.push_back(header);
+		this->_headers.push_back(header);
 }
 
-void AMessage::setMessageBody(std::string messageBody) {
-    this->_messageBody = messageBody;
-	addHeader(Header("Content-Length",http::toString(_messageBody.size())));
+void AMessage::setMessageBody(std::string messageBody)
+{
+	this->_messageBody = messageBody;
+	addHeader(Header("Content-Length", http::toString(_messageBody.size())));
 }
 
-void AMessage::setStartLine(std::string startLine) {
-    this->_startLine = startLine;
+void AMessage::setStartLine(std::string startLine)
+{
+	this->_startLine = startLine;
 }

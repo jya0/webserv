@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 21:05:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/12 20:13:54 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 # define	DEFAULT_AUTO_INDEX				false
 # define	DEFAULT_CMB_SIZE				-1
-# define	DEFAULT_INDEX					"index.html"
+# define	DEFAULT_INDEX					""
 # define	DEFAULT_LISTEN_IP				"127.0.0.1"
 # define	DEFAULT_LISTEN_PORT				80
 # define	DEFAULT_RETURN_CODE				301	//not defined by NGINX

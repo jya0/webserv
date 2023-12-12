@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 21:11:07 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/12 20:22:50 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 #include	"ServerParser_namespace.hpp"
 
 /* class ServerConfig */
-ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)), 
-									_autoIndex(DEFAULT_AUTO_INDEX), 
+ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)),
+									_autoIndex(DEFAULT_AUTO_INDEX),
 									_sizeCMB(DEFAULT_CMB_SIZE),
-									_index(std::vector< std::string >(1, DEFAULT_INDEX)), 
+									_index(std::vector< std::string >(1, DEFAULT_INDEX)),
 									_root(DEFAULT_ROOT) {};
 
 ServerConfig::~ServerConfig(void) {};
@@ -106,7 +106,7 @@ ServerConfig::ServerConfig(DirectiveBlock *serverDve) {
 			_return = parseReturnDirective(serverDve->readDirectiveSimple(DVE_RETURN));
 		} catch (std::exception &e) {};
 		try {
-			_root = serverDve->readDirectiveSimple(DVE_ROOT).front();
+			_root = ServerParser::appendSlashes(serverDve->readDirectiveSimple(DVE_ROOT).front());
 		} catch (std::exception &e) {};
 	};
 };

@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/webserv",
-			"args": ["${workspaceFolder}/conf.d/startup.conf"],
+			"args": ["${workspaceFolder}/tests/intra_tester.conf"],
 			"environment": [],
 			"cwd": "${workspaceFolder}",
 			"MIMode": "lldb",

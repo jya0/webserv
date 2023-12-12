@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/11 17:13:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/12 19:34:29 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,12 @@ static std::string	decodeUri(const std::string &encoded)
 Request::Request(std::string httpRaw) : AMessage(httpRaw) {
 	std::string method = _startLine.substr(0, _startLine.find(' '));
 	_httpMethod = methodEnum(method);
-	_uri = _startLine.substr(_startLine.find(' ') + 1, 
-								_startLine.find(' ', 
-									_startLine.find(' ') + 1) - 
+	_uri = _startLine.substr(_startLine.find(' ') + 1,
+								_startLine.find(' ',
+									_startLine.find(' ') + 1) -
 										_startLine.find(' ') - 1);
 	_uri = decodeUri(_uri);
-	_httpVersion = _startLine.substr(_startLine.find(' ', 
+	_httpVersion = _startLine.substr(_startLine.find(' ',
 										_startLine.find(' ') + 1) + 1);
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
 		parseMessageBody();
