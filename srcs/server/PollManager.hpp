@@ -8,7 +8,7 @@
 class PollManager {
 private:
 	size_t					nfds;
-	struct pollfd			_sockets[200];
+	struct pollfd			_sockets[2000];
 
 public:
 	PollManager(size_t);

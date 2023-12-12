@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 22:11:17 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/12 19:07:44 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		else if (!indexPages.empty() && requestREF.getUri() == locPTR->locationUri)
 			result = loadIndex(indexPages, servConfREF, locPTR);
 		else
-			throw (403); // forbidden
+			throw (404);
 	}
 	else if (Autoindex::isPathReg(filePathREF) > 0)
 		result = loadFile(filePathREF);
@@ -319,7 +319,6 @@ static Response	handleGet(const std::string &filePathREF, const Request &request
 
 	callCGI(filePathREF, requestREF, locPTR);
 	response = loadContent(filePathREF, requestREF, servConfREF, locPTR);
-	response.addHeader(Header());
 	return (response);
 }
 
@@ -422,6 +421,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	std::string												filePath;
 
 	try {
+
 		checkHost(requestREF, servConfREF);
 		locPTR = servConfREF.getLocation(requestREF.getUri());
 		if (locPTR != NULL && !(locPTR->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))

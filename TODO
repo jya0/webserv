@@ -1,1 +1,4 @@
 #INDEX AND RETURN REDIRCTION CONTROL LOOP TODO
+
+
+#Need to check for CGI returns if the script itself has an error
