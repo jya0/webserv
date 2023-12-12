@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/12 21:33:12 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/12 23:20:30 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
 		_autoIndex		= serverConfigREF.getAutoIndex();
 		_sizeCMB		= serverConfigREF.getSizeCMB();
 		_errorPages		= serverConfigREF.getErrorPages();
+		std::string sup = serverConfigREF.getErrorPage(100);
 		_index			= serverConfigREF.getIndex();
 		_return			= serverConfigREF.getReturn();
 		_root			= serverConfigREF.getRoot();
@@ -169,10 +170,12 @@ const std::vector< t_errorPage >						&ServerConfig::getErrorPages(void) const {
 };
 
 std::string												ServerConfig::getErrorPage(const int &statusCode) const {
-	for (std::vector< t_errorPage >::const_iterator itc1 = _errorPages.begin(); itc1 != _errorPages.end(); ++itc1)
+	if (_errorPages.empty())
+		return ("");
+	for (std::vector<std::pair<std::vector<int>, std::string> >::const_iterator itc1 = _errorPages.begin(); itc1 != _errorPages.end(); ++itc1)
 	{
 		if (itc1->first.empty())
-			continue ;
+			continue;
 		for (std::vector<int>::const_iterator itc2 = itc1->first.begin(); itc2 != itc1->first.end(); ++itc2)
 		{
 			if (statusCode == *itc2)

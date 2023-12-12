@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/10 23:13:50 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/12 22:38:48 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,10 @@ namespace http {
 			bool			responseReady() const;
 			void			setResponseStatus(bool status);
 
-			class	ResponseException;
 		private:
-			class	ErrorPageResponse;
-			class	RedirectResponse;
 	};
-};
-
-class	http::Response::ErrorPageResponse: public Response {
+	class ErrorPageResponse : public Response
+	{
 	private:
 	protected:
 	public:
@@ -73,9 +69,10 @@ class	http::Response::ErrorPageResponse: public Response {
 		ErrorPageResponse(const ErrorPageResponse &eprREF);
 		ErrorPageResponse &operator=(const ErrorPageResponse &eprREF);
 		ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR);
-};
+	};
 
-class	http::Response::RedirectResponse: public Response {
+	class RedirectResponse : public Response
+	{
 	private:
 	protected:
 	public:
@@ -84,20 +81,26 @@ class	http::Response::RedirectResponse: public Response {
 		RedirectResponse(const RedirectResponse &rrREF);
 		RedirectResponse &operator=(const RedirectResponse &rrREF);
 		RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR);
+	};
+
+	class ResponseException : public std::exception
+	{
+	private:
+		std::string _errorMsg;
+
+	public:
+		virtual ~ResponseException() throw(){};
+		ResponseException(const std::string &errorMsg)
+		{
+			_errorMsg = errorMsg;
+		};
+		virtual const char *what() const throw()
+		{
+			return (_errorMsg.c_str());
+		};
+	};
 };
 
-class	http::Response::ResponseException: public std::exception {
-		private:
-			std::string	_errorMsg;
-    	public:
-			virtual ~ResponseException() throw () {};
-			ResponseException(const std::string &errorMsg) {
-				_errorMsg = errorMsg;
-			};
-			virtual const char *what() const throw()
-			{
-				return (_errorMsg.c_str());
-			};
-};
+
 
 #endif

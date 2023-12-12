@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/12 19:22:08 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/12 21:57:43 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void ServerMonitor::monitorCGI()
 			clientSock = _cgiScripts[i].getClientSocket();
 			serverSock = _cgiScripts[i].getServerSocket();
 			_cgiScripts.erase(_cgiScripts.begin() + i);
-			*_servers.at(serverSock)->responses[clientSock] = Response(408);
+			_servers.at(serverSock)->responses[clientSock] = Response(408);
 			return;
 		}
 		else
@@ -119,9 +119,9 @@ void ServerMonitor::serveClientRequest(int server, int triggered)
 			cgi.setServerSocket(server);
 			cgi.setClientSocket(triggered);
 			_cgiScripts.push_back(cgi);
-			_servers.at(server)->responses[triggered]->setResponseStatus(false);
+			_servers.at(server)->responses[triggered].setResponseStatus(false);
 		}
-		std::map<int, Request *>::iterator itr = _servers.at(server)->requests.find(triggered);
+		std::map<int, Request >::iterator itr = _servers.at(server)->requests.find(triggered);
 		_servers.at(server)->requests.erase(itr);
 	}
 }
@@ -130,9 +130,9 @@ void ServerMonitor::serveClientResponse(int server, int client)
 {
 	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
-	_servers.at(server)->sendResponse(client, *(_servers.at(server)->responses[client]));
+	_servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
 
-	std::map<int, Response *>::iterator response = _servers.at(server)->responses.find(client);
+	std::map<int, Response >::iterator response = _servers.at(server)->responses.find(client);
 	_servers.at(server)->responses.erase(response);
 }
 

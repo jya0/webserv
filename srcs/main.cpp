@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/11 02:17:16 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/12 23:27:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int main(int argc, char **argv)
 	}
 	std::vector<ServerConfig> configs = ServerParser::parseConfigFile(argv[1]);
 	ServerMonitor monitor(configs);
+	// std::string sup = configs.front().getErrorPage(100);
 	try
 	{
 		monitor.startServers();

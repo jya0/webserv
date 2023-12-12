@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/12 19:31:39 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/12 23:06:17 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,21 +74,21 @@ void WebServer::sendData(int client, std::string message)
 int WebServer::recieveData(int &client)
 {
 	std::string ret = connection.recieveData(client);
-	std::map<int, Request *>::iterator itr = requests.find(client);
+	std::map<int, Request>::iterator itr = requests.find(client);
 	if (itr == requests.end())
-		requests[client] = new Request();
-	requests[client]->appendRawData(ret);
-	requests[client]->setRequestStatus(false);
+		requests[client] = Request();
+	requests[client].appendRawData(ret);
+	requests[client].setRequestStatus(false);
 	size_t pos = 0;
-	if ((pos = requests[client]->getRawData().find("\r\n\r\n")) != std::string::npos)
+	if ((pos = requests[client].getRawData().find("\r\n\r\n")) != std::string::npos)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
-		std::cout << requests[client]->getRawData() << "\n";
-		std::string raw = requests[client]->getRawData();
-		std::map<int, Request *>::iterator itr = requests.find(client);
+		std::cout << requests[client].getRawData() << "\n";
+		std::string raw = requests[client].getRawData();
+		std::map<int, Request >::iterator itr = requests.find(client);
 		requests.erase(itr);
-		requests[client] = new Request(raw);
-		requests[client]->setRequestStatus(true);
+		requests[client] = Request(raw);
+		requests[client].setRequestStatus(true);
 	}
 	return (ret.size());
 }
@@ -120,14 +120,14 @@ bool WebServer::responseReady(int client)
 {
 	if (responses.count(client) == 0)
 		return (false);
-	return (responses[client]->responseReady());
+	return (responses[client].responseReady());
 }
 
 bool WebServer::requestReady(int client)
 {
 	if (requests.count(client) == 0)
 		return (false);
-	return (requests[client]->requestReady());
+	return (requests[client].requestReady());
 }
 
 void WebServer::closeCGI(CGIhandler &cgiREF)
@@ -161,13 +161,14 @@ void WebServer::closeCGI(CGIhandler &cgiREF)
 	fclose(cgiREF.getInFile());
 	fclose(cgiREF.getOutFile());
 
-	*responses[cgiREF.getClientSocket()] = Response(200, cgiResult);
+	responses[cgiREF.getClientSocket()] = Response(200, cgiResult);
+	delete []readBuf;
 }
 
 void WebServer::buildResponse(int client)
 {
-	responses[client] = new Response();
-	responses[client]->setResponseStatus(false);
-	responses[client]->buildResponse(*requests[client], _config);
-	responses[client]->setResponseStatus(true);
+	responses[client] = Response();
+	responses[client].setResponseStatus(false);
+	responses[client].buildResponse(requests[client], _config);
+	responses[client].setResponseStatus(true);
 }

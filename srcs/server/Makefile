@@ -6,14 +6,16 @@
 #    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/03 13:29:44 by jyao              #+#    #+#              #
-#    Updated: 2023/12/12 21:28:44 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/12 23:05:02 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile server
 
 CXX				:=	c++
-CXXFLAGS		:= -Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
+# CXXFLAGS		:= -Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
+CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)

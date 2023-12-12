@@ -6,7 +6,7 @@
 #    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/12 21:29:06 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/12 23:21:20 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,9 @@ SRCS			=	$(addsuffix .cpp, $(addprefix $(SRCS_DIR), $(FILES)))
 
 OBJS			=	$(SRCS:.cpp=.o)
 
-CXXFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
+# CXXFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
+CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+
 
 all:	$(NAME)
 
@@ -55,6 +57,9 @@ $(NAME): | $(LIBS) $(OBJS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+
+RUDE:
+	c++ -g3 -std=c++98 -Isrcs/ServerConfig -Isrcs/server -Isrcs/http/Autoindex -Isrcs/http/CGIhandler -Isrcs/http/Message -Isrcs/http  srcs/*.cpp srcs/ServerConfig/*.cpp srcs/http/Autoindex/*.cpp srcs/http/CGIhandler/*.cpp srcs/http/Message/*.cpp srcs/server/*.cpp -o webserv
 
 WEBSERV: $(LIBS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LIBS) $(OBJS) -o $(NAME)
@@ -92,6 +97,6 @@ fclean:	clean
 
 re:		fclean all
 
-.PHONY: all clean fclean re WEBSERV $(LIBS)
+.PHONY: all clean fclean re WEBSERV $(LIBS) RUDE
 
 # c++  -std=c++98 -Isrcs/ServerConfig -Isrcs/server -Isrcs/http/Autoindex -Isrcs/http/CGIhandler -Isrcs/http/Message -Isrcs/http  srcs/*.cpp srcs/ServerConfig/*.cpp srcs/http/Autoindex/*.cpp srcs/http/CGIhandler/*.cpp srcs/http/Message/*.cpp srcs/server/*.cpp -std=c++98

@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/12 21:22:42 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/12 22:38:00 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,13 +111,13 @@ Response::Response(std::string httpRaw) : AMessage(httpRaw)
 	_ready = true;
 }
 
-Response::ErrorPageResponse::ErrorPageResponse(void): Response() {};
+ErrorPageResponse::ErrorPageResponse(void): Response() {};
 
-Response::ErrorPageResponse::~ErrorPageResponse(void) {};
+ErrorPageResponse::~ErrorPageResponse(void) {};
 
-Response::ErrorPageResponse::ErrorPageResponse(const ErrorPageResponse &eprREF): Response(eprREF) {};
+ErrorPageResponse::ErrorPageResponse(const ErrorPageResponse &eprREF): Response(eprREF) {};
 
-Response::ErrorPageResponse	&Response::ErrorPageResponse::operator=(const ErrorPageResponse &eprREF) {
+ErrorPageResponse	&ErrorPageResponse::operator=(const ErrorPageResponse &eprREF) {
 	this->Response::operator=(eprREF);
 	return (*this);
 };
@@ -137,7 +137,7 @@ static std::string	loadFile(const std::string &filePathREF)
 	return ("");
 }
 
-Response::ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR): Response(status) {
+ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR): Response(status) {
 	std::string	epFile;
 	std::string	root;
 	std::string	epFilePath;
@@ -154,18 +154,18 @@ Response::ErrorPageResponse::ErrorPageResponse(const int &status, const ServerCo
 		setMessageBody(loadFile(epFilePath));
 };
 
-Response::RedirectResponse::RedirectResponse(void): Response() {};
+RedirectResponse::RedirectResponse(void): Response() {};
 
-Response::RedirectResponse::~RedirectResponse(void) {};
+RedirectResponse::~RedirectResponse(void) {};
 
-Response::RedirectResponse::RedirectResponse(const RedirectResponse &rrREF): Response(rrREF) {};
+RedirectResponse::RedirectResponse(const RedirectResponse &rrREF): Response(rrREF) {};
 
-Response::RedirectResponse	&Response::RedirectResponse::operator=(const RedirectResponse &rrREF) {
+RedirectResponse	&RedirectResponse::operator=(const RedirectResponse &rrREF) {
 	this->Response::operator=(rrREF);
 	return (*this);
 };
 
-Response::RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
+RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
 	ServerConfig::Return	returnObj;
 	std::string				indexPath;
 
