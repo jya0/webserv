@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 13:11:43 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 17:21:44 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ void ServerMonitor::serveClientRequest(int server, int triggered)
 	catch (http::CGIhandler::CGIexception &e) {
 		if (e.what() == std::string("CGI: Child process done\n"))
 			this->killChild();
+		
 	}
 		std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(triggered);
 	_servers.at(server)->requests.erase(itr);

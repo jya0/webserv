@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 13:26:11 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 17:24:18 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,12 +175,11 @@ void CGIhandler::runCGI(const std::string &scriptName)
 	av[1] = 0;
 	execve(scriptName.c_str(), av, envp);
 	deleteEnvArr(envp);
-	throw(CGIhandler::CGIexception("CGI: Error when executing CGI script!\n"));
 }
 
 void CGIhandler::closeFds() {
-	dup2(_cinSave, STDIN_FILENO);
-	dup2(_coutSave, STDOUT_FILENO);
+	dup2(_inFileFd, STDIN_FILENO);
+	dup2(_outFileFd, STDOUT_FILENO);
 	close(_cinSave);
 	close(_coutSave);
 	close(_inFileFd);
@@ -206,9 +205,16 @@ std::string CGIhandler::executeCGI(const std::string &scriptName)
 		runCGI(scriptName);
 	else
 		throw(*this);
-	closeFds();
+	dup2(_cinSave, STDIN_FILENO);
+	dup2(_coutSave, STDOUT_FILENO);
+	close(_cinSave);
+	close(_coutSave);
+	close(_inFileFd);
+	close(_outFileFd);
+	fclose(_inFile);
+	fclose(_outFile);
 	if (_childPid == 0)
-		throw CGIexception("CGI: Child process done\n");
+		throw CGIexception("CGI: Error when executing CGI script!\n");
 	return (cgiResult);
 };
 
