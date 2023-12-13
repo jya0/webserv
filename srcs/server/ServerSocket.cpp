@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 21:22:25 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 23:09:08 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
 	if (bytesRecieved == 0)
 	{
-		close(peer_socket);
-		peer_socket = -1;
 		delete[] buffer;
 		return (std::string(""));
 	}
 	if (bytesRecieved < 0)
 	{
+		close(peer_socket);
+		peer_socket = -1;
 		log("read() sys call failed: Failed to read bytes from client socket\n");
 		delete[] buffer;
 		throw SocketIOError();
@@ -88,7 +88,7 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	return (ret);
 }
 
-void ServerSocket::sendData(int peer_socket, std::string message)
+void ServerSocket::sendData(int &peer_socket, std::string message)
 {
 	ssize_t bytesSent;
 
@@ -98,6 +98,8 @@ void ServerSocket::sendData(int peer_socket, std::string message)
 	if (bytesSent < 0)
 	{
 		log("send() sys call failed: Failed to send bytes to client socket\n");
+		close(peer_socket);
+		peer_socket = -1;
 		throw SocketIOError();
 	}
 	else if (size_t(bytesSent) == message.size())
@@ -125,9 +127,11 @@ void ServerSocket::startConnection()
 
 void ServerSocket::startListening()
 {
-	if (listen(passive_socket, 50) < 0)
+	if (listen(passive_socket, 500) < 0)
 	{
 		log("listen() sys call failed: Cannot listen from server socket\n");
+		close(passive_socket);
+		passive_socket = -1;
 		throw SocketIOError();
 	}
 	std::cout << "\n*** Listening on ADDRESS: "
@@ -142,6 +146,7 @@ int ServerSocket::acceptConnection()
 							 &socket_address_len);
 	if (peer_socket < 0)
 	{
+		close(peer_socket);
 		std::cout << "accept() sys call failed: Server failed to accept incoming connection from ADDRESS: "
 				  << inet_ntoa(socket_address.sin_addr) << "; PORT: "
 				  << ntohs(socket_address.sin_port);
@@ -154,7 +159,7 @@ int ServerSocket::acceptConnection()
 
 void ServerSocket::closeConnection()
 {
-	if (passive_socket  != -1)
+	if (passive_socket != -1)
 	{
 		close(passive_socket);
 		passive_socket = -1;

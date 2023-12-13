@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 21:22:45 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 23:04:37 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ int WebServer::recieveData(int &client)
 		std::cerr << "Failed to receive client request: " << e.what() << std::endl;
 		return (-1);
 	}
+	if (ret == "")
+		closeClientConnection(client);
 	std::map<int, Request>::iterator itr = requests.find(client);
 	if (itr == requests.end())
 		requests[client] = Request();

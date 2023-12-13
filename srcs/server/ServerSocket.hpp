@@ -31,7 +31,7 @@ public:
 	ServerSocket &operator=(const ServerSocket &rhs);
 	~ServerSocket();
 
-	void				sendData(int peer_socket, std::string message);
+	void				sendData(int &peer_socket, std::string message);
 	std::string			recieveData(int &peer_socket);
 	void				startConnection();
 	void				startListening();
