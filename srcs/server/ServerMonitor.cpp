@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 22:04:35 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 22:53:11 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _soc
 
 ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : _servers(servers), _sockets(_servers.size()){};
 
-ServerMonitor::~ServerMonitor(){
+ServerMonitor::~ServerMonitor()
+{
 	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
 		delete itr->second;
 };
@@ -106,7 +107,16 @@ bool ServerMonitor::incomingConnectiontoServer(int triggered)
 
 void ServerMonitor::acceptIncomingConnection(int triggered)
 {
-	int client = _servers.find(triggered)->second->acceptConnection();
+	int client = -1;
+	try
+	{
+		client = _servers.find(triggered)->second->acceptConnection();
+	}
+	catch (ServerSocket::SocketIOError &e)
+	{
+		std::cerr << "Failed to accept incoming connection from a client: " << e.what() << std::endl;
+		return;
+	}
 	if (client != -1)
 		_sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
 }
@@ -119,11 +129,18 @@ void ServerMonitor::closeClientConenction(int server, int client)
 
 void ServerMonitor::serveClientRequest(int server, int client)
 {
-	int status = _servers.at(server)->recieveData(client);
-	if (status == -1 || _servers.at(server)->requestReady(client) == false)
-		return;
-	try {
+	int status = -1;
+	try
+	{
+		status = _servers.at(server)->recieveData(client);
+		if (status == -1 || _servers.at(server)->requestReady(client) == false)
+			return;
 		_servers.at(server)->buildResponse(client);
+	}
+	catch (ServerSocket::SocketIOError &e)
+	{
+		std::cerr << "Failed to server Client request: " << e.what() << std::endl;
+		return;
 	}
 	catch (http::CGIhandler &cgi)
 	{
@@ -140,11 +157,18 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
 	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
-	int status = _servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
-	if (status == -1)
-		return ;
+	try
+	{
+		_servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
+		closeClientConenction(server, client);
+	}
+	catch (ServerSocket::SocketIOError &e)
+	{
+		std::cerr << "Failed to serve client with a response: " << e.what() << std::endl;
+		return;
+	}
 	requests++;
-	std::map<int, Response >::iterator response = _servers.at(server)->responses.find(client);
+	std::map<int, Response>::iterator response = _servers.at(server)->responses.find(client);
 	_servers.at(server)->responses.erase(response);
 }
 
@@ -155,7 +179,7 @@ void ServerMonitor::startServers()
 	int triggered = 0;
 	int server = 0;
 	int requests = 0;
-	int	i = 0;
+	int i = 0;
 	while (2)
 	{
 		rc = _sockets.callPoll();
@@ -169,7 +193,7 @@ void ServerMonitor::startServers()
 			server = retrieveClientHandlerSocket(triggered);
 			if ((_sockets[i].revents & POLLHUP) || (_sockets[i].revents & POLLERR))
 				closeClientConenction(server, triggered);
-			if (_sockets[i].revents & POLLIN && incomingConnectiontoServer(triggered))
+			else if (_sockets[i].revents & POLLIN && incomingConnectiontoServer(triggered))
 				acceptIncomingConnection(triggered);
 			else if (_sockets[i].revents & POLLIN)
 				serveClientRequest(server, triggered);
