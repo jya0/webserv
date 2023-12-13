@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 05:29:24 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 07:04:06 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,6 @@ RedirectResponse	&RedirectResponse::operator=(const RedirectResponse &rrREF) {
 
 RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
 	ServerConfig::Return	returnObj;
-	std::string				indexPath;
 
 	if (locPTR != NULL)
 		returnObj = locPTR->getReturn();
@@ -181,6 +180,8 @@ RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const Server
 		redirect.addHeader(Header("Location", returnObj.uri));
 		this->Response::operator=(redirect);
 	}
+	std::cerr << "\n<<<<<<<<<<<<<\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<<<<<<<<<<<\n<<<<<<<<<<<<\n<<<<<<<<<<<redirect: " << returnObj.uri<< std::endl;
+	// exit(1);
 };
 
 /**
@@ -292,7 +293,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		indexPages = locPTR->getIndex();
 		indexPages.insert(indexPages.end(), servConfREF.getIndex().begin(), servConfREF.getIndex().end());
 		if (locPTR->getAutoIndex() == true)
-			result = Autoindex::genPage(filePathREF, requestREF, servConfREF);
+			result = Autoindex::genPage(filePathREF, requestREF);
 		else if (!indexPages.empty() && requestREF.getUri() == locPTR->locationUri)
 			result = loadIndex(indexPages, servConfREF, locPTR);
 		else

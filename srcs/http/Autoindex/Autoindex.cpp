@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:09:04 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 18:06:50 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 06:21:23 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include	<sys/stat.h>
 #include	<iostream>
 #include	<sstream>
+#include	<cstdlib>
 #include	"Autoindex_namespace.hpp"
 #include	"ServerParser_namespace.hpp"
 
@@ -43,11 +44,12 @@ static void	pageAddClosing(std::string &pageREF) {
     			"</html>\n";
 };
 
-std::string	Autoindex::genPage(std::string path, const Request &requestREF, const ServerConfig &servConfREF) {
-	DIR			*dirPTR;
-	std::string	page;
-	std::string	direntName;
-	std::string	uri;
+std::string	Autoindex::genPage(std::string path, const Request &requestREF) {
+	DIR										*dirPTR;
+	std::string								page;
+	std::string								direntName;
+	std::string								uri;
+	std::pair< std::string, std::string >	hostNport;
 
 	if (path.empty())
 		return (page);
@@ -62,14 +64,16 @@ std::string	Autoindex::genPage(std::string path, const Request &requestREF, cons
 
 		return (page);
 	};
+	hostNport = ServerParser::splitByTwo(requestREF.getHeaderValue("Host"), ':');
 	pageAddOpening(page, requestREF.getUri());
 	for (struct dirent *dirent = readdir(dirPTR); dirent != NULL; dirent = readdir(dirPTR))
 	{
 		direntName = dirent->d_name;
 		if (isPathFolder(path + direntName) > 0)
 			direntName += "/";
-		page += direntLink(uri, direntName, servConfREF.getListen().first, servConfREF.getListen().second);
+		page += direntLink(uri, direntName, hostNport.first, std::atoi(hostNport.second.c_str()));
 	}
+	closedir(dirPTR);
 	pageAddClosing(page);
 	return (page);
 };
