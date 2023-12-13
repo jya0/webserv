@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 19:59:50 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 21:22:25 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
 	if (bytesRecieved == 0)
 	{
+		close(peer_socket);
 		peer_socket = -1;
 		delete[] buffer;
 		return (std::string(""));
@@ -124,7 +125,7 @@ void ServerSocket::startConnection()
 
 void ServerSocket::startListening()
 {
-	if (listen(passive_socket, 1000) < 0)
+	if (listen(passive_socket, 50) < 0)
 	{
 		log("listen() sys call failed: Cannot listen from server socket\n");
 		throw SocketIOError();

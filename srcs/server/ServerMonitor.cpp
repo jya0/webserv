@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 20:49:45 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 21:28:36 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,15 +185,14 @@ void ServerMonitor::startServers()
 			if (_sockets[i].revents == 0 || triggered == -1)
 				continue;
 			server = retrieveClientHandlerSocket(triggered);
-			if ((_sockets[i].revents & POLLHUP) || (_sockets[i].revents & POLLERR))
-				closeClientConenction(server, triggered);
-			else if (_sockets[i].revents & POLLIN && incomingConnectiontoServer(triggered))
+			if (_sockets[i].revents & POLLIN && incomingConnectiontoServer(triggered))
 				acceptIncomingConnection(triggered);
 			else if (_sockets[i].revents & POLLIN)
 				serveClientRequest(server, triggered);
 			else if ((_sockets[i].revents & POLLOUT))
 				serveClientResponse(server, triggered, requests);
 		}
+		usleep(25);
 		monitorCGI();
 	}
 }
