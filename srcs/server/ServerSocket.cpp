@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 11:46:02 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 17:51:57 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,6 @@ ServerSocket &ServerSocket::operator=(const ServerSocket &rhs)
 ServerSocket::~ServerSocket()
 {
 	closeConnection();
-}
-
-std::string ServerSocket::generateDefaultResponse()
-{
-	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
-	std::ostringstream ss;
-	ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << (CR_LF CR_LF)
-	   << htmlFile;
-	return ss.str();
 }
 
 std::string ServerSocket::recieveData(int &peer_socket)

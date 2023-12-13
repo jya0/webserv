@@ -64,7 +64,7 @@ public:
 	bool			responseReady(int client);
 	void			buildResponse(int client);
 	bool			requestReady(int client);
-	void			closeCGI(CGIhandler &cgiREF);
+	void			closeCGI(CGIhandler &cgiREF, const int &statusREF);
 };
 
 #endif

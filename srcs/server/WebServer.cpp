@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 13:02:54 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 18:31:33 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,28 +153,31 @@ bool WebServer::requestReady(int client)
 	return (requests[client].requestReady());
 }
 
-void WebServer::closeCGI(CGIhandler &cgiREF)
+void WebServer::closeCGI(CGIhandler &cgiREF, const int &statusREF)
 {
-	std::string cgiResult;
-	char *readBuf;
-	ssize_t readReturn;
-	try
-	{
-		readBuf = new char[READ_BUF_SIZE + 1];
+	std::string	cgiResult;
+	char		 *readBuf;
+	ssize_t		readReturn;
+	int			responseStatus;
+
+	responseStatus = 200;
+	if (WEXITSTATUS(statusREF) != 0)
+		responseStatus = 500;
+	else {
+		try {
+			readBuf = new char[READ_BUF_SIZE + 1];
+			lseek(cgiREF.getOutFileFd(), 0, SEEK_SET);
+			do
+			{
+				std::memset(readBuf, 0, READ_BUF_SIZE + 1);
+				readReturn = read(cgiREF.getOutFileFd(), readBuf, READ_BUF_SIZE);
+				cgiResult += readBuf;
+			} while (readReturn > 0);
+		}
+		catch (std::exception &e) {
+			responseStatus = 500;
+		}
 	}
-	catch (std::exception &e)
-	{
-		std::cerr << e.what()
-				  << std::endl;
-		throw(CGIhandler::CGIexception("CGI failed to read result!"));
-	}
-	lseek(cgiREF.getOutFileFd(), 0, SEEK_SET);
-	do
-	{
-		std::memset(readBuf, 0, READ_BUF_SIZE + 1);
-		readReturn = read(cgiREF.getOutFileFd(), readBuf, READ_BUF_SIZE);
-		cgiResult += readBuf;
-	} while (readReturn > 0);
 	dup2(cgiREF.getCinSave(), STDIN_FILENO);
 	dup2(cgiREF.getCoutSave(), STDOUT_FILENO);
 	close(cgiREF.getCinSave());
@@ -183,8 +186,9 @@ void WebServer::closeCGI(CGIhandler &cgiREF)
 	close(cgiREF.getOutFileFd());
 	fclose(cgiREF.getInFile());
 	fclose(cgiREF.getOutFile());
-
-	responses[cgiREF.getClientSocket()] = Response(200, cgiResult);
+	if (responseStatus != 200)
+		cgiResult = "OOOOOOOPS I'VE FAILED CGI!!!";
+	responses[cgiREF.getClientSocket()] = Response(responseStatus, cgiResult);
 	delete []readBuf;
 }
 

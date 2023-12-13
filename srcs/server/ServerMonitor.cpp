@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 17:40:30 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 18:02:24 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void ServerMonitor::monitorCGI()
 				throw(http::CGIhandler::CGIexception("CGI failed to run!"));
 			if (child == _cgiScripts[i].getChildPid() || child == -1)
 			{
-				_servers.at((_cgiScripts[i].getServerSocket()))->closeCGI(_cgiScripts[i]);
+				_servers.at((_cgiScripts[i].getServerSocket()))->closeCGI(_cgiScripts[i], status);
 				_cgiScripts.erase(_cgiScripts.begin() + i);
 				return;
 			}
