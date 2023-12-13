@@ -173,30 +173,31 @@ std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &fil
 	configIF.open(filename.c_str(), std::ios::in);
 	if (!configIF.is_open())
 		throw (ServerParser::ParseErrorException("Could not open config file!"));
-	while (configIF.peek() != EOF)
-	{
-		dveBlock = getNextDirectiveBlock(configIF);
-		if (dveBlock == NULL)
+	try {
+		while (configIF.peek() != EOF)
 		{
-			serverBlocks.clear();
-			break ;
-		}
-		else
-		{
-			try {
+			dveBlock = getNextDirectiveBlock(configIF);
+			if (dveBlock == NULL)
+				throw (ParseErrorException("NULL directive block!"));
+			else
+			{
 				dveBlock->printDirective();
 				dveBlock->parseDirective();
 				dveBlock->checkDirective(HTTP);
 				serverBlocks.push_back(ServerConfig(dveBlock));
+				delete (dveBlock);
 			}
-			catch (std::exception &e)
-			{
-				std::cerr	<< e.what()
-							<< std::endl;
-			}
-			delete (dveBlock);
 		}
+		configIF.close();
 	}
-	configIF.close();
+	catch (std::exception &e)
+	{
+		std::cerr	<< e.what()
+					<< std::endl;
+		configIF.close();
+		delete (dveBlock);
+		serverBlocks.clear();
+		throw (ParseErrorException("Parser Error!"));
+	}
 	return (serverBlocks);
 }
