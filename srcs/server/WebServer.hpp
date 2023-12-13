@@ -46,6 +46,8 @@ public:
 
 	WebServer();
 	WebServer(std::string ip, int port);
+	WebServer(const WebServer &rhs);
+	WebServer &operator=(const WebServer &rhs);
 	~WebServer();
 	WebServer(const ServerConfig &configREF);
 

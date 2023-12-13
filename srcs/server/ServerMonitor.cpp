@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/12 21:57:43 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 06:46:09 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,27 @@
 
 ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
-	WebServer *server;
 	size_t i = 0;
 
 	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++, i++)
 	{
-		server = new WebServer(*itr);
-		_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
+		WebServer server(*itr);
+		_servers.insert(std::make_pair(server.getConnection().getPassiveSocket(), server));
 	}
 	_sockets = PollManager(_servers.size());
 }
 
-ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : _servers(servers), _sockets(_servers.size()){};
+ServerMonitor::ServerMonitor(std::map<int, WebServer > servers) : _servers(servers), _sockets(_servers.size()){};
 
 ServerMonitor::~ServerMonitor(){};
 
+
 int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 {
-	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
+	for (std::map<int, WebServer >::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
 	{
-		if (itr->second->connectedClient(triggered))
-			return (itr->second->getConnection().getPassiveSocket());
+		if (itr->second.connectedClient(triggered))
+			return (itr->second.getConnection().getPassiveSocket());
 	}
 	return (-1);
 }
@@ -55,7 +55,7 @@ void ServerMonitor::monitorCGI()
 			clientSock = _cgiScripts[i].getClientSocket();
 			serverSock = _cgiScripts[i].getServerSocket();
 			_cgiScripts.erase(_cgiScripts.begin() + i);
-			_servers.at(serverSock)->responses[clientSock] = Response(408);
+			_servers.at(serverSock).responses[clientSock] = Response(408);
 			return;
 		}
 		else
@@ -66,7 +66,7 @@ void ServerMonitor::monitorCGI()
 				throw(http::CGIhandler::CGIexception("CGI failed to run!"));
 			if (sup == _cgiScripts[i].getChildPid() || sup == -1)
 			{
-				_servers.at((_cgiScripts[i].getServerSocket()))->closeCGI(_cgiScripts[i]);
+				_servers.at((_cgiScripts[i].getServerSocket())).closeCGI(_cgiScripts[i]);
 				_cgiScripts.erase(_cgiScripts.begin() + i);
 				return;
 			}
@@ -76,10 +76,10 @@ void ServerMonitor::monitorCGI()
 
 void ServerMonitor::startListeningFromServers()
 {
-	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
+	for (std::map<int, WebServer >::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
 	{
-		_sockets.addFd(itr->second->getConnection().getPassiveSocket(), POLLIN | POLLOUT);
-		itr->second->startListening();
+		_sockets.addFd(itr->second.getConnection().getPassiveSocket(), POLLIN | POLLOUT);
+		itr->second.startListening();
 	}
 }
 
@@ -92,48 +92,48 @@ void ServerMonitor::acceptIncomingConnection(int triggered)
 {
 	int client;
 
-	client = _servers.find(triggered)->second->acceptConnection();
+	client = _servers.find(triggered)->second.acceptConnection();
 	if (client != -1)
 		_sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
 }
 
 void ServerMonitor::closeClientConenction(int server, int triggered)
 {
-	_servers.at(server)->closeClientConnection(triggered);
+	_servers.at(server).closeClientConnection(triggered);
 	_sockets.removeFd(triggered);
 }
 
 void ServerMonitor::serveClientRequest(int server, int triggered)
 {
-	_servers.at(server)->recieveData(triggered);
+	_servers.at(server).recieveData(triggered);
 	if (triggered == -1)
 		return;
-	if (_servers.at(server)->requestReady(triggered))
+	if (_servers.at(server).requestReady(triggered))
 	{
 		try
 		{
-			_servers.at(server)->buildResponse(triggered);
+			_servers.at(server).buildResponse(triggered);
 		}
 		catch (http::CGIhandler cgi)
 		{
 			cgi.setServerSocket(server);
 			cgi.setClientSocket(triggered);
 			_cgiScripts.push_back(cgi);
-			_servers.at(server)->responses[triggered].setResponseStatus(false);
+			_servers.at(server).responses[triggered].setResponseStatus(false);
 		}
-		std::map<int, Request >::iterator itr = _servers.at(server)->requests.find(triggered);
-		_servers.at(server)->requests.erase(itr);
+		std::map<int, Request >::iterator itr = _servers.at(server).requests.find(triggered);
+		_servers.at(server).requests.erase(itr);
 	}
 }
 
 void ServerMonitor::serveClientResponse(int server, int client)
 {
-	if (server == -1 || _servers.at(server)->responseReady(client) == false)
+	if (server == -1 || _servers.at(server).responseReady(client) == false)
 		return;
-	_servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
+	_servers.at(server).sendResponse(client, (_servers.at(server).responses[client]));
 
-	std::map<int, Response >::iterator response = _servers.at(server)->responses.find(client);
-	_servers.at(server)->responses.erase(response);
+	std::map<int, Response >::iterator response = _servers.at(server).responses.find(client);
+	_servers.at(server).responses.erase(response);
 }
 
 void ServerMonitor::startServers()
@@ -142,9 +142,9 @@ void ServerMonitor::startServers()
 	int rc = 0;
 	int triggered = 0;
 	int server = 0;
-
+	int requests = 0;
 	int i = 0;
-	while (2)
+	while (requests != 3)
 	{
 		rc = _sockets.callPoll();
 		if (rc < 0)
@@ -162,7 +162,10 @@ void ServerMonitor::startServers()
 			else if (_sockets[i].revents & POLLIN)
 				serveClientRequest(server, triggered);
 			else if ((_sockets[i].revents & POLLOUT))
+			{
 				serveClientResponse(server, triggered);
+				requests++;
+			}
 		}
 		monitorCGI();
 	}

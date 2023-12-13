@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/11 02:17:02 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 06:16:51 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@
 class ServerMonitor
 {
 private:
-	std::map<int, WebServer *>		_servers;
+	std::map<int, WebServer>		_servers;
 	PollManager						_sockets;
 	std::vector<http::CGIhandler>	_cgiScripts;
 
 public:
 
-	ServerMonitor(std::map<int, WebServer *> servers);
+	ServerMonitor(std::map<int, WebServer > servers);
 	ServerMonitor(const std::vector<ServerConfig> &configsREF);
 	~ServerMonitor();
 

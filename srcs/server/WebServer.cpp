@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/12 23:06:17 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 06:38:12 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,24 @@ WebServer::WebServer(const ServerConfig &configREF) : connection(configREF.getLi
 WebServer::WebServer(std::string ip, int port) : connection(ip, port)
 {
 }
+
+WebServer::WebServer(const WebServer &rhs)
+{
+	*this = rhs;
+}
+
+WebServer &WebServer::operator=(const WebServer &rhs)
+{
+	if (this == &rhs)
+		return (*this);
+	this->connection = rhs.connection;
+	this->clients = rhs.clients;
+	this->_config = rhs._config;
+	this->responses = rhs.responses;
+	this->requests = rhs.requests;
+	return (*this);
+}
+
 
 WebServer::~WebServer()
 {

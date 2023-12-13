@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 19:23:36 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 07:04:48 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ ServerSocket::ServerSocket()
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
-	startConnection();
 }
 
 ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
@@ -34,15 +33,24 @@ ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr),
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
-	try
-	{
-		startConnection();
-	}
-	catch (...)
-	{
-		std::cerr << "Faled to establish connection\n";
-		exit(0);
-	}
+}
+
+ServerSocket::ServerSocket(const ServerSocket &rhs)
+{
+	*this = rhs;
+}
+
+ServerSocket &ServerSocket::operator=(const ServerSocket &rhs)
+{
+	if (this == &rhs)
+		return (*this);
+	this->port = rhs.port;
+	this->ip_address = rhs.ip_address;
+	this->passive_socket = rhs.passive_socket;
+	socket_address.sin_family = AF_INET;
+	socket_address.sin_port = htons(port);
+	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
+	return (*this);
 }
 
 ServerSocket::~ServerSocket()
@@ -115,6 +123,15 @@ void ServerSocket::startConnection()
 
 void ServerSocket::startListening()
 {
+	try
+	{
+		startConnection();
+	}
+	catch (...)
+	{
+		std::cerr << "Faled to establish connection\n";
+		exit(0);
+	}
 	if (listen(passive_socket, 20) < 0)
 	{
 		log("Socket listen failed\n");
@@ -142,7 +159,8 @@ int ServerSocket::acceptConnection()
 
 void ServerSocket::closeConnection()
 {
-	close(passive_socket);
+	if (passive_socket  != -1)
+		close(passive_socket);
 }
 
 const int &ServerSocket::getPassiveSocket()
