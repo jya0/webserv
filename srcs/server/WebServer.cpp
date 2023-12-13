@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 08:13:07 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 09:31:55 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ WebServer &WebServer::operator=(const WebServer &rhs)
 
 WebServer::~WebServer()
 {
+	connection.closeConnection();
 }
 
 void WebServer::startConnection()

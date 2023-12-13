@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 21:10:03 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 10:25:20 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,33 +20,6 @@
 
 using namespace http;
 
-/*
-std::map<std::string, std::string>	headers = request.getHeaders();
-if (headers.find("Auth-Scheme") != headers.end() && headers["Auth-Scheme"] != "")
-	this->_env["AUTH_TYPE"] = headers["Authorization"];
-
-this->_env["REDIRECT_STATUS"] = "200"; //Security needed to execute php-cgi
-this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
-this->_env["SCRIPT_NAME"] = config.getPath();
-this->_env["SCRIPT_FILENAME"] = config.getPath();
-this->_env["REQUEST_METHOD"] = request.getMethod();
-this->_env["CONTENT_LENGTH"] = to_string(this->_body.length());
-this->_env["CONTENT_TYPE"] = headers["Content-Type"];
-this->_env["PATH_INFO"] = request.getPath(); //might need some change, using config path/contentLocation
-this->_env["PATH_TRANSLATED"] = request.getPath(); //might need some change, using config path/contentLocation
-this->_env["QUERY_STRING"] = request.getQuery();
-this->_env["REMOTEaddr"] = to_string(config.getHostPort().host);
-this->_env["REMOTE_IDENT"] = headers["Authorization"];
-this->_env["REMOTE_USER"] = headers["Authorization"];
-this->_env["REQUEST_URI"] = request.getPath() + request.getQuery();
-if (headers.find("Hostname") != headers.end())
-	this->_env["SERVER_NAME"] = headers["Hostname"];
-else
-	this->_env["SERVER_NAME"] = this->_env["REMOTEaddr"];
-this->_env["SERVER_PORT"] = to_string(config.getHostPort().port);
-this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
-this->_env["SERVER_SOFTWARE"] = "Weebserv/1.0";
-*/
 
 CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1) {
 	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
@@ -98,15 +71,8 @@ CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Loca
 	_cgiEnv["CONTENT_LENGTH"]		= http::toString(requestREF.getMessageBody().size());
 	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
 	_cgiEnv["PATH_INFO"]			= getCgiPathInfo(requestREF);
-	// _cgiEnv["PATH_TRANSLATED"]		= requestREF.getHeaderValue(locationREF.getCgiPathInfo());
 	_cgiEnv["QUERY_STRING"]			= getQueryString(requestREF);
-	// _cgiEnv["REMOTE_ADDR"]			= requestREF.getHeaderValue();
-	// _cgiEnv["REMOTE_HOST"]			= requestREF.getHeaderValue();
-	// _cgiEnv["REMOTE_IDENT"]			= requestREF.getHeaderValue();
-	// _cgiEnv["REMOTE_USER"]			= requestREF.getHeaderValue();
 	_cgiEnv["REQUEST_METHOD"]		= requestREF.getHttpMethod();
-	// _cgiEnv["SCRIPT_NAME"]			= requestREF.getHeaderValue();
-	// _cgiEnv["SERVER_PORT"]			= requestREF.getHeaderValue();
 };
 
 CGIhandler::CGIhandler(const CGIhandler &cgiREF) {
@@ -183,33 +149,38 @@ static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF) {
 	return (envArr);
 };
 
-static void	createTmpFiles(FILE *&inFile, FILE *&outFile, int &inFileFd, int &outFileFd) {
-	inFile = tmpfile();
-	outFile = tmpfile();
-	if (inFile == NULL || outFile == NULL)
+static void	createTmpFiles(FILE **inFile, FILE **outFile, int &inFileFd, int &outFileFd) {
+	*inFile = tmpfile();
+	*outFile = tmpfile();
+	if (*inFile == NULL || *outFile == NULL)
 		throw(CGIhandler::CGIexception("CGI failed to create temporary files!"));
-	inFileFd = fileno(inFile);
-	outFileFd = fileno(outFile);
+	inFileFd = fileno(*inFile);
+	outFileFd = fileno(*outFile);
 	if (inFileFd < 0 || outFileFd < 0)
 		throw(CGIhandler::CGIexception("CGI failed to get fd of temporary files!"));
 };
 
-static void	CGIchild(const int &inFileFd, const int &outFileFd, char * const *cgiEnv, const std::string &scriptName) {
+static void CGIchild(const int &cinSave, const int &coutSave, const int &inFileFd, const int &outFileFd, FILE *inFile, FILE *outFile, char *const *cgiEnv, const std::string &scriptName)
+{
 	if (cgiEnv != NULL)
-		{
-			dup2(inFileFd, STDIN_FILENO);
-			dup2(outFileFd, STDOUT_FILENO);
-			(void)inFileFd;
-			(void)outFileFd;
-			char **av = new char *[2];
-			av[0] = new char[2 + scriptName.size() + 1];
-			av[1] = new char[1];
-			std::string src = "./" + scriptName;
-			const char *csrc = src.c_str();
-			memcpy(av[0], csrc, src.size());
-			av[0][src.size()] = 0;
-			av[1] = 0;
-			execve(scriptName.c_str(), av, cgiEnv);
+	{
+		dup2(inFileFd, STDIN_FILENO);
+		dup2(outFileFd, STDOUT_FILENO);
+		close(inFileFd);
+		close(outFileFd);
+		close(cinSave);
+		close(coutSave);
+		fclose(inFile);
+		fclose(outFile);
+		char **av = new char *[2];
+		av[0] = new char[2 + scriptName.size() + 1];
+		av[1] = new char[1];
+		std::string src = "./" + scriptName;
+		const char *csrc = src.c_str();
+		memcpy(av[0], csrc, src.size());
+		av[0][src.size()] = 0;
+		av[1] = 0;
+		execve(scriptName.c_str(), av, cgiEnv);
 	}
 	deleteEnvArr(cgiEnv);
 }
@@ -227,7 +198,7 @@ std::string CGIhandler::executeCGI(const std::string &scriptName)
 
 	cinSave = dup(STDIN_FILENO);
 	coutSave = dup(STDOUT_FILENO);
-	createTmpFiles(inFile, outFile, inFileFd, outFileFd);
+	createTmpFiles(&inFile, &outFile, inFileFd, outFileFd);
 	write(inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
 	lseek(inFileFd, 0, SEEK_SET);
 	_startTime = std::clock();
@@ -235,7 +206,7 @@ std::string CGIhandler::executeCGI(const std::string &scriptName)
 	if (pid < 0)
 		throw(CGIexception("CGI failed to create fork!"));
 	if (pid == 0)
-		CGIchild(inFileFd, outFileFd, mapToArr(_cgiEnv), scriptName);
+		CGIchild(cinSave, coutSave, inFileFd, outFileFd, inFile, outFile, mapToArr(_cgiEnv), scriptName);
 	else
 	{
 		_childPid = pid;

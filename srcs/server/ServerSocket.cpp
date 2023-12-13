@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 08:50:44 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 09:35:50 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,12 @@ ServerSocket::ServerSocket()
 	socket_address.sin_family = AF_INET;
 	socket_address.sin_port = htons(port);
 	socket_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
+	passive_socket = -1;
+	port = 8000;
 }
 
 ServerSocket::ServerSocket(std::string ip_addr, int port) : ip_address(ip_addr), port(port),
-															passive_socket(), socket_address(),
+															passive_socket(-1), socket_address(),
 															socket_address_len(sizeof(socket_address))
 {
 	socket_address.sin_family = AF_INET;
@@ -118,6 +120,7 @@ void ServerSocket::startConnection()
 	if (bind(passive_socket, (sockaddr *)&socket_address, socket_address_len) < 0)
 	{
 		log("Cannot connect socket to address");
+		closeConnection();
 		throw SocketIOError();
 	}
 	fcntl(passive_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
@@ -153,7 +156,10 @@ int ServerSocket::acceptConnection()
 void ServerSocket::closeConnection()
 {
 	if (passive_socket  != -1)
+	{
 		close(passive_socket);
+		passive_socket = -1;
+	}
 }
 
 const int &ServerSocket::getPassiveSocket()

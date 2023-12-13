@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 08:26:35 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 09:56:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ ServerMonitor::~ServerMonitor(){
 		delete itr->second;
 };
 
-
 int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 {
 	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
@@ -40,6 +39,18 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 			return (itr->second->getConnection().getPassiveSocket());
 	}
 	return (-1);
+}
+
+static void closeCgiFds(http::CGIhandler &cgi)
+{
+	dup2(cgi.getCinSave(), STDIN_FILENO);
+	dup2(cgi.getCoutSave(), STDOUT_FILENO);
+	close(cgi.getCinSave());
+	close(cgi.getCoutSave());
+	close(cgi.getInFileFd());
+	close(cgi.getOutFileFd());
+	fclose(cgi.getInFile());
+	fclose(cgi.getOutFile());
 }
 
 void ServerMonitor::monitorCGI()
@@ -57,6 +68,7 @@ void ServerMonitor::monitorCGI()
 			kill(_cgiScripts[i].getChildPid(), SIGKILL);
 			clientSock = _cgiScripts[i].getClientSocket();
 			serverSock = _cgiScripts[i].getServerSocket();
+			closeCgiFds(_cgiScripts[i]);
 			_cgiScripts.erase(_cgiScripts.begin() + i);
 			_servers.at(serverSock)->responses[clientSock] = Response(408);
 			return;
