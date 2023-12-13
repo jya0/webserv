@@ -437,7 +437,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/Users/jyao/Documents/circle5/webserv/siege-4.1.6'
+ac_pwd='/Users/rriyas/Documents/Cursus/webserv/siege-4.1.6'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='utils/install-sh -c -d'
@@ -541,7 +541,7 @@ _ASBOX
 #
 AMDEP_TRUE="" ac_aux_dir="utils"
  prefix=/usr/local sysconfdir=${prefix}/etc localstatedir=${prefix}/var platform=apple-x86_64-darwin19.6.0
- VERSION=4.1.6 DATE="December-12-2023" PROGRAM="siege" AUTHOR="Jeffrey Fulmer, et al." EMAIL="jeff@joedog.org"
+ VERSION=4.1.6 DATE="December-13-2023" PROGRAM="siege" AUTHOR="Jeffrey Fulmer, et al." EMAIL="jeff@joedog.org"
  bindir=${prefix}${exec_prefix}/bin sh=/bin/sh
  bindir=${prefix}${exec_prefix}/bin sh=/bin/sh
  bindir=${prefix}${exec_prefix}/bin LREP=/usr/bin/perl
@@ -691,7 +691,7 @@ S["PLATFORM"]="apple-x86_64-darwin19.6.0"
 S["EMAIL"]="jeff@joedog.org"
 S["AUTHOR"]="Jeffrey Fulmer, et al."
 S["PROGRAM"]="siege"
-S["DATE"]="December-12-2023"
+S["DATE"]="December-13-2023"
 S["host_os"]="darwin19.6.0"
 S["host_vendor"]="apple"
 S["host_cpu"]="x86_64"
@@ -714,12 +714,12 @@ S["mkdir_p"]="$(MKDIR_P)"
 S["MKDIR_P"]="utils/install-sh -c -d"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]="strip"
-S["install_sh"]="${SHELL} /Users/jyao/Documents/circle5/webserv/siege-4.1.6/utils/install-sh"
-S["MAKEINFO"]="${SHELL} /Users/jyao/Documents/circle5/webserv/siege-4.1.6/utils/missing makeinfo"
-S["AUTOHEADER"]="${SHELL} /Users/jyao/Documents/circle5/webserv/siege-4.1.6/utils/missing autoheader"
-S["AUTOMAKE"]="${SHELL} /Users/jyao/Documents/circle5/webserv/siege-4.1.6/utils/missing automake-1.13"
-S["AUTOCONF"]="${SHELL} /Users/jyao/Documents/circle5/webserv/siege-4.1.6/utils/missing autoconf"
-S["ACLOCAL"]="${SHELL} /Users/jyao/Documents/circle5/webserv/siege-4.1.6/utils/missing aclocal-1.13"
+S["install_sh"]="${SHELL} /Users/rriyas/Documents/Cursus/webserv/siege-4.1.6/utils/install-sh"
+S["MAKEINFO"]="${SHELL} /Users/rriyas/Documents/Cursus/webserv/siege-4.1.6/utils/missing makeinfo"
+S["AUTOHEADER"]="${SHELL} /Users/rriyas/Documents/Cursus/webserv/siege-4.1.6/utils/missing autoheader"
+S["AUTOMAKE"]="${SHELL} /Users/rriyas/Documents/Cursus/webserv/siege-4.1.6/utils/missing automake-1.13"
+S["AUTOCONF"]="${SHELL} /Users/rriyas/Documents/Cursus/webserv/siege-4.1.6/utils/missing autoconf"
+S["ACLOCAL"]="${SHELL} /Users/rriyas/Documents/Cursus/webserv/siege-4.1.6/utils/missing aclocal-1.13"
 S["VERSION"]="4.1.6"
 S["PACKAGE"]="siege"
 S["CYGPATH_W"]="echo"

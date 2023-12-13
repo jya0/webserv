@@ -27,6 +27,8 @@ protected:
 public:
 	ServerSocket();
 	ServerSocket(std::string ip_addr, int port);
+	ServerSocket(const ServerSocket &rhs);
+	ServerSocket &operator=(const ServerSocket &rhs);
 	~ServerSocket();
 
 	static std::string	generateDefaultResponse();
