@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 21:22:45 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 22:08:39 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,26 +80,23 @@ void WebServer::closeClientConnection(int client)
 		return;
 	if (std::find(clients.begin(), clients.end(), client) != clients.end())
 	{
-		close(client);
+		if (client != -1)
+			close(client);
 		clients.erase(std::find(clients.begin(), clients.end(), client));
 	}
 }
 
-void WebServer::sendData(int client, std::string message)
+int WebServer::sendData(int client, std::string message)
 {
-	connection.sendData(client, message);
+	int status = connection.sendData(client, message);
+	return (status);
 }
 
 int WebServer::recieveData(int &client)
 {
-	std::string ret;
-	try {
-		ret = connection.recieveData(client);
-	}
-	catch(ServerSocket::SocketIOError &e) {
-		std::cerr << "Failed to receive client request: " << e.what() << std::endl;
+	std::string ret = connection.recieveData(client);
+	if (client <= 0)
 		return (-1);
-	}
 	std::map<int, Request>::iterator itr = requests.find(client);
 	if (itr == requests.end())
 		requests[client] = Request();
@@ -124,16 +121,14 @@ ServerSocket &WebServer::getConnection()
 	return (connection);
 }
 
-void WebServer::sendResponse(int client, const Response &response)
+int WebServer::sendResponse(int client, const Response &response)
 {
 	std::string rawResponse = response.getRawMessage();
-	try {
-		sendData(client, rawResponse);
-	}
-	catch(ServerSocket::SocketIOError &e){
-		std::cerr<<"Failed to send response: "<<e.what()<<std::endl;
-	}
+	int status = sendData(client, rawResponse);
+	closeClientConnection(client);
+	return (status);
 }
+
 bool WebServer::connectedClient(int client) const
 {
 	return (std::find(clients.begin(), clients.end(), client) != clients.end());

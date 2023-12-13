@@ -54,8 +54,8 @@ public:
 	WebServer(const ServerConfig &configREF);
 
 	ServerSocket	&getConnection();
-	void			sendResponse(int client, const Response &response);
-	void			sendData(int client, std::string message);
+	int				sendResponse(int client, const Response &response);
+	int				sendData(int client, std::string message);
 	int				recieveData(int &client);
 	void			startConnection();
 	void			startListening();

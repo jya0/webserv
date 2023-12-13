@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 21:22:25 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 22:03:13 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	return (ret);
 }
 
-void ServerSocket::sendData(int peer_socket, std::string message)
+int ServerSocket::sendData(int peer_socket, std::string message)
 {
 	ssize_t bytesSent;
 
@@ -98,12 +98,12 @@ void ServerSocket::sendData(int peer_socket, std::string message)
 	if (bytesSent < 0)
 	{
 		log("send() sys call failed: Failed to send bytes to client socket\n");
-		throw SocketIOError();
+		close(peer_socket);
+		return (-1);
 	}
-	else if (size_t(bytesSent) == message.size())
+	if (size_t(bytesSent) == message.size())
 		log("------ Server Response sent to client ------\n\n");
-	else
-		log("Error sending response to client");
+	return(bytesSent);
 }
 
 void ServerSocket::startConnection()
@@ -112,23 +112,25 @@ void ServerSocket::startConnection()
 	if (passive_socket < 0)
 	{
 		log("socket() sys call failed: Socket creation failed\n");
-		throw SocketIOError();
+		// throw SocketIOError();
 	}
 	if (bind(passive_socket, (sockaddr *)&socket_address, socket_address_len) < 0)
 	{
 		log("bind() sys call failed: Cannot bind socket to address\n");
-		closeConnection();
-		throw SocketIOError();
+		close(passive_socket);
+		passive_socket = -1;
+		// throw SocketIOError();
 	}
 	fcntl(passive_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 }
 
 void ServerSocket::startListening()
 {
-	if (listen(passive_socket, 50) < 0)
+	if (listen(passive_socket, 100) < 0)
 	{
 		log("listen() sys call failed: Cannot listen from server socket\n");
-		throw SocketIOError();
+		close(passive_socket);
+		passive_socket = -1;
 	}
 	std::cout << "\n*** Listening on ADDRESS: "
 			  << inet_ntoa(socket_address.sin_addr)
@@ -145,7 +147,8 @@ int ServerSocket::acceptConnection()
 		std::cout << "accept() sys call failed: Server failed to accept incoming connection from ADDRESS: "
 				  << inet_ntoa(socket_address.sin_addr) << "; PORT: "
 				  << ntohs(socket_address.sin_port);
-		throw SocketIOError();
+		close(passive_socket);
+		passive_socket = -1;
 	}
 	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	std::cout << "Connection accepted!\n";
