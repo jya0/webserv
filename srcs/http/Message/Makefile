@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 01:25:24 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/13 19:16:05 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,13 +29,14 @@ endif
 
 NAME		=	$(addsuffix $(LIB_SUFFIX), libmessage)
 
-HEADERS			:=	AMessage.hpp	Header.hpp	Http_namespace.hpp	\
+HEADERS			:=	AMessage.hpp	Header.hpp	\
 				Request.hpp		Response.hpp
 HTTP_DIR		:=	../
 CGI_DIR			:=	../CGIhandler/
 CONFIG_DIR		:=	../../ServerConfig/
 AUTOINDEX_DIR	:=	../Autoindex/
-INCLUDES		:=	-I.	-I$(CONFIG_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(HTTP_DIR)
+SERVER_DIR		:=	../../server/
+INCLUDES		:=	-I.	-I$(CONFIG_DIR) -I$(CGI_DIR) -I$(AUTOINDEX_DIR) -I$(HTTP_DIR) -I$(SERVER_DIR)
 FILES			:=	AMessage	Header	Request	Response	MimeTypes
 SRCS			=	$(addsuffix .cpp, $(FILES))
 

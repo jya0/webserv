@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 13:02:54 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 18:25:28 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,14 +175,7 @@ void WebServer::closeCGI(CGIhandler &cgiREF)
 		readReturn = read(cgiREF.getOutFileFd(), readBuf, READ_BUF_SIZE);
 		cgiResult += readBuf;
 	} while (readReturn > 0);
-	dup2(cgiREF.getCinSave(), STDIN_FILENO);
-	dup2(cgiREF.getCoutSave(), STDOUT_FILENO);
-	close(cgiREF.getCinSave());
-	close(cgiREF.getCoutSave());
-	close(cgiREF.getInFileFd());
-	close(cgiREF.getOutFileFd());
-	fclose(cgiREF.getInFile());
-	fclose(cgiREF.getOutFile());
+	cgiREF.closeParentFds();
 
 	responses[cgiREF.getClientSocket()] = Response(200, cgiResult);
 	delete []readBuf;

@@ -8,6 +8,7 @@
 
 #define MAX_SOCKETS 200
 
+
 class PollManager {
 private:
 	size_t					nfds;
@@ -15,6 +16,8 @@ private:
 
 public:
 	PollManager(size_t);
+	PollManager(const PollManager &rhs);
+	PollManager &operator=(const PollManager &rhs);
 	~PollManager();
 
 	pollfd	&operator[](int);

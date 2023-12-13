@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 17:00:46 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 01:27:13 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/13 19:11:28 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,8 +33,9 @@ NAME		=	$(addsuffix $(LIB_SUFFIX), libcgi)
 HTTP_DIR	:=	../
 MESSAGE_DIR	:=	../Message/
 CONFIG_DIR	:=	../../ServerConfig/
+SERVER_DIR	:=	../../server/
 
-INCLUDES	:=	-I.	-I$(MESSAGE_DIR) -I$(CONFIG_DIR) -I$(HTTP_DIR)
+INCLUDES	:=	-I.	-I$(MESSAGE_DIR) -I$(CONFIG_DIR) -I$(HTTP_DIR) -I$(SERVER_DIR)
 
 HEADERS		:=	CGIhandler.hpp
 

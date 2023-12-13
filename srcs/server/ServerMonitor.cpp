@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 17:40:30 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:02:55 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _soc
 		_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
 	}
 	_sockets = PollManager(_servers.size());
+	http::CGIhandler::setPollManager(_sockets);
 }
 
 ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : _servers(servers), _sockets(_servers.size()){};
@@ -117,20 +118,20 @@ void ServerMonitor::acceptIncomingConnection(int triggered)
 		_sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
 }
 
-void ServerMonitor::closeClientConenction(int server, int triggered)
+void ServerMonitor::closeClientConenction(int server, int client)
 {
-	_servers.at(server)->closeClientConnection(triggered);
-	_sockets.removeFd(triggered);
+	_servers.at(server)->closeClientConnection(client);
+	_sockets.removeFd(client);
 }
 
-void ServerMonitor::serveClientRequest(int server, int triggered)
+void ServerMonitor::serveClientRequest(int server, int client)
 {
 	int status = -1;
 	try {
-		status = _servers.at(server)->recieveData(triggered);
-		if (status == -1 || _servers.at(server)->requestReady(triggered) == false)
+		status = _servers.at(server)->recieveData(client);
+		if (status == -1 || _servers.at(server)->requestReady(client) == false)
 			return;
-		_servers.at(server)->buildResponse(triggered);
+		_servers.at(server)->buildResponse(client);
 	}
 	catch (ServerSocket::SocketIOError &e)
 	{
@@ -140,11 +141,11 @@ void ServerMonitor::serveClientRequest(int server, int triggered)
 	catch (http::CGIhandler &cgi)
 	{
 		cgi.setServerSocket(server);
-		cgi.setClientSocket(triggered);
+		cgi.setClientSocket(client);
 		_cgiScripts.push_back(cgi);
-		_servers.at(server)->responses[triggered].setResponseStatus(false);
+		_servers.at(server)->responses[client].setResponseStatus(false);
 	}
-	std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(triggered);
+	std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(client);
 	_servers.at(server)->requests.erase(itr);
 }
 
@@ -171,7 +172,7 @@ void ServerMonitor::startServers()
 	int triggered = 0;
 	int server = 0;
 	int requests = 0;
-	int i = 0;
+	int	i = 0;
 	while (requests != 10)
 	{
 		rc = _sockets.callPoll();

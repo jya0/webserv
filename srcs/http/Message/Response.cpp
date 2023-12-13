@@ -6,15 +6,22 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 17:42:34 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:14:59 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<fstream>
 #include	<sstream>
 #include	<cstdlib>
-#include	"Http_namespace.hpp"
 #include	"ServerParser_namespace.hpp"
+#include 	"AMessage.hpp"
+#include	"Request.hpp"
+#include	"Response.hpp"
+#include	"Header.hpp"
+#include	"CGIhandler.hpp"
+#include	"Autoindex_namespace.hpp"
+#include	"MimeTypes.hpp"
+#include	"ToString.tpp"
 
 using namespace http;
 

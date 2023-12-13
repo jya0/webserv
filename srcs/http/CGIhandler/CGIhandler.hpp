@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 17:30:06 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:01:17 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include	<cstdio>
 # include	"Request.hpp"
 # include	"ServerConfig.hpp"
+# include	"PollManager.hpp"
 #include	<stdio.h>
 #include	<ctime>
 #include	<iostream>
@@ -48,9 +49,10 @@ namespace	http {
 			std::clock_t 							_startTime;
 			int										_clientSocket;
 			int										_serverSocket;
-
 		protected:
 		public:
+			static PollManager						*sockets;
+			static void setPollManager(PollManager &socketsREF);
 			CGIhandler(void);
 			CGIhandler(const CGIhandler &cgiREF);
 			~CGIhandler(void);

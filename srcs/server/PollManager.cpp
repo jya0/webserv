@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 05:03:53 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 11:49:06 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:16:55 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,22 @@ PollManager::PollManager(size_t n) : nfds(n)
 {
 	memset(&_sockets, 0, MAX_SOCKETS * sizeof(struct pollfd));
 }
+
+PollManager::PollManager(const PollManager &rhs)
+{
+	*this = rhs;
+}
+
+PollManager &PollManager::operator=(const PollManager &rhs)
+{
+	if (this == &rhs)
+		return (*this);
+	this->nfds= rhs.nfds;
+	for (size_t i = 0; i< nfds; i++)
+		this->_sockets[i] = rhs._sockets[i];
+	return (*this);
+}
+
 
 PollManager::~PollManager()
 {

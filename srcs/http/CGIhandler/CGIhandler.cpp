@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 17:44:14 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:21:12 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 using namespace http;
 
+PollManager *CGIhandler::sockets = NULL;
 
 CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1) {
 	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
@@ -179,7 +180,7 @@ void CGIhandler::runCGI(const std::string &scriptName)
 	exit(status);
 }
 
-void CGIhandler::closeParentFds() {
+void CGIhandler::closeChildFds() {
 	dup2(_inFileFd, STDIN_FILENO);
 	dup2(_outFileFd, STDOUT_FILENO);
 	close(_cinSave);
@@ -188,9 +189,12 @@ void CGIhandler::closeParentFds() {
 	close(_outFileFd);
 	fclose(_inFile);
 	fclose(_outFile);
+	std::cerr<<"I have access to: "<<CGIhandler::sockets->getNfds()<<"\n";
+	for (int i = 0; i < CGIhandler::sockets->getNfds(); i++)
+		std::cerr<<(*CGIhandler::sockets)[i].fd<<std::endl;
 }
 
-void CGIhandler::closeChildFds() {
+void CGIhandler::closeParentFds() {
 	dup2(_cinSave, STDIN_FILENO);
 	dup2(_coutSave, STDOUT_FILENO);
 	close(_cinSave);
@@ -199,6 +203,7 @@ void CGIhandler::closeChildFds() {
 	close(_outFileFd);
 	fclose(_inFile);
 	fclose(_outFile);
+
 }
 
 
@@ -216,10 +221,7 @@ void CGIhandler::executeCGI(const std::string &scriptName)
 	if (_childPid == 0)
 		runCGI(scriptName);
 	else
-	{
-		closeParentFds();
 		throw(*this);
-	}
 };
 
 std::clock_t &CGIhandler::getStartTime()
@@ -278,4 +280,9 @@ void CGIhandler::setServerSocket(int serverSocket)
 void CGIhandler::setClientSocket(int clientSocket)
 {
 	_clientSocket = clientSocket;
+}
+
+void CGIhandler::setPollManager(PollManager &socketsREF)
+{
+	CGIhandler::sockets = &socketsREF;
 }

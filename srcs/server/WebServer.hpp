@@ -24,9 +24,12 @@
 #include <poll.h>
 #include <stdio.h>
 #include "ServerConfig.hpp"
-#include "Http_namespace.hpp"
 #include "ServerSocket.hpp"
 #include "PollManager.hpp"
+
+#include "Response.hpp"
+#include "CGIhandler.hpp"
+#include "Request.hpp"
 
 #define SERVERS_UP 2
 
@@ -39,7 +42,6 @@ protected:
 	ServerSocket				connection;
 	std::vector<int>			clients;
 	ServerConfig				_config;
-
 public:
 	std::map<int, Response >	responses;
 	std::map<int, Request >		requests;
