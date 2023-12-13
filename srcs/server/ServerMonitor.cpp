@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 01:24:21 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 03:17:59 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ void ServerMonitor::monitorCGI()
 	int serverSock = 0;
 
 	int status = 0;
+	if (_cgiScripts.size() == 0)
+		return ;
 	for (size_t i = 0; i < _cgiScripts.size(); i++)
 	{
 		curr_time = std::clock();
