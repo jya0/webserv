@@ -1,0 +1,23 @@
+{
+   bash_still_reachable_blocks
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:xrealloc
+   fun:uwp_init
+   fun:cmd_init
+   fun:set_locale_var
+   fun:set_default_lang
+   fun:set_lang
+   fun:initialize_shell_variables
+   fun:make_variable_value
+   fun:hash_create
+   fun:make_new_assoc_variable
+   fun:yyparse
+   fun:parse_command
+   fun:reader_loop
+   fun:execute_command
+   ...
+   fun:adjust_shell_level
+}

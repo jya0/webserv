@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 05:57:19 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 08:49:52 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ int main(int argc, char **argv)
 	}
 	std::vector<ServerConfig> configs = ServerParser::parseConfigFile(argv[1]);
 	ServerParser::parseConfigFile(std::string(argv[1]));
-	ServerMonitor monitor(configs);
 	try
 	{
+		ServerMonitor monitor(configs);
 		monitor.startServers();
 	}
-	catch(ServerSocket::SocketIOError &e)
+	catch(std::exception &e)
 	{
 		std::cerr<<e.what()<<std::endl;
 	}
