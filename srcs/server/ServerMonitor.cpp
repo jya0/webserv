@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 17:21:44 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 17:40:30 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,31 +123,19 @@ void ServerMonitor::closeClientConenction(int server, int triggered)
 	_sockets.removeFd(triggered);
 }
 
-
-void ServerMonitor::killChild() {
-	for (int i = 0; i < _sockets.getNfds(); i++)
-		close(_sockets[i].fd);
-	exit(0);
-}
-
 void ServerMonitor::serveClientRequest(int server, int triggered)
 {
 	int status = -1;
 	try {
 		status = _servers.at(server)->recieveData(triggered);
+		if (status == -1 || _servers.at(server)->requestReady(triggered) == false)
+			return;
+		_servers.at(server)->buildResponse(triggered);
 	}
 	catch (ServerSocket::SocketIOError &e)
 	{
 		std::cerr << "Failed to server Client request: " << e.what() << std::endl;
 		return;
-	}
-	if (status == -1)
-		return;
-	if (!(_servers.at(server)->requestReady(triggered)))
-		return ;
-	try
-	{
-		_servers.at(server)->buildResponse(triggered);
 	}
 	catch (http::CGIhandler &cgi)
 	{
@@ -156,12 +144,7 @@ void ServerMonitor::serveClientRequest(int server, int triggered)
 		_cgiScripts.push_back(cgi);
 		_servers.at(server)->responses[triggered].setResponseStatus(false);
 	}
-	catch (http::CGIhandler::CGIexception &e) {
-		if (e.what() == std::string("CGI: Child process done\n"))
-			this->killChild();
-		
-	}
-		std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(triggered);
+	std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(triggered);
 	_servers.at(server)->requests.erase(itr);
 }
 

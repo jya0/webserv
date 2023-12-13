@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 17:24:18 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 17:44:14 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,8 +163,9 @@ void CGIhandler::createTmpFiles()
 
 void CGIhandler::runCGI(const std::string &scriptName)
 {
+	int status = 0;
 	char **envp = mapToArr(_cgiEnv);
-	closeFds();
+	closeChildFds();
 	char **av = new char *[2];
 	av[0] = new char[2 + scriptName.size() + 1];
 	av[1] = new char[1];
@@ -173,11 +174,12 @@ void CGIhandler::runCGI(const std::string &scriptName)
 	memcpy(av[0], csrc, src.size());
 	av[0][src.size()] = 0;
 	av[1] = 0;
-	execve(scriptName.c_str(), av, envp);
+	status = execve(scriptName.c_str(), av, envp);
 	deleteEnvArr(envp);
+	exit(status);
 }
 
-void CGIhandler::closeFds() {
+void CGIhandler::closeParentFds() {
 	dup2(_inFileFd, STDIN_FILENO);
 	dup2(_outFileFd, STDOUT_FILENO);
 	close(_cinSave);
@@ -188,23 +190,7 @@ void CGIhandler::closeFds() {
 	fclose(_outFile);
 }
 
-std::string CGIhandler::executeCGI(const std::string &scriptName)
-{
-	std::string cgiResult;
-
-	_cinSave = dup(STDIN_FILENO);
-	_coutSave = dup(STDOUT_FILENO);
-	createTmpFiles();
-	write(_inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
-	lseek(_inFileFd, 0, SEEK_SET);
-	_startTime = std::clock();
-	_childPid = fork();
-	if (_childPid < 0)
-		throw(CGIexception("CGI: Failed to create fork!\n"));
-	if (_childPid == 0)
-		runCGI(scriptName);
-	else
-		throw(*this);
+void CGIhandler::closeChildFds() {
 	dup2(_cinSave, STDIN_FILENO);
 	dup2(_coutSave, STDOUT_FILENO);
 	close(_cinSave);
@@ -213,9 +199,27 @@ std::string CGIhandler::executeCGI(const std::string &scriptName)
 	close(_outFileFd);
 	fclose(_inFile);
 	fclose(_outFile);
+}
+
+
+void CGIhandler::executeCGI(const std::string &scriptName)
+{
+	_cinSave = dup(STDIN_FILENO);
+	_coutSave = dup(STDOUT_FILENO);
+	createTmpFiles();
+	write(_inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
+	lseek(_inFileFd, 0, SEEK_SET);
+	_startTime = std::clock();
+	_childPid = fork();
+	if (_childPid < 0)
+		throw(500);
 	if (_childPid == 0)
-		throw CGIexception("CGI: Error when executing CGI script!\n");
-	return (cgiResult);
+		runCGI(scriptName);
+	else
+	{
+		closeParentFds();
+		throw(*this);
+	}
 };
 
 std::clock_t &CGIhandler::getStartTime()
