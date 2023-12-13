@@ -12,14 +12,15 @@
 
 #include	"ServerParser_namespace.hpp"
 #include	"ServerConfig.hpp"
+#include	"Autoindex_namespace.hpp"
 #include 	<utility>
 #include	<fstream>
 #include	<sstream>
 #include	<cstdlib>
 
+using namespace http;
+
 const std::vector< std::string >	ServerParser::dveNames = ServerParser::tokenize(SIMPLE_DIRECTIVES BLOCK_DIRECTIVES);
-size_t							ServerParser::loadLineNo = 1;
-size_t							ServerParser::checkLineNo = 1;
 
 std::pair< std::string, std::string >	ServerParser::splitByTwo(const std::string &strREF, const char &delimREF)
 {
@@ -167,33 +168,36 @@ std::vector< ServerConfig >	ServerParser::parseConfigFile(const std::string &fil
 	std::ifstream					configIF;
 
 	dveBlock = NULL;
+	if (Autoindex::isPathFolder(filename) > 0)
+		throw (ServerParser::ParseErrorException("Invalid file provided!"));
 	configIF.open(filename.c_str(), std::ios::in);
 	if (!configIF.is_open())
-		throw (ServerParser::ParseErrorException("Could not open config file!", ServerParser::loadLineNo));
-	while (configIF.peek() != EOF)
-	{
-		dveBlock = getNextDirectiveBlock(configIF);
-		if (dveBlock == NULL)
+		throw (ServerParser::ParseErrorException("Could not open config file!"));
+	try {
+		while (configIF.peek() != EOF)
 		{
-			serverBlocks.clear();
-			break ;
-		}
-		else
-		{
-			try {
+			dveBlock = getNextDirectiveBlock(configIF);
+			if (dveBlock == NULL)
+				throw (ParseErrorException("NULL directive block!"));
+			else
+			{
 				dveBlock->printDirective();
 				dveBlock->parseDirective();
 				dveBlock->checkDirective(HTTP);
 				serverBlocks.push_back(ServerConfig(dveBlock));
+				delete (dveBlock);
 			}
-			catch (std::exception &e)
-			{
-				std::cerr	<< e.what()
-							<< std::endl;
-			}
-			delete (dveBlock);
 		}
+		configIF.close();
 	}
-	configIF.close();
+	catch (std::exception &e)
+	{
+		std::cerr	<< e.what()
+					<< std::endl;
+		configIF.close();
+		delete (dveBlock);
+		serverBlocks.clear();
+		throw (ParseErrorException("Parser Error!"));
+	}
 	return (serverBlocks);
 }

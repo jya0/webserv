@@ -11,3 +11,7 @@ fix cgi if script fails
 
 fd leaks
 
+
+siege with random requests to ensure no segfault
+
+multiple servers
