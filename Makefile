@@ -6,7 +6,7 @@
 #    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 19:31:10 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/13 20:49:38 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,8 @@ NAME			=	webserv
 
 CXX				=	c++
 # CXXFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
-CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -fPIC
+
 
 UNAME := $(shell uname)
 

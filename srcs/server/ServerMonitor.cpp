@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 19:54:29 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 20:49:45 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,6 @@ void ServerMonitor::monitorCGI()
 	for (size_t i = 0; i < _cgiScripts.size(); i++)
 	{
 		curr_time = std::clock();
-		std::cerr << "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW" <<std::endl;
-		// exit(0);
 		if ((size_t)(curr_time - _cgiScripts[i].getStartTime()) >= ((size_t)(CLOCKS_PER_SEC)*TIME_OUT_SEC))
 		{
 			kill(_cgiScripts[i].getChildPid(), SIGKILL);
@@ -157,6 +155,7 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 		return;
 	try {
 		_servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
+		closeClientConenction(server, client);
 	}
 	catch(ServerSocket::SocketIOError &e) {
 		std::cerr << "Failed to serve client with a response: " << e.what() << std::endl;

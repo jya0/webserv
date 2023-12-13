@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 09:48:05 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/13 20:45:35 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@
 
 CXX			:=	c++
 # CXXFLAGS	:=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
-CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -fPIC
+
 
 
 UNAME := $(shell uname)

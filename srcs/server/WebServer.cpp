@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 19:57:38 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 20:34:05 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,6 @@ void WebServer::sendResponse(int client, const Response &response)
 	catch(ServerSocket::SocketIOError &e){
 		std::cerr<<"Failed to send response: "<<e.what()<<std::endl;
 	}
-	closeClientConnection(client);
 }
 bool WebServer::connectedClient(int client) const
 {

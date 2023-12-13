@@ -6,7 +6,7 @@
 #    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 19:16:05 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/13 20:45:23 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,8 @@
 
 CXX				:=	c++
 # CXXFLAGS		:=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
-CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -fPIC
+
 
 
 UNAME := $(shell uname)
