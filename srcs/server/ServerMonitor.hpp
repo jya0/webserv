@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 16:13:10 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 19:25:58 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 01:23:42 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ public:
 	void	startListening();
 	bool	incomingConnectiontoServer(int triggered);
 	void	acceptIncomingConnection(int triggered);
-	void	closeClientConenction(int server, int client);
+	void	closeClientConnection(int server, int client);
 	void	serveClientRequest(int server, int client);
 	void	serveClientResponse(int server, int client, int &requests);
 };

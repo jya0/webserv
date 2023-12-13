@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 23:09:08 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 01:32:35 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ ServerSocket::~ServerSocket()
 
 std::string ServerSocket::recieveData(int &peer_socket)
 {
+	if (peer_socket == passive_socket)
+		return ("");
 	long bytesRecieved;
 	char *buffer = new char[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
@@ -76,8 +78,6 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	}
 	if (bytesRecieved < 0)
 	{
-		close(peer_socket);
-		peer_socket = -1;
 		log("read() sys call failed: Failed to read bytes from client socket\n");
 		delete[] buffer;
 		throw SocketIOError();
@@ -98,14 +98,10 @@ void ServerSocket::sendData(int &peer_socket, std::string message)
 	if (bytesSent < 0)
 	{
 		log("send() sys call failed: Failed to send bytes to client socket\n");
-		close(peer_socket);
-		peer_socket = -1;
 		throw SocketIOError();
 	}
-	else if (size_t(bytesSent) == message.size())
+	if (size_t(bytesSent) == message.size())
 		log("------ Server Response sent to client ------\n\n");
-	else
-		log("Error sending response to client");
 }
 
 void ServerSocket::startConnection()

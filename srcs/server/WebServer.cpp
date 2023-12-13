@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 23:04:37 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 01:34:03 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,10 @@ int WebServer::recieveData(int &client)
 		return (-1);
 	}
 	if (ret == "")
+	{
 		closeClientConnection(client);
+		return (-1);
+	}
 	std::map<int, Request>::iterator itr = requests.find(client);
 	if (itr == requests.end())
 		requests[client] = Request();
@@ -129,12 +132,7 @@ ServerSocket &WebServer::getConnection()
 void WebServer::sendResponse(int client, const Response &response)
 {
 	std::string rawResponse = response.getRawMessage();
-	try {
-		sendData(client, rawResponse);
-	}
-	catch(ServerSocket::SocketIOError &e){
-		std::cerr<<"Failed to send response: "<<e.what()<<std::endl;
-	}
+	sendData(client, rawResponse);
 }
 bool WebServer::connectedClient(int client) const
 {
