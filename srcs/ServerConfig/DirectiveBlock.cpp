@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DirectiveBlock.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/09 04:35:16 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 04:02:58 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 DirectiveBlock::DirectiveBlock(void) {
 }
 
-DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF): ADirective(blockREF) {
+DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF) {
 	*this = blockREF;
 }
 
@@ -36,6 +36,7 @@ DirectiveBlock::~DirectiveBlock(void) {
 }
 
 DirectiveBlock	&DirectiveBlock::operator=(DirectiveBlock const	&blockREF) {
+	this->ADirective::operator=(blockREF);
 	clearDvesMap();
 	_dvesMap = *(blockREF.getDvesMap());
 	return (*this);
@@ -45,7 +46,7 @@ const std::multimap<std::string, ADirective *>	*DirectiveBlock::getDvesMap(void)
 	return (&(_dvesMap));
 }
 
-void	DirectiveBlock::insertMapDirective(ADirective *dvePTR) { 
+void	DirectiveBlock::insertMapDirective(ADirective *dvePTR) {
 	std::pair< std::string, ADirective * > dvePair;
 
 	if (dvePTR == NULL)
@@ -58,9 +59,9 @@ void	DirectiveBlock::insertMapDirective(ADirective *dvePTR) {
 
 /**
  * @brief returns the array of values from directive (the frist instance if there's duplicate)
- * 
- * @param dveName 
- * @return std::vector< std::string > 
+ *
+ * @param dveName
+ * @return std::vector< std::string >
  */
 std::vector< std::string >	DirectiveBlock::readDirectiveSimple(const std::string &dveName) const {
 	std::multimap< std::string, ADirective * >::const_iterator	dveITR;

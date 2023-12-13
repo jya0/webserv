@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/12 22:38:00 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 03:40:15 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,9 +141,18 @@ ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &serv
 	std::string	epFile;
 	std::string	root;
 	std::string	epFilePath;
+	std::vector<ServerConfig::ErrorPage> errorPages;
 
+	if (locPTR != NULL)
+		errorPages = locPTR->getErrorPages();
 	if (locPTR != NULL && !locPTR->getErrorPages().empty())
 		epFile = locPTR->getErrorPage(status);
+	// if (locPTR != NULL)
+	// {
+	// 	errorPages = locPTR->getErrorPages();
+	// 	if (errorPages.size() != 0)
+	// 		epFile = locPTR->getErrorPage(status);
+	// }
 	else if (!servConfREF.getErrorPages().empty())
 		epFile = servConfREF.getErrorPage(status);
 	root = servConfREF.getRoot();

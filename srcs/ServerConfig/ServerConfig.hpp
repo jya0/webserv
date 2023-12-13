@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:55:49 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 01:10:35 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 02:59:41 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,10 +132,11 @@ class ServerConfig::ErrorPage
 	private:
 	protected:
 	public:
-		std::vector<int> codes;
-		std::string page;
+		std::vector< int >	codes;
+		std::string			page;
 
 		ErrorPage(void);
+		ErrorPage(std::string _page, int code);
 		ErrorPage(const std::vector<std::string> &errorPage);
 		~ErrorPage(void);
 		ErrorPage(const ErrorPage &errorPageREF);

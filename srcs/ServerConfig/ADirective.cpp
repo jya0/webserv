@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ADirective.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 02:53:12 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 04:03:15 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ ADirective::~ADirective(void) {
 ADirective	&ADirective::operator=(ADirective const	&dveREF) {
 	_dveName = dveREF.getName();
 	_dveValues = dveREF.getValues();
-	// _dveType = dveREF.getType();
+	_dveType = dveREF.getType();
 	return (*this);
 }
 
@@ -160,7 +160,7 @@ static bool	checkValues(const e_directiveType &dveTypeREF, const std::vector< st
 			return (false);
 		case (AUTOINDEX):
 		{
-			return (dveValuesREF.size() == 1 && 
+			return (dveValuesREF.size() == 1 &&
 				(dveValuesREF.front() == "on" || dveValuesREF.front() == "off"));
 		}
 		case (CLIENT_MAX_BODY_SIZE):

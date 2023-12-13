@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/12 19:34:29 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 04:00:00 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ Request::Request(void) : AMessage() {
  * @param RequestREF Request to copy
  */
 Request::Request(Request const &RequestREF) : AMessage() {
-	this->operator=(RequestREF);
+	this->Request::operator=(RequestREF);
 	return;
 }
 
@@ -49,6 +49,7 @@ Request::~Request(void) {
 Request &Request::operator=(Request const &RequestREF) {
 	if (this != &RequestREF)
 	{
+		this->AMessage::operator=(RequestREF);
 		this->_httpMethod = RequestREF._httpMethod;
 		this->_uri = RequestREF._uri;
 	}

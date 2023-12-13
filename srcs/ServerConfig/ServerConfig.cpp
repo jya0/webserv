@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 01:17:22 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 04:05:15 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@
 #include	"ServerParser_namespace.hpp"
 
 /* class ServerConfig */
-ServerConfig::ServerConfig(void) : _listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)),
-								   _autoIndex(DEFAULT_AUTO_INDEX),
-								   _sizeCMB(DEFAULT_CMB_SIZE),
-								   _index(std::vector<std::string>(1, DEFAULT_INDEX)),
-								   _root(DEFAULT_ROOT){};
+ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT)),
+									_autoIndex(DEFAULT_AUTO_INDEX),
+									_sizeCMB(DEFAULT_CMB_SIZE),
+									_root(DEFAULT_ROOT)
+									{
+										_errorPages.push_back(ServerConfig::ErrorPage("", -1));
+									};
 
 ServerConfig::~ServerConfig(void) {};
 
@@ -99,6 +101,7 @@ ServerConfig::ServerConfig(const ServerConfig &serverConfigREF) {
 };
 
 ServerConfig &ServerConfig::operator=(const ServerConfig &serverConfigREF) {
+
 	if (this != &serverConfigREF)
 	{
 		_listen			= serverConfigREF.getListen();
@@ -152,8 +155,6 @@ const std::vector< ServerConfig::ErrorPage >							&ServerConfig::getErrorPages(
 };
 
 std::string												ServerConfig::getErrorPage(const int &statusCode) const {
-	if (_errorPages.empty())
-		return ("");
 	for (std::vector< ErrorPage >::const_iterator itc1 = _errorPages.begin(); itc1 != _errorPages.end(); ++itc1)
 	{
 		for (std::vector<int>::const_iterator itc2 = itc1->codes.begin(); itc2 != itc1->codes.end(); ++itc2)
@@ -192,13 +193,14 @@ ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_
 
 ServerConfig::Location::~Location(void) {};
 
-ServerConfig::Location::Location(const Location &locationREF): ServerConfig(locationREF) {
+ServerConfig::Location::Location(const Location &locationREF) {
 	this->ServerConfig::Location::operator=(locationREF);
 };
 
 ServerConfig::Location &ServerConfig::Location::operator=(const Location &locationREF) {
 	if (this != &locationREF)
 	{
+		this->ServerConfig::operator=(locationREF);
 		locationUri = locationREF.locationUri;
 		limitExcept = locationREF.limitExcept;
 	}
@@ -251,12 +253,21 @@ ServerConfig::Location::LimitExcept &ServerConfig::Location::LimitExcept::operat
 	return (*this);
 };
 
-ServerConfig::ErrorPage::ErrorPage(void) {};
+ServerConfig::ErrorPage::ErrorPage(void) {
+};
+
+ServerConfig::ErrorPage::ErrorPage(std::string _page, int code){
+	codes.push_back(code);
+	page = _page;
+};
 
 ServerConfig::ErrorPage::ErrorPage(const std::vector< std::string > &errorPage) {
 	std::stringstream ss;
 	int code;
 
+	this->operator=(ErrorPage("", -1));
+	if (errorPage.empty())
+		return ;
 	this->page = errorPage.back();
 	for (std::vector<std::string>::const_iterator itc = errorPage.begin(); itc != (errorPage.end() - 1); ++itc)
 	{

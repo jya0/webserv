@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DirectiveSimple.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:11:12 by jyao              #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 04:03:49 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ DirectiveSimple::~DirectiveSimple(void) {
 }
 
 DirectiveSimple	&DirectiveSimple::operator=(DirectiveSimple const &simpleREF) {
-	_dveName = simpleREF.getName();
-	_dveValues = simpleREF.getValues();
-	_dveType = simpleREF.getType();
+	this->ADirective::operator=(simpleREF);
 	return (*this);
 }
