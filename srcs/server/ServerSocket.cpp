@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 22:03:13 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 22:14:48 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	{
 		log("read() sys call failed: Failed to read bytes from client socket\n");
 		delete[] buffer;
-		throw SocketIOError();
+		// throw SocketIOError();
 	}
 	std::cout << "------ Reading Request from client ------\n\n";
 	std::string ret(buffer);
