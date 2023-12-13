@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DirectiveBlock.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:16:14 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 09:47:07 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 19:33:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 DirectiveBlock::DirectiveBlock(void) {
 }
 
-DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF) {
+DirectiveBlock::DirectiveBlock(DirectiveBlock const	&blockREF): ADirective(blockREF) {
 	*this = blockREF;
 }
 

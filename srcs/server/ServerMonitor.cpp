@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 19:02:55 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:25:20 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void ServerMonitor::monitorCGI()
 				throw(http::CGIhandler::CGIexception("CGI failed to run!"));
 			if (child == _cgiScripts[i].getChildPid() || child == -1)
 			{
-				_servers.at((_cgiScripts[i].getServerSocket()))->closeCGI(_cgiScripts[i]);
+				_servers.at((_cgiScripts[i].getServerSocket()))->closeCGI(_cgiScripts[i], status);
 				_cgiScripts.erase(_cgiScripts.begin() + i);
 				return;
 			}

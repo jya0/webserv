@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 18:25:28 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:32:20 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,31 +153,37 @@ bool WebServer::requestReady(int client)
 	return (requests[client].requestReady());
 }
 
-void WebServer::closeCGI(CGIhandler &cgiREF)
+void WebServer::closeCGI(CGIhandler &cgiREF, const int &statusREF)
 {
-	std::string cgiResult;
-	char *readBuf;
-	ssize_t readReturn;
-	try
-	{
-		readBuf = new char[READ_BUF_SIZE + 1];
-	}
-	catch (std::exception &e)
-	{
-		std::cerr << e.what()
-				  << std::endl;
-		throw(CGIhandler::CGIexception("CGI failed to read result!"));
-	}
-	lseek(cgiREF.getOutFileFd(), 0, SEEK_SET);
-	do
-	{
-		std::memset(readBuf, 0, READ_BUF_SIZE + 1);
-		readReturn = read(cgiREF.getOutFileFd(), readBuf, READ_BUF_SIZE);
-		cgiResult += readBuf;
-	} while (readReturn > 0);
-	cgiREF.closeParentFds();
+	std::string	cgiResult;
+	char		 *readBuf;
+	ssize_t		readReturn;
+	int			responseStatus;
 
-	responses[cgiREF.getClientSocket()] = Response(200, cgiResult);
+	readReturn = 0;
+	readBuf = NULL;
+	responseStatus = 200;
+	if (WEXITSTATUS(statusREF) != 0)
+		responseStatus = 500;
+	else {
+		try {
+			readBuf = new char[READ_BUF_SIZE + 1];
+			lseek(cgiREF.getOutFileFd(), 0, SEEK_SET);
+			do
+			{
+				std::memset(readBuf, 0, READ_BUF_SIZE + 1);
+				readReturn = read(cgiREF.getOutFileFd(), readBuf, READ_BUF_SIZE);
+				cgiResult += readBuf;
+			} while (readReturn > 0);
+		}
+		catch (std::exception &e) {
+			responseStatus = 500;
+		}
+	}
+	cgiREF.closeParentFds();
+	if (responseStatus != 200)
+		cgiResult = "OOOOOOOPS I'VE FAILED CGI!!!";
+	responses[cgiREF.getClientSocket()] = Response(responseStatus, cgiResult);
 	delete []readBuf;
 }
 

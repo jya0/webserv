@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 07:07:49 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 19:34:19 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ ServerConfig::Location::Location(ADirective *locationDve): ServerConfig(dynamic_
 
 ServerConfig::Location::~Location(void) {};
 
-ServerConfig::Location::Location(const Location &locationREF) {
+ServerConfig::Location::Location(const Location &locationREF): ServerConfig(locationREF) {
 	this->ServerConfig::Location::operator=(locationREF);
 };
 

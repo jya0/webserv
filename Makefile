@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 05:54:46 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/13 19:31:10 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ clean:
 fclean: clean
 
 RUDE:
-	c++ -g3 -std=c++98 -Isrcs/ServerConfig -Isrcs/server -Isrcs/http/Autoindex -Isrcs/http/CGIhandler -Isrcs/http/Message -Isrcs/http  srcs/*.cpp srcs/ServerConfig/*.cpp srcs/http/Autoindex/*.cpp srcs/http/CGIhandler/*.cpp srcs/http/Message/*.cpp srcs/server/*.cpp -o webserv
+	$(CXX) $(CXXFLAGS) -Isrcs/ServerConfig -Isrcs/server -Isrcs/http/Autoindex -Isrcs/http/CGIhandler -Isrcs/http/Message -Isrcs/http  srcs/*.cpp srcs/ServerConfig/*.cpp srcs/http/Autoindex/*.cpp srcs/http/CGIhandler/*.cpp srcs/http/Message/*.cpp srcs/server/*.cpp -o webserv
 
 re: fclean all
 
