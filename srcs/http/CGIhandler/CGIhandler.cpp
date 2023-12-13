@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 19:21:12 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 03:04:10 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,10 +189,10 @@ void CGIhandler::closeChildFds() {
 	close(_outFileFd);
 	fclose(_inFile);
 	fclose(_outFile);
-	std::cerr<<"I have access to: "<<CGIhandler::sockets->getNfds()<<"\n";
 	for (int i = 0; i < CGIhandler::sockets->getNfds(); i++)
-		std::cerr<<(*CGIhandler::sockets)[i].fd<<std::endl;
+		close((*CGIhandler::sockets)[i].fd);
 }
+
 
 void CGIhandler::closeParentFds() {
 	dup2(_cinSave, STDIN_FILENO);

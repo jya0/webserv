@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 01:34:03 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 03:26:24 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int WebServer::recieveData(int &client)
 	if ((pos = requests[client].getRawData().find("\r\n\r\n")) != std::string::npos)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
-		std::cout << requests[client].getRawData() << "\n";
+		// std::cout << requests[client].getRawData() << "\n";
 		std::string raw = requests[client].getRawData();
 		std::map<int, Request >::iterator itr = requests.find(client);
 		requests.erase(itr);
