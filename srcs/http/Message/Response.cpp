@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 04:39:00 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 05:29:24 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,16 +143,8 @@ ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &serv
 	std::string	epFilePath;
 	std::vector<ServerConfig::ErrorPage> errorPages;
 
-	if (locPTR != NULL)
-		errorPages = locPTR->getErrorPages();
 	if (locPTR != NULL && !locPTR->getErrorPages().empty())
 		epFile = locPTR->getErrorPage(status);
-	// if (locPTR != NULL)
-	// {
-	// 	errorPages = locPTR->getErrorPages();
-	// 	if (errorPages.size() != 0)
-	// 		epFile = locPTR->getErrorPage(status);
-	// }
 	else if (!servConfREF.getErrorPages().empty())
 		epFile = servConfREF.getErrorPage(status);
 	root = servConfREF.getRoot();
@@ -244,10 +236,15 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 {
 	std::string filePath;
 
+	if (locPTR == NULL)
+		return ("");
 	filePath = locPTR->getRoot();
 	if (filePath.empty())
 		filePath = servConfREF.getRoot();
-	filePath += requestREF.getUri().substr(locPTR->locationUri.size(), std::string::npos);
+	if (checkMimeType(locPTR->locationUri) == MIME_CGI)
+		filePath += requestREF.getUri().substr(1, std::string::npos);
+	else
+		filePath += requestREF.getUri().substr(locPTR->locationUri.size(), std::string::npos);
 	return (filePath);
 }
 
@@ -256,7 +253,7 @@ static void header_for_GetHead(Response &response, const std::string &fileStr)
 	std::string	mimeType;
 
 	(void)response;
-	mimeType = checkMimeType(fileStr).empty();
+	mimeType = http::checkMimeType(fileStr).empty();
 	if (mimeType.empty())
 		mimeType = "text/html";
 
@@ -430,8 +427,8 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	const ServerConfig::Location							*locPTR;
 	std::string												filePath;
 
+	locPTR = NULL;
 	try {
-
 		checkHost(requestREF, servConfREF);
 		locPTR = servConfREF.getLocation(requestREF.getUri());
 		if (locPTR != NULL && !(locPTR->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
@@ -443,6 +440,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 			throw (404);
 		checkCMB(requestREF, servConfREF, locPTR);
 		filePath = getFilePath(requestREF, servConfREF, locPTR);
+		std::cout<<"\n\n\n///////////////////////////////////////////File Path :"<<filePath<<std::endl;
 		switch (requestREF.getHttpMethodEnum())
 		{
 			case (HEAD):

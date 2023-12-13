@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 16:57:39 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 04:39:04 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 05:07:28 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ ServerConfig::ServerConfig(void):	_listen(std::make_pair(DEFAULT_LISTEN_IP, DEFA
 									_autoIndex(DEFAULT_AUTO_INDEX),
 									_sizeCMB(DEFAULT_CMB_SIZE),
 									_root(DEFAULT_ROOT)
-									{
-										_errorPages.push_back(ServerConfig::ErrorPage("", -1));
-									};
+									{};
 
 ServerConfig::~ServerConfig(void) {};
 
@@ -253,19 +251,12 @@ ServerConfig::Location::LimitExcept &ServerConfig::Location::LimitExcept::operat
 	return (*this);
 };
 
-ServerConfig::ErrorPage::ErrorPage(void) {
-};
-
-ServerConfig::ErrorPage::ErrorPage(std::string _page, int code){
-	codes.push_back(code);
-	page = _page;
-};
+ServerConfig::ErrorPage::ErrorPage(void) {};
 
 ServerConfig::ErrorPage::ErrorPage(const std::vector< std::string > &errorPage) {
 	std::stringstream ss;
 	int code;
 
-	this->operator=(ErrorPage("", -1));
 	if (errorPage.empty())
 		return ;
 	this->page = errorPage.back();
