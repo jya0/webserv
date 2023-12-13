@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 07:04:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 12:11:45 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -441,7 +441,6 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 			throw (404);
 		checkCMB(requestREF, servConfREF, locPTR);
 		filePath = getFilePath(requestREF, servConfREF, locPTR);
-		std::cout<<"\n\n\n///////////////////////////////////////////File Path :"<<filePath<<std::endl;
 		switch (requestREF.getHttpMethodEnum())
 		{
 			case (HEAD):

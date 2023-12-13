@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 21:09:42 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 13:23:53 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,12 @@ namespace	http {
 			void setServerSocket(int serverSocket);
 			void setClientSocket(int clientSocket);
 			std::string	executeCGI(const std::string &scriptName);
+			void createTmpFiles();
+			void closeFds();
+			void deleteEnvArr(char *const *envArr);
+			void runCGI(const std::string &scriptName);
+
+			char **mapToArr(const std::map<std::string, std::string> &cgiEnvREF);
 	};
 }
 

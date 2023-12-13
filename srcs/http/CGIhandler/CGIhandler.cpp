@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 10:25:20 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 13:26:11 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ const http::Request							&CGIhandler::getCgiRequest(void) const {
 	return (_cgiRequest);
 };
 
-static void	deleteEnvArr(char * const *envArr) {
+void	CGIhandler::deleteEnvArr(char * const *envArr) {
 	if (envArr != NULL)
 	{
 		for (int i = 0; envArr[i] != NULL; ++i)
@@ -117,7 +117,7 @@ static void	deleteEnvArr(char * const *envArr) {
 	}
 };
 
-static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF) {
+char	**CGIhandler::mapToArr(const std::map< std::string, std::string > &cgiEnvREF) {
 	char		**envArr;
 	int			i = 0;
 	std::string	cgiElment;
@@ -149,86 +149,66 @@ static char	**mapToArr(const std::map< std::string, std::string > &cgiEnvREF) {
 	return (envArr);
 };
 
-static void	createTmpFiles(FILE **inFile, FILE **outFile, int &inFileFd, int &outFileFd) {
-	*inFile = tmpfile();
-	*outFile = tmpfile();
-	if (*inFile == NULL || *outFile == NULL)
+void CGIhandler::createTmpFiles()
+{
+	_inFile = tmpfile();
+	_outFile = tmpfile();
+	if (_inFile == NULL || _outFile == NULL)
 		throw(CGIhandler::CGIexception("CGI failed to create temporary files!"));
-	inFileFd = fileno(*inFile);
-	outFileFd = fileno(*outFile);
-	if (inFileFd < 0 || outFileFd < 0)
+	_inFileFd = fileno(_inFile);
+	_outFileFd = fileno(_outFile);
+	if (_inFileFd < 0 || _outFileFd < 0)
 		throw(CGIhandler::CGIexception("CGI failed to get fd of temporary files!"));
 };
 
-static void CGIchild(const int &cinSave, const int &coutSave, const int &inFileFd, const int &outFileFd, FILE *inFile, FILE *outFile, char *const *cgiEnv, const std::string &scriptName)
+void CGIhandler::runCGI(const std::string &scriptName)
 {
-	if (cgiEnv != NULL)
-	{
-		dup2(inFileFd, STDIN_FILENO);
-		dup2(outFileFd, STDOUT_FILENO);
-		close(inFileFd);
-		close(outFileFd);
-		close(cinSave);
-		close(coutSave);
-		fclose(inFile);
-		fclose(outFile);
-		char **av = new char *[2];
-		av[0] = new char[2 + scriptName.size() + 1];
-		av[1] = new char[1];
-		std::string src = "./" + scriptName;
-		const char *csrc = src.c_str();
-		memcpy(av[0], csrc, src.size());
-		av[0][src.size()] = 0;
-		av[1] = 0;
-		execve(scriptName.c_str(), av, cgiEnv);
-	}
-	deleteEnvArr(cgiEnv);
+	char **envp = mapToArr(_cgiEnv);
+	closeFds();
+	char **av = new char *[2];
+	av[0] = new char[2 + scriptName.size() + 1];
+	av[1] = new char[1];
+	std::string src = "./" + scriptName;
+	const char *csrc = src.c_str();
+	memcpy(av[0], csrc, src.size());
+	av[0][src.size()] = 0;
+	av[1] = 0;
+	execve(scriptName.c_str(), av, envp);
+	deleteEnvArr(envp);
+	throw(CGIhandler::CGIexception("CGI: Error when executing CGI script!\n"));
+}
+
+void CGIhandler::closeFds() {
+	dup2(_cinSave, STDIN_FILENO);
+	dup2(_coutSave, STDOUT_FILENO);
+	close(_cinSave);
+	close(_coutSave);
+	close(_inFileFd);
+	close(_outFileFd);
+	fclose(_inFile);
+	fclose(_outFile);
 }
 
 std::string CGIhandler::executeCGI(const std::string &scriptName)
 {
-	pid_t pid;
-	int cinSave;
-	int coutSave;
-	FILE *inFile;
-	int inFileFd;
-	FILE *outFile;
-	int outFileFd;
 	std::string cgiResult;
 
-	cinSave = dup(STDIN_FILENO);
-	coutSave = dup(STDOUT_FILENO);
-	createTmpFiles(&inFile, &outFile, inFileFd, outFileFd);
-	write(inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
-	lseek(inFileFd, 0, SEEK_SET);
+	_cinSave = dup(STDIN_FILENO);
+	_coutSave = dup(STDOUT_FILENO);
+	createTmpFiles();
+	write(_inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
+	lseek(_inFileFd, 0, SEEK_SET);
 	_startTime = std::clock();
-	pid = fork();
-	if (pid < 0)
-		throw(CGIexception("CGI failed to create fork!"));
-	if (pid == 0)
-		CGIchild(cinSave, coutSave, inFileFd, outFileFd, inFile, outFile, mapToArr(_cgiEnv), scriptName);
+	_childPid = fork();
+	if (_childPid < 0)
+		throw(CGIexception("CGI: Failed to create fork!\n"));
+	if (_childPid == 0)
+		runCGI(scriptName);
 	else
-	{
-		_childPid = pid;
-		_inFile = inFile;
-		_inFileFd = inFileFd;
-		_outFile = outFile;
-		_outFileFd = outFileFd;
-		_cinSave = cinSave;
-		_coutSave = coutSave;
-		usleep(100);
 		throw(*this);
-	}
-	dup2(cinSave, STDIN_FILENO);
-	dup2(coutSave, STDOUT_FILENO);
-	close(cinSave);
-	close(coutSave);
-	close(inFileFd);
-	close(outFileFd);
-	fclose(inFile);
-	fclose(outFile);
-	if (pid == 0)
-		exit(EXIT_FAILURE);
+	closeFds();
+	if (_childPid == 0)
+		throw CGIexception("CGI: Child process done\n");
 	return (cgiResult);
 };
 

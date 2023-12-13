@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 12:05:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 13:11:43 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void ServerMonitor::monitorCGI()
 	}
 }
 
-void ServerMonitor::startListeningFromServers()
+void ServerMonitor::startListening()
 {
 	for (std::map<int, WebServer *>::iterator itr = _servers.begin(); itr != _servers.end(); itr++)
 	{
@@ -123,6 +123,13 @@ void ServerMonitor::closeClientConenction(int server, int triggered)
 	_sockets.removeFd(triggered);
 }
 
+
+void ServerMonitor::killChild() {
+	for (int i = 0; i < _sockets.getNfds(); i++)
+		close(_sockets[i].fd);
+	exit(0);
+}
+
 void ServerMonitor::serveClientRequest(int server, int triggered)
 {
 	int status = -1;
@@ -142,14 +149,18 @@ void ServerMonitor::serveClientRequest(int server, int triggered)
 	{
 		_servers.at(server)->buildResponse(triggered);
 	}
-	catch (http::CGIhandler cgi)
+	catch (http::CGIhandler &cgi)
 	{
 		cgi.setServerSocket(server);
 		cgi.setClientSocket(triggered);
 		_cgiScripts.push_back(cgi);
 		_servers.at(server)->responses[triggered].setResponseStatus(false);
 	}
-	std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(triggered);
+	catch (http::CGIhandler::CGIexception &e) {
+		if (e.what() == std::string("CGI: Child process done\n"))
+			this->killChild();
+	}
+		std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(triggered);
 	_servers.at(server)->requests.erase(itr);
 }
 
@@ -171,7 +182,7 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 
 void ServerMonitor::startServers()
 {
-	startListeningFromServers();
+	startListening();
 	int rc = 0;
 	int triggered = 0;
 	int server = 0;
