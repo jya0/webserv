@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/13 01:27:59 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/13 09:48:05 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,9 +32,10 @@ endif
 NAME		=	$(addsuffix $(LIB_SUFFIX), libconfparser)
 # NAME		:=	parserTEST
 HTTP_DIR	:=	../http/
+AUTOINDEX_DIR	=	$(HTTP_DIR)Autoindex
 MESSAGE_DIR	=	$(HTTP_DIR)Message/
 
-INCLUDES	:=	-I. -I$(MESSAGE_DIR) -I$(HTTP_DIR)
+INCLUDES	:=	-I. -I$(MESSAGE_DIR) -I$(HTTP_DIR) -I$(AUTOINDEX_DIR)
 
 HEADERS		:=	ADirective.hpp	DirectiveBlock.hpp	DirectiveSimple.hpp	\
 				ServerParser_namespace.hpp				ServerConfig.hpp

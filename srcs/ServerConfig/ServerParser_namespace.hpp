@@ -32,8 +32,6 @@ namespace	ServerParser {
     std::vector< ServerConfig >				parseConfigFile(const std::string &filename);
 	std::string								appendSlashes(std::string uri);
 	extern const std::vector< std::string >	dveNames;
-	extern size_t							loadLineNo;
-	extern size_t							checkLineNo;
 	std::vector< std::string >				tokenize(const std::string &lineREF);
 	std::pair< std::string, std::string >	splitByTwo(const std::string &strREF, const char &delimREF);
 
@@ -45,9 +43,8 @@ class ServerParser::ParseErrorException: public std::exception {
 			std::string	_errorMsg;
     	public:
 			virtual ~ParseErrorException() throw () {};
-			ParseErrorException(const std::string &errorMsg, const size_t &lineNo) {
+			ParseErrorException(const std::string &errorMsg) {
 				_errorMsg = errorMsg;
-				_errorMsg += "Error is at non-space line " + http::toString(lineNo);
 			};
 			virtual const char *what() const throw()
 			{

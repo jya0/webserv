@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ADirective.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:31:46 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 04:03:15 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 09:46:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,25 +71,24 @@ int	ADirective::parseDirective(void) {
 	std::vector< std::string >::const_iterator	dveNameITR;
 	std::stringstream							ss;
 
-	ServerParser::loadLineNo++;
 	colonLoc = _dveName.find_first_of(":", 0);
 	if (colonLoc == std::string::npos || (colonLoc + 1) != _dveName.size())
 	{
 		ss << "Error " << ServerParser::ERROR_COLON << " missing or wrong ':' at " << "\"" << _dveName << "\"" << std::endl;
-		throw (ServerParser::ParseErrorException(ss.str(), ServerParser::loadLineNo));
+		throw (ServerParser::ParseErrorException(ss.str()));
 	}
 	dveNameITR = std::find(ServerParser::dveNames.begin(), ServerParser::dveNames.end(), _dveName);
 	if (dveNameITR == ServerParser::dveNames.end())
 	{
 		ss << "Error " << ServerParser::ERROR_DVE_NAME << " directive name: " << "\"" << _dveName << "\"" << std::endl;
-		throw (ServerParser::ParseErrorException(ss.str(), ServerParser::loadLineNo));
+		throw (ServerParser::ParseErrorException(ss.str()));
 	}
 	_dveType = (e_directiveType)(dveNameITR - ServerParser::dveNames.begin());
 	if (((_dveType == SERVER) != _dveValues.empty())
 		|| ((_dveType >= AUTOINDEX && _dveType <= SERVER_NAME) != (dynamic_cast<DirectiveBlock *>(this) == NULL)))
 	{
 		ss << "Error " << ServerParser::ERROR_DVE_TYPE << " incompatible directive type: " << "\"" << _dveName << "\"" << std::endl;
-		throw (ServerParser::ParseErrorException(ss.str(), ServerParser::loadLineNo));
+		throw (ServerParser::ParseErrorException(ss.str()));
 	}
 	return (0);
 }
@@ -226,16 +225,15 @@ static bool	checkValues(const e_directiveType &dveTypeREF, const std::vector< st
 int		ADirective::checkDirective(const e_directiveType &dveContextREF) const {
 	std::stringstream	ss;
 
-	ServerParser::checkLineNo++;
 	if (checkContext(dveContextREF, _dveType) == false)
 	{
 		ss << "Error " << ServerParser::ERROR_BAD_CONTEXT << " directive is not under the right context: " << "\"" << _dveName << "\"" << std::endl;
-		throw (ServerParser::ParseErrorException(ss.str(), ServerParser::checkLineNo));
+		throw (ServerParser::ParseErrorException(ss.str()));
 	}
 	if (checkValues(_dveType, _dveValues) == false)
 	{
 		ss << "Error " << ServerParser::ERROR_DVE_VALUE << " error directive value(s): " << "\"" << _dveName << "\"" << std::endl;
-		throw (ServerParser::ParseErrorException(ss.str(), ServerParser::checkLineNo));
+		throw (ServerParser::ParseErrorException(ss.str()));
 	}
 	return (0);
 };
