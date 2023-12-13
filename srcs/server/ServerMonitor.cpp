@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 03:42:18 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 03:48:18 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,6 @@ void ServerMonitor::startServers()
 			else if ((_sockets[i].revents & POLLOUT))
 				serveClientResponse(server, triggered, requests);
 		}
-		monitorCGI();
+		// monitorCGI();
 	}
 }
