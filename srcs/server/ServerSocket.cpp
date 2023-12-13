@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 19:35:32 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 19:59:50 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void ServerSocket::startConnection()
 
 void ServerSocket::startListening()
 {
-	if (listen(passive_socket, 20) < 0)
+	if (listen(passive_socket, 1000) < 0)
 	{
 		log("listen() sys call failed: Cannot listen from server socket\n");
 		throw SocketIOError();
