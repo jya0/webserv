@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 03:40:15 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 04:39:00 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,6 +431,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 	std::string												filePath;
 
 	try {
+
 		checkHost(requestREF, servConfREF);
 		locPTR = servConfREF.getLocation(requestREF.getUri());
 		if (locPTR != NULL && !(locPTR->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))

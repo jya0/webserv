@@ -3,18 +3,20 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
+#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 14:58:03 by jyao              #+#    #+#              #
-#    Updated: 2023/12/12 23:04:31 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/13 03:06:25 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Autoindex -*-
 
-CXX			:=	c++
-# CXXFLAGS	:=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
-CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+NAME			=	webserv
+
+CXX				=	c++
+# CXXFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
+CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 
 
 UNAME := $(shell uname)
