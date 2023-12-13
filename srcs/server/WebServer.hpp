@@ -55,7 +55,6 @@ public:
 	void			sendResponse(int client, const Response &response);
 	void			sendData(int client, std::string message);
 	int				recieveData(int &client);
-	Request			receiveRequest(int client, std::string);
 	void			startConnection();
 	void			startListening();
 	int				acceptConnection();

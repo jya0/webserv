@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 09:31:55 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/13 12:05:09 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,14 @@ void WebServer::sendData(int client, std::string message)
 
 int WebServer::recieveData(int &client)
 {
-	std::string ret = connection.recieveData(client);
+	std::string ret;
+	try {
+		ret = connection.recieveData(client);
+	}
+	catch(ServerSocket::SocketIOError &e) {
+		std::cerr << "Failed to receive client request: " << e.what() << std::endl;
+		return (-1);
+	}
 	std::map<int, Request>::iterator itr = requests.find(client);
 	if (itr == requests.end())
 		requests[client] = Request();
@@ -117,18 +124,15 @@ ServerSocket &WebServer::getConnection()
 	return (connection);
 }
 
-Request WebServer::receiveRequest(int client, std::string rawRequest)
-{
-	Request request(rawRequest);
-	if (!request.validate())
-		sendResponse(client, Response(400));
-	return (request);
-}
-
 void WebServer::sendResponse(int client, const Response &response)
 {
 	std::string rawResponse = response.getRawMessage();
-	sendData(client, rawResponse);
+	try {
+		sendData(client, rawResponse);
+	}
+	catch(ServerSocket::SocketIOError &e){
+		std::cerr<<"Failed to send response: "<<e.what()<<std::endl;
+	}
 }
 bool WebServer::connectedClient(int client) const
 {

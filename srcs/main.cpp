@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 15:38:21 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/13 09:41:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/13 11:49:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 
 int main(int argc, char **argv)
 {
-	(void)argv;
 	if (argc != 2)
 	{
 		std::cout<<"Invalid Paramaters!\n";
