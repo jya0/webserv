@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 19:32:07 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:35:57 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,12 @@ ServerSocket::~ServerSocket()
 	closeConnection();
 }
 
-ssize_t	ServerSocket::recieveData(int &peer_socket, char *buffer)
+ssize_t ServerSocket::recieveData(int &peer_socket, char *buffer)
 {
-	ssize_t	bytesRecieved;
+	ssize_t bytesRecieved;
 
-	buffer = new char[BUFFER_SIZE + 1];
-	memset(buffer, 0, BUFFER_SIZE + 1);
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
-	std::cout<<std::string(buffer)<<std::endl;
+	std::cout << std::string(buffer) << std::endl;
 	if (bytesRecieved < 0)
 	{
 		log("read() sys call failed: Failed to read bytes from client socket\n");
@@ -80,12 +78,11 @@ ssize_t	ServerSocket::recieveData(int &peer_socket, char *buffer)
 	return (bytesRecieved);
 }
 
-void ServerSocket::sendData(int &peer_socket, std::string message)
+size_t ServerSocket::sendData(int &peer_socket, std::string message)
 {
 	ssize_t bytesSent;
-
 	const char *s = message.c_str();
-	// std::cerr << message;
+
 	bytesSent = send(peer_socket, s, message.size(), 0);
 	if (bytesSent < 0)
 	{
@@ -94,6 +91,7 @@ void ServerSocket::sendData(int &peer_socket, std::string message)
 	}
 	if (size_t(bytesSent) == message.size())
 		log("------ Server Response sent to client ------\n\n");
+	return (bytesSent);
 }
 
 void ServerSocket::startConnection()

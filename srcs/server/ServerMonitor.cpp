@@ -6,11 +6,10 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 07:53:35 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 02:36:53 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerMonitor.hpp"
 
 ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
@@ -18,12 +17,14 @@ ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _soc
 
 	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++)
 	{
-		try {
+		try
+		{
 			server = new WebServer(*itr);
 			_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
 		}
-		catch(ServerSocket::SocketIOError &e) {
-			std::cerr<<e.what()<<std::endl;
+		catch (ServerSocket::SocketIOError &e)
+		{
+			std::cerr << e.what() << std::endl;
 		}
 	}
 	_sockets = PollManager(_servers.size());
@@ -57,18 +58,18 @@ static void closeCgiFds(const http::CGIhandler &cgi)
 	close(cgi.getCoutSave());
 	close(cgi.getInFileFd());
 	close(cgi.getOutFileFd());
-	fclose(const_cast< FILE * >(cgi.getInFile()));
-	fclose(const_cast< FILE * >(cgi.getOutFile()));
+	fclose(const_cast<FILE *>(cgi.getInFile()));
+	fclose(const_cast<FILE *>(cgi.getOutFile()));
 }
 
 void ServerMonitor::monitorCGI()
 {
-	std::clock_t	curr_time;
-	int				clientSock;
-	int				serverSock;
-	int				status;
+	std::clock_t curr_time;
+	int clientSock;
+	int serverSock;
+	int status;
 
-	for (std::vector< http::CGIhandler >::iterator it = _cgiScripts.begin(); it != _cgiScripts.end(); ++it)
+	for (std::vector<http::CGIhandler>::iterator it = _cgiScripts.begin(); it != _cgiScripts.end(); ++it)
 	{
 		curr_time = std::clock();
 		if ((size_t)(curr_time - it->getStartTime()) >= ((size_t)(CLOCKS_PER_SEC)*TIME_OUT_SEC))
@@ -138,16 +139,17 @@ void ServerMonitor::closeClientConnection(int server, int client)
 void ServerMonitor::serveClientRequest(int server, int client)
 {
 	if (server == -1)
-		return ;
+		return;
 	int status = _servers.at(server)->recieveData(client);
 	if (status == -1)
 	{
 		closeClientConnection(server, client);
-		return ;
+		return;
 	}
 	if (_servers.at(server)->requestReady(client) == false)
 		return;
-	try {
+	try
+	{
 		_servers.at(server)->buildResponse(client);
 	}
 	catch (http::CGIhandler &cgi)
@@ -163,12 +165,16 @@ void ServerMonitor::serveClientRequest(int server, int client)
 
 void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
-	if (server == -1 || _servers.at(server)->responseReady(client) == false)
+	size_t bytesSent = 0;
+	size_t bytesToSend = 0;
+	Response &response = _servers.at(server)->responses.find(client);
+
+	if (server == -1 || !response.responseReady())
 		return;
+	bytesToSend = response.getSize();
 	try
 	{
-		_servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
-		closeClientConnection(server, client);
+		bytesSent = _servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
 	}
 	catch (ServerSocket::SocketIOError &e)
 	{
@@ -176,6 +182,14 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 		closeClientConnection(server, client);
 		return;
 	}
+	if (bytesSent < 0)
+	{
+		closeClientConnection(server, client);
+		return;
+	}
+	if (bytesSent < bytesToSend)
+		return;
+	closeClientConnection(server, client);
 	requests++;
 	std::map<int, Response>::iterator response = _servers.at(server)->responses.find(client);
 	_servers.at(server)->responses.erase(response);

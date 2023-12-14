@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 00:24:37 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:36:23 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,13 @@ WebServer &WebServer::operator=(const WebServer &rhs)
 {
 	if (this == &rhs)
 		return (*this);
-	_connection		= rhs._connection;
-	_clients		= rhs._clients;
-	_config			= rhs._config;
-	responses		= rhs.responses;
-	requests		= rhs.requests;
+	_connection = rhs._connection;
+	_clients = rhs._clients;
+	_config = rhs._config;
+	responses = rhs.responses;
+	requests = rhs.requests;
 	return (*this);
 }
-
 
 WebServer::~WebServer()
 {
@@ -62,7 +61,7 @@ void WebServer::startListening()
 
 int WebServer::acceptConnection()
 {
-	int	client;
+	int client;
 
 	client = _connection.acceptConnection();
 	if (client >= 0)
@@ -91,19 +90,23 @@ void WebServer::sendData(int client, std::string message)
 	_connection.sendData(client, message);
 }
 
-ssize_t	WebServer::recieveData(int &client)
+ssize_t WebServer::recieveData(int &client)
 {
-	char		*buffer;
-	std::string	bufSTR;
-	ssize_t		bytesRead;
+	char *buffer;
+	std::string bufSTR;
+	ssize_t bytesRead;
 
 	buffer = NULL;
-	try {
+	try
+	{
+		buffer = new char[BUFFER_SIZE + 1];
+		memset(buffer, 0, BUFFER_SIZE + 1);
 		bytesRead = _connection.recieveData(client, buffer);
 		bufSTR = std::string(buffer, bytesRead);
-		delete [](buffer);
+		delete[] (buffer);
 	}
-	catch(std::exception &e) {
+	catch (std::exception &e)
+	{
 		std::cerr << "Failed to receive client request: " << e.what() << std::endl;
 		return (-1);
 	}
@@ -112,8 +115,8 @@ ssize_t	WebServer::recieveData(int &client)
 		closeClientConnection(client);
 		return (-1);
 	}
-
-	if (!requests.count(client)) {
+	if (!requests.count(client))
+	{
 		requests[client] = Request(bufSTR);
 		requests[client].setRequestStatus(false);
 	}
@@ -127,7 +130,6 @@ ssize_t	WebServer::recieveData(int &client)
 		requests[client].parseMessageBody();
 		requests[client].setRequestStatus(true);
 	}
-	delete [](buffer);
 	return (status);
 }
 
@@ -136,11 +138,15 @@ ServerSocket &WebServer::getConnection()
 	return (_connection);
 }
 
-void WebServer::sendResponse(int client, const Response &response)
+size_t WebServer::sendResponse(int client, const Response &response)
 {
+	size_t bytesSent;
+
 	std::string rawResponse = response.getRawMessage();
-	sendData(client, rawResponse);
+	bytesSent = sendData(client, rawResponse);
+	return (bytesSent);
 }
+
 bool WebServer::connectedClient(int client) const
 {
 	return (std::find(_clients.begin(), _clients.end(), client) != _clients.end());
@@ -162,18 +168,20 @@ bool WebServer::requestReady(int client)
 
 void WebServer::closeCGI(const CGIhandler &cgiREF, const int &statusREF)
 {
-	std::string	cgiResult;
-	char		 *readBuf;
-	ssize_t		readReturn;
-	int			responseStatus;
+	std::string cgiResult;
+	char *readBuf;
+	ssize_t readReturn;
+	int responseStatus;
 
 	readReturn = 0;
 	readBuf = NULL;
 	responseStatus = 200;
 	if (WEXITSTATUS(statusREF) != 0)
 		responseStatus = 500;
-	else {
-		try {
+	else
+	{
+		try
+		{
 			readBuf = new char[READ_BUF_SIZE + 1];
 			lseek(cgiREF.getOutFileFd(), 0, SEEK_SET);
 			do
@@ -183,7 +191,8 @@ void WebServer::closeCGI(const CGIhandler &cgiREF, const int &statusREF)
 				cgiResult += readBuf;
 			} while (readReturn > 0);
 		}
-		catch (std::exception &e) {
+		catch (std::exception &e)
+		{
 			responseStatus = 500;
 		}
 	}
@@ -191,7 +200,7 @@ void WebServer::closeCGI(const CGIhandler &cgiREF, const int &statusREF)
 	if (responseStatus != 200)
 		cgiResult = "OOOOOOOPS I'VE FAILED CGI!!!";
 	responses[cgiREF.getClientSocket()] = Response(responseStatus, cgiResult);
-	delete []readBuf;
+	delete[] readBuf;
 }
 
 void WebServer::buildResponse(int client)
