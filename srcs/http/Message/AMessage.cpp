@@ -121,7 +121,7 @@ void AMessage::parseMessageBody()
  *
  * @param rawMessage The raw message to be parsed
  */
-AMessage::AMessage(std::string rawMessage)
+AMessage::AMessage(const FILE *rawMessage)
 {
 	std::istringstream iss(rawMessage);
 	std::string line;

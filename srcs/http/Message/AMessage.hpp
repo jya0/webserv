@@ -3,24 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   AMessage.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 22:14:43 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 23:56:59 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Messge.class.hpp                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/13 17:44:03 by jyao              #+#    #+#             */
-/*   Updated: 2023/08/13 18:10:33 by jyao             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef HTTP_AMESSAGE_HPP
 # define HTTP_AMESSAGE_HPP
@@ -29,6 +18,7 @@
 # include	<string>
 # include	<list>
 # include	<utility>
+# include	<cstdio>
 # include	"Header.hpp"
 
 namespace http {
@@ -48,13 +38,14 @@ namespace http {
 		protected:
 			std::string			_startLine;
 			std::list<Header>	_headers;
-			std::string			_messageBody;
+			FILE				*_raw;
+			fpos_t				_messageBody;
 		public:
 			AMessage(void);
 			AMessage(const AMessage &aMessageREF);
 			AMessage(std::string startLine, std::list<Header> headers,
 				std::string messageBody);
-			AMessage(std::string rawMessage);
+			AMessage(const FILE *rawMessage);
 			std::string	getStartLine(void);
 			std::list<Header>	getHeaders(void) const;
 			std::string			getHeaderValue(const std::string &headerKey) const;

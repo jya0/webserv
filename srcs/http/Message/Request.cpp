@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 23:01:04 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 23:47:24 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,28 @@ Request::~Request(void) {
 	return;
 }
 
-FILE	*duplicateFile(FILE *input)
+FILE	*http::duplicateFile(const FILE *input)
 {
 	FILE	*duplFile;
 	char	*buffer;
+	size_t	readReturn;
 
 	buffer = new char[BUFFER_SIZE + 1];
-	memset(buffer, 0, BUFFER_SIZE + 1);
 	duplFile = NULL;
 	if (input != NULL)
 	{
 		duplFile = tmpfile();
 		if (duplFile == NULL)
 			return (NULL);
+		fseek(duplFile, 0, SEEK_SET);
 		do {
-
+			memset(buffer, 0, BUFFER_SIZE + 1);
+			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
+			fwrite(buffer, sizeof (char), readReturn, duplFile);
 		} while (2);
+		fseek(duplFile, 0, SEEK_SET);
 	}
+	delete [] (buffer);
 	return (duplFile);
 }
 
@@ -75,11 +80,11 @@ Request &Request::operator=(Request const &requestREF) {
 		this->AMessage::operator=(requestREF);
 		this->_httpMethod = requestREF._httpMethod;
 		this->_uri = requestREF._uri;
-		// if (requestREF.getRawMessage() != NULL)
-		// {
-		// 	fclose(_raw);
-		// 	// _raw =
-		// }
+		if (requestREF.getRawData() != NULL)
+		{
+			fclose(_raw);
+			_raw = duplicateFile(requestREF.getRawData());
+		}
 	}
 	return (*this);
 }
@@ -108,7 +113,7 @@ static std::string	decodeUri(const std::string &encoded)
  *
  * @param httpRaw The raw HTTP request to be parsed
  */
-Request::Request(std::string httpRaw) : AMessage(httpRaw) {
+Request::Request(FILE *httpRaw): AMessage(httpRaw) {
 	std::string method = _startLine.substr(0, _startLine.find(' '));
 	_httpMethod = methodEnum(method);
 	_uri = _startLine.substr(_startLine.find(' ') + 1,
@@ -223,7 +228,7 @@ void Request::setRequestStatus(bool status) {
 	_ready = status;
 }
 
-FILE *Request::getRawData() {
+const FILE *Request::getRawData() const {
 	return (_raw);
 }
 

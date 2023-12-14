@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 22:39:58 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 23:59:47 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ enum e_httpMethod {
 };
 
 namespace http {
+	FILE	*duplicateFile(const FILE *input);
 	/**
 	 * @brief This class describes an HTTP Request.
 	 * @field _httpMethod		The HTTP method of the request.
@@ -54,7 +55,6 @@ namespace http {
 			e_httpMethod	_httpMethod;
 			std::string		_httpVersion;
 			std::string		_uri;
-			FILE			*_raw;
 			bool			_ready;
 		protected:
 		public:
@@ -62,7 +62,7 @@ namespace http {
 			Request(Request const &RequestREF);
 			Request	&operator=(Request const &RequestREF);
 			~Request(void);
-			Request(std::string httpRaw);
+			Request(FILE *httpRaw);
 
 			static std::string methodName(e_httpMethod method);
 			static e_httpMethod methodEnum(const std::string method);
@@ -75,7 +75,7 @@ namespace http {
 			void appendRawData(const std::string &_data);
 			bool requestReady() const;
 			void setRequestStatus(bool status);
-			FILE *getRawData();
+			const FILE *getRawData() const;
 			bool recievedEOF();
 	};
 };
