@@ -6,7 +6,7 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/14 02:44:32 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/14 05:26:54 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,8 @@ CXX				:=	c++
 # CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
 CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98 -fPIC
 # CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -fPIC
+
+# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2 -fPIC
 
 
 

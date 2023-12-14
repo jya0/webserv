@@ -6,7 +6,7 @@
 #include <sys/poll.h>
 #include <cstring>
 
-#define MAX_SOCKETS 200
+#define MAX_SOCKETS 10000
 
 
 class PollManager {

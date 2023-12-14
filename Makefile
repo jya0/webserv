@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
+#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/14 04:12:26 by rriyas           ###   ########.fr        #
+#    Updated: 2023/12/14 05:26:37 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,9 @@ NAME			=	webserv
 
 CXX				=	c++
 # CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
-CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98 -fPIC
+CXXFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -fPIC
 # CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -fPIC
+# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2 -fPIC
 
 
 UNAME := $(shell uname)

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 04:56:36 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 05:20:17 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,18 @@
 ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
 	WebServer *server;
-	int n = 0;
 
 	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++)
 	{
 		try {
 			server = new WebServer(*itr);
 			_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
-			n++;
 		}
 		catch(ServerSocket::SocketIOError &e) {
 			std::cerr<<e.what()<<std::endl;
 		}
 	}
-	_sockets = PollManager(n);
+	_sockets = PollManager(_servers.size());
 	http::CGIhandler::setPollManager(_sockets);
 	_cgiScripts.clear();
 }
