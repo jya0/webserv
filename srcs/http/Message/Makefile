@@ -6,18 +6,18 @@
 #    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 18:31:50 by jyao              #+#    #+#              #
-#    Updated: 2023/12/14 06:18:29 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/14 08:20:31 by jyao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -*- Makefile Message -*-
 
 CXX				:=	c++
-# CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 
+CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -std=c++98 
 # CXXFLAGS		:=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98 
 # CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 
 
-CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2 
+# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2 
 
 
 
