@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 04:49:15 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 04:56:36 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,20 @@
 ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
 	WebServer *server;
+	int n = 0;
 
 	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++)
 	{
-		server = new WebServer(*itr);
-		_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
+		try {
+			server = new WebServer(*itr);
+			_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
+			n++;
+		}
+		catch(ServerSocket::SocketIOError &e) {
+			std::cerr<<e.what()<<std::endl;
+		}
 	}
-	_sockets = PollManager(_servers.size());
+	_sockets = PollManager(n);
 	http::CGIhandler::setPollManager(_sockets);
 	_cgiScripts.clear();
 }
@@ -182,7 +189,7 @@ void ServerMonitor::startServers()
 	int server = 0;
 	int requests = 0;
 	int i = 0;
-	while (2)
+	while (requests != 10)
 	{
 		monitorCGI();
 		rc = _sockets.callPoll();
