@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 19:25:12 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 07:22:47 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,8 +187,6 @@ RedirectResponse::RedirectResponse(const ServerConfig &servConfREF, const Server
 		redirect.addHeader(Header("Location", returnObj.uri));
 		this->Response::operator=(redirect);
 	}
-	std::cerr << "\n<<<<<<<<<<<<<\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<<<<<<<<<<<\n<<<<<<<<<<<<\n<<<<<<<<<<<redirect: " << returnObj.uri<< std::endl;
-	// exit(1);
 };
 
 /**
@@ -256,16 +254,16 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 	return (filePath);
 }
 
-static void header_for_GetHead(Response &response, const std::string &fileStr)
+static void setHeader(Response &response, const std::string &fileStr)
 {
 	std::string	mimeType;
 
 	(void)response;
-	mimeType = http::checkMimeType(fileStr).empty();
+	mimeType = http::checkMimeType(fileStr);
 	if (mimeType.empty())
 		mimeType = "text/html";
 
-	response.addHeader(Header("Content-Type", "text/html"));
+	response.addHeader(Header("Content-Type", mimeType));
 }
 
 static std::string	loadIndex(const std::vector< std::string > &indexPages, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
@@ -312,7 +310,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		throw (403); //forbidden
 	else
 		throw (404);
-	header_for_GetHead(response, result);
+	setHeader(response, result);
 	response.setMessageBody(result);
 	return (response);
 };
@@ -406,7 +404,6 @@ static void	checkHost(const Request &requestREF, const ServerConfig &servConfREF
 	std::string					hostHeader;
 
 	hostHeader = ServerParser::splitByTwo(requestREF.getHeaderValue("Host"), ':').first;
-	std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << hostHeader;
 	serverNames = servConfREF.getServerNames();
 	if (hostHeader.empty() ||
 		(!serverNames.empty() && std::find(serverNames.begin(), serverNames.end(), hostHeader) == serverNames.end()))

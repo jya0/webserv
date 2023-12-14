@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 03:47:32 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 06:39:37 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void ServerSocket::startConnection()
 
 void ServerSocket::startListening()
 {
-	if (listen(passive_socket, 100) < 0)
+	if (listen(passive_socket, SERVER_QUEUE_SIZE) < 0)
 	{
 		log("listen() sys call failed: Cannot listen from server socket\n");
 		close(passive_socket);

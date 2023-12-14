@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MimeTypes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:43:10 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/11 17:13:34 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 06:52:01 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,6 @@
 #include	"MimeTypes.hpp"
 #include	"CGIhandler.hpp"
 
-/* std::string	http::checkMimeType(const std::string &uriREF) {
-	http::t_mime_map::const_iterator	itc;
-	std::stringstream					ss;
-	std::string							suffix;
-
-	ss.str(uriREF);
-	std::getline(ss, suffix, '.');
-	ss >> suffix;
-	http::IsMimeTypeUnary	mimeUnary(suffix);
-	itc = std::find_if(mimeTypes.begin(), mimeTypes.end(), mimeUnary);
-	if (itc != mimeTypes.end())
-		return (itc->second);
-	return ("");
-};
- */
 
 std::string	http::getSuffix(const std::string &fileREF) {
 	size_t								lastDot;

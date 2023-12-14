@@ -1,17 +1,2 @@
-CHECK for return values of system callss
-
-stress test parser
-
-stress terst server with multiple in config
-
-
-stree test with siege
-
-fix cgi if script fails
-
-fd leaks
-
-
-siege with random requests to ensure no segfault
-
-multiple servers
+-> check QUERY_STRING
+-> chunked request

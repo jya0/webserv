@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/13 04:00:00 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 06:55:26 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ e_httpMethod Request::methodEnum(std::string method) {
 	else if (method == DELETE_METHOD)
 		return (DELETE);
 	else
-		return (GET);
+		return (NO_METHOD);
 }
 
 /**

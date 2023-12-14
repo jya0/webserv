@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/09 17:35:43 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 06:54:40 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
  * @brief An enum for the HTTP methods supported by the server.
  */
 enum e_httpMethod {
+	NO_METHOD = 0,
 	GET = 1,
 	POST = GET << 1,
 	HEAD = POST << 1,

@@ -15,7 +15,7 @@
 # include	<exception>
 
 # define	BUFFER_SIZE 420000
-
+# define	SERVER_QUEUE_SIZE 42
 class ServerSocket {
 protected:
 	std::string			ip_address;

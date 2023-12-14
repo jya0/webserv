@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 06:23:01 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 06:48:21 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ using namespace http;
 
 PollManager *CGIhandler::sockets = NULL;
 
-CGIhandler::CGIhandler(void):	_childPid(-1), _inFile(NULL), _inFileFd(-1), 
+CGIhandler::CGIhandler(void):	_childPid(-1), _inFile(NULL), _inFileFd(-1),
 								_outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1),
 								_clientSocket(-1), _serverSocket(-1) {
 	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
@@ -194,7 +194,6 @@ void CGIhandler::closeChildFds() {
 	for (int i = 0; i < CGIhandler::sockets->getNfds(); i++)
 		close((*CGIhandler::sockets)[i].fd);
 }
-
 
 void CGIhandler::closeParentFds() const {
 	dup2(_cinSave, STDIN_FILENO);

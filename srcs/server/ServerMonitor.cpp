@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 06:11:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 07:53:35 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,10 @@ void ServerMonitor::acceptIncomingConnection(int triggered)
 		std::cerr << "Failed to accept incoming connection from a client: " << e.what() << std::endl;
 		return;
 	}
-	if (client != -1)
+	if (_sockets.getNfds() < MAX_SOCKETS)
 		_sockets.addFd(client, POLLIN | POLLOUT | POLLHUP | POLLERR);
+	else
+		closeClientConnection(triggered, client);
 }
 
 void ServerMonitor::closeClientConnection(int server, int client)
@@ -196,7 +198,7 @@ void ServerMonitor::startServers()
 		for (i = 0; i < _sockets.getNfds(); i++)
 		{
 			triggered = _sockets[i].fd;
-			if (_sockets[i].revents == 0 || triggered == -1)
+			if (_sockets[i].revents == 0)
 				continue;
 			server = retrieveClientHandlerSocket(triggered);
 			if ((_sockets[i].revents & POLLHUP) || (_sockets[i].revents & POLLERR))

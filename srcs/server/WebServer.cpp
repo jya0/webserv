@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 04:50:05 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 07:18:41 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstring>
 #include "WebServer.hpp"
 #include "PollManager.hpp"
+#include "Header.hpp"
 
 WebServer::WebServer()
 {
@@ -76,7 +77,7 @@ void WebServer::closeServerConnection()
 
 void WebServer::closeClientConnection(int client)
 {
-	if (clients.size() == 0)
+	if (clients.size() == 0 || client == -1)
 		return;
 	if (std::find(clients.begin(), clients.end(), client) != clients.end())
 	{
@@ -111,10 +112,9 @@ int WebServer::recieveData(int &client)
 	requests[client].appendRawData(ret);
 	requests[client].setRequestStatus(false);
 	size_t pos = 0;
-	if ((pos = requests[client].getRawData().find("\r\n\r\n")) != std::string::npos)
+	if ((pos = requests[client].getRawData().find(CR_LF CR_LF)) != std::string::npos)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
-		// std::cout << requests[client].getRawData() << "\n";
 		std::string raw = requests[client].getRawData();
 		std::map<int, Request >::iterator itr = requests.find(client);
 		requests.erase(itr);
