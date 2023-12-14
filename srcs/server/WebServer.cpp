@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 21:33:07 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 22:39:29 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ WebServer::WebServer()
 {
 }
 
-WebServer::WebServer(const ServerConfig &configREF) : connection(configREF.getListen().first, configREF.getListen().second), _config(configREF)
+WebServer::WebServer(const ServerConfig &configREF) : _connection(configREF.getListen().first, configREF.getListen().second), _config(configREF)
 {
 }
 
-WebServer::WebServer(std::string ip, int port) : connection(ip, port)
+WebServer::WebServer(std::string ip, int port) : _connection(ip, port)
 {
 }
 
@@ -119,7 +119,7 @@ ssize_t	WebServer::recieveData(int &client)
 	requests[client].appendRawData(bufSTR);
 	requests[client].setRequestStatus(false);
 	size_t pos = 0;
-	if ((pos = requests[client].findRawData(CR_LF CR_LF)) != std::string::npos)
+	if (requests[client].recievedEOF())
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
 		requests.erase(requests.find(client));

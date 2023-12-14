@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 18:51:01 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 22:39:58 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,11 @@ namespace http {
 			std::string	getHttpMethod(void) const;
 			const std::string	&getUri(void) const;
 			bool validate(void) const;
-			void appendRawData(std::string _data);
+			void appendRawData(const std::string &_data);
 			bool requestReady() const;
 			void setRequestStatus(bool status);
-			std::string getRawData();
+			FILE *getRawData();
+			bool recievedEOF();
 	};
 };
 

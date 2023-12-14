@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 21:27:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 23:01:04 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<cstdlib>
 #include	<sstream>
 #include	"Request.hpp"
-
+#include	"ServerSocket.hpp"
 using namespace http;
 
 /**
@@ -43,22 +43,24 @@ Request::~Request(void) {
 	return;
 }
 
-static FILE	*duplicateFile(FILE *input)
+FILE	*duplicateFile(FILE *input)
 {
-	FILE	*dup;
+	FILE	*duplFile;
 	char	*buffer;
 
 	buffer = new char[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
+	duplFile = NULL;
 	if (input != NULL)
 	{
-		dup = tmpfile();
-		if (dup == NULL)
+		duplFile = tmpfile();
+		if (duplFile == NULL)
 			return (NULL);
 		do {
-			
-		} while (
+
+		} while (2);
 	}
+	return (duplFile);
 }
 
 /**
@@ -68,16 +70,16 @@ static FILE	*duplicateFile(FILE *input)
  * @return Request& Reference to the copied Request
  */
 Request &Request::operator=(Request const &requestREF) {
-	if (this != &RequestREF)
+	if (this != &requestREF)
 	{
-		this->AMessage::operator=(RequestREF);
-		this->_httpMethod = RequestREF._httpMethod;
-		this->_uri = RequestREF._uri;
-		if (requestREF.getRawMessage() != NULL)
-		{
-			fclose(_raw);
-			_raw = 
-		}
+		this->AMessage::operator=(requestREF);
+		this->_httpMethod = requestREF._httpMethod;
+		this->_uri = requestREF._uri;
+		// if (requestREF.getRawMessage() != NULL)
+		// {
+		// 	fclose(_raw);
+		// 	// _raw =
+		// }
 	}
 	return (*this);
 }
@@ -209,7 +211,9 @@ bool Request::validate(void) const {
 }
 
 void Request::appendRawData(const std::string &bufSTR) {
-	_raw = _raw + _data;
+	fseek(_raw, 0, SEEK_END);
+	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _raw);
+	// _raw = _raw + _data;
 }
 
 bool Request::requestReady() const {
@@ -219,6 +223,11 @@ void Request::setRequestStatus(bool status) {
 	_ready = status;
 }
 
-std::string Request::getRawData() {
+FILE *Request::getRawData() {
 	return (_raw);
+}
+
+bool Request::recievedEOF() {
+
+	return (false);
 }
