@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 03:06:06 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:27:19 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,36 +35,7 @@ Request::Request(const std::string &messageHeader): AMessage(messageHeader) {}
 /**
  * @brief Destroy the Request object
  */
-Request::~Request(void) {
-	if (_messageBody != NULL)
-		fclose(_messageBody);
-	return;
-}
-
-FILE	*http::duplicateFile(const FILE *input)
-{
-	FILE	*duplFile;
-	char	*buffer;
-	size_t	readReturn;
-
-	buffer = new char[BUFFER_SIZE + 1];
-	duplFile = NULL;
-	if (input != NULL)
-	{
-		duplFile = tmpfile();
-		if (duplFile == NULL)
-			return (NULL);
-		fseek(duplFile, 0, SEEK_SET);
-		do {
-			memset(buffer, 0, BUFFER_SIZE + 1);
-			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
-			fwrite(buffer, sizeof (char), readReturn, duplFile);
-		} while (2);
-		fseek(duplFile, 0, SEEK_SET);
-	}
-	delete [] (buffer);
-	return (duplFile);
-}
+Request::~Request(void) {}
 
 /**
  * @brief The copy assignment operator of the Request class.
@@ -78,11 +49,6 @@ Request &Request::operator=(Request const &requestREF) {
 		this->AMessage::operator=(requestREF);
 		this->_httpMethod = requestREF._httpMethod;
 		this->_uri = requestREF._uri;
-		if (requestREF.getRawData() != NULL)
-		{
-			fclose(_messageBody);
-			_messageBody = duplicateFile(requestREF.getRawData());
-		}
 	}
 	return (*this);
 }
@@ -156,6 +122,8 @@ void	Request::parseRequest(void)
 										_startLine.find(' ') + 1) + 1);
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
 		parseChuncked();
+// 	if (getHeaderValue("Content-Length") != "")
+// 		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
 }
 
 /**

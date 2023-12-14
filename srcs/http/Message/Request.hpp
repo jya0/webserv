@@ -6,7 +6,11 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/12/15 03:06:19 by rriyas           ###   ########.fr       */
+=======
+/*   Updated: 2023/12/15 03:12:40 by jyao             ###   ########.fr       */
+>>>>>>> f84865cec3bff481a0f02f509a0b16ea62fca5ee
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +41,6 @@ enum e_httpMethod {
 };
 
 namespace http {
-	FILE	*duplicateFile(const FILE *input);
 	/**
 	 * @brief This class describes an HTTP Request.
 	 * @field _httpMethod		The HTTP method of the request.

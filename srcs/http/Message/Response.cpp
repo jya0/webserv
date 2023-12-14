@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 03:04:25 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:29:11 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ Response::Response(int status, const std::string &responseBody)
  *
  * @param responseREF Response object to copy
  */
-Response::Response(const Response &responseREF) : AMessage(responseREF)
+Response::Response(const Response &responseREF): AMessage(responseREF)
 {
 	*this = responseREF;
 	return;
@@ -80,10 +80,7 @@ Response::Response(const Response &responseREF) : AMessage(responseREF)
 /**
  * @brief Destroy the Response object
  */
-Response::~Response(void)
-{
-	return;
-}
+Response::~Response(void) {}
 
 /**
  * @brief The Response copy assignment operator.
@@ -448,7 +445,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 			return (*this = RedirectResponse(servConfREF, locPTR));
 		else if (locPTR == NULL)
 			throw (404);
-		checkCMB(requestREF, servConfREF, locPTR);
+		// checkCMB(requestREF, servConfREF, locPTR);
 		filePath = getFilePath(requestREF, servConfREF, locPTR);
 		switch (requestREF.getHttpMethodEnum())
 		{

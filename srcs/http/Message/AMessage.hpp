@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 03:05:26 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:27:01 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@
 
 #define MSG_BODY_BUFFER 42
 
-namespace http
-{
-	std::string fileToString(FILE *file);
-	size_t getFileSize(FILE *file);
+namespace http {
+	std::string	fileToString(FILE *file);
+	typedef std::pair< std::string, FILE * >	t_raw_message;
+	FILE	*duplicateFile(const FILE *input);
 
 	/**
 	 * @brief 	This class describes a TCP/HTTP message.
@@ -56,15 +56,15 @@ namespace http
 		virtual ~AMessage(void);
 		AMessage &operator=(const AMessage &aMessageREF);
 
-		std::string getStartLine(void);
-		std::list<Header> getHeaders(void) const;
-		std::string getHeaderValue(const std::string &headerKey) const;
-		const FILE *getMessageBody(void) const;
-		std::string getMessageBodyStr(void) const;
-		std::string getRawMessage(void) const;
-		void addHeader(Header header);
-		void setMessageBody(const std::string &msgBodyREF);
-		void setStartLine(std::string startLine);
+			std::string			getStartLine(void);
+			std::list< Header >	getHeaders(void) const;
+			std::string			getHeaderValue(const std::string &headerKey) const;
+			const FILE			*getMessageBody(void) const;
+			std::string			getMessageBodyStr(void) const;
+			void 				addHeader(Header header);
+			void				setMessageBody(const std::string &msgBodyREF);
+			void 				setStartLine(std::string startLine);
+			t_raw_message		getRawMessage(void) const;
 	};
 }
 

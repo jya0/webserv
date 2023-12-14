@@ -13,9 +13,11 @@
 #include	<sstream>
 #include	<algorithm>
 #include	<cstdio>
+#include	<cstring>
 #include	"AMessage.hpp"
 #include	"ToString.tpp"
 #include	"ServerParser_namespace.hpp"
+#include	"ServerSocket.hpp"
 
 using namespace http;
 
@@ -25,6 +27,8 @@ using namespace http;
 AMessage::AMessage(void): _ready(false)
 {
 	_messageBody = tmpfile();
+	if (_messageBody != NULL)
+		std::cerr << "<<<<<<<<<<<<<<<<<<<<<NO TEMP FILE!" << std::endl;
 }
 
 /**
@@ -77,7 +81,34 @@ AMessage::AMessage(std::string messageHeader)
  */
 AMessage::~AMessage(void)
 {
+	if (_messageBody != NULL)
+		fclose(_messageBody);
 	return;
+}
+
+FILE	*http::duplicateFile(const FILE *input)
+{
+	FILE	*duplFile;
+	char	*buffer;
+	size_t	readReturn;
+
+	buffer = new char[BUFFER_SIZE + 1];
+	duplFile = NULL;
+	if (input != NULL)
+	{
+		duplFile = tmpfile();
+		if (duplFile == NULL)
+			return (NULL);
+		fseek(duplFile, 0, SEEK_SET);
+		do {
+			memset(buffer, 0, BUFFER_SIZE + 1);
+			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
+			fwrite(buffer, sizeof (char), readReturn, duplFile);
+		} while (2);
+		fseek(duplFile, 0, SEEK_SET);
+	}
+	delete [] (buffer);
+	return (duplFile);
 }
 
 /**
@@ -92,7 +123,11 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
 	{
 		_startLine = aMessageREF._startLine;
 		_headers = aMessageREF._headers;
-		_messageBody = aMessageREF._messageBody;
+		if (_messageBody != NULL)
+		{
+			fclose(_messageBody);
+			_messageBody = duplicateFile(aMessageREF._messageBody);
+		}
 		_messageBodySize = aMessageREF._messageBodySize;
 		_httpVersion = aMessageREF._httpVersion;
 		_ready = aMessageREF._ready;
@@ -190,21 +225,16 @@ size_t http::getFileSize(FILE *file)
  *
  * @return std::string The raw message
  */
-std::string AMessage::getRawMessage(void) const
+t_raw_message	AMessage::getRawMessage(void) const
 {
-	// std::string rawMessage = this->_startLine;
-	// for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
-	// {
-	// 	if (rawMessage.size() == 0)
-	// 		rawMessage = it->getKey() + ": " + it->getValue() + CR_LF;
-	// 	else
-	// 		rawMessage += it->getKey() + ": " + it->getValue() + CR_LF;
-	// }
-	// rawMessage += CR_LF + this->_messageBody;
-	// // if (_messageBody.find(CR_LF CR_LF) == std::string::npos)
-	// // 	rawMessage += CR_LF CR_LF;
-	// return (rawMessage);
-	return ("");
+	std::string	statusNheader;
+
+	statusNheader = _startLine;
+	for (std::list< Header >::const_iterator it = _headers.begin(); it != _headers.end(); it++)
+		statusNheader += it->getKey() + ": " + it->getValue() + CR_LF;
+	statusNheader += CR_LF;
+	fseek(_messageBody, 0, SEEK_SET);
+	return (std::make_pair< std::string, FILE * >(statusNheader, _messageBody));
 }
 
 void AMessage::addHeader(Header header)
