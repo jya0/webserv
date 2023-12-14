@@ -17,6 +17,7 @@
 #include	"AMessage.hpp"
 #include	"ToString.tpp"
 #include	"ServerParser_namespace.hpp"
+#include	"ServerSocket.hpp"
 
 using namespace http;
 
@@ -26,6 +27,8 @@ using namespace http;
 AMessage::AMessage(void): _ready(false)
 {
 	_messageBody = tmpfile();
+	if (_messageBody != NULL)
+		std::cerr << "<<<<<<<<<<<<<<<<<<<<<NO TEMP FILE!" << std::endl;
 }
 
 /**
@@ -78,8 +81,34 @@ AMessage::AMessage(std::string messageHeader)
  */
 AMessage::~AMessage(void)
 {
-	fclose(_messageBody);
+	if (_messageBody != NULL)
+		fclose(_messageBody);
 	return;
+}
+
+FILE	*http::duplicateFile(const FILE *input)
+{
+	FILE	*duplFile;
+	char	*buffer;
+	size_t	readReturn;
+
+	buffer = new char[BUFFER_SIZE + 1];
+	duplFile = NULL;
+	if (input != NULL)
+	{
+		duplFile = tmpfile();
+		if (duplFile == NULL)
+			return (NULL);
+		fseek(duplFile, 0, SEEK_SET);
+		do {
+			memset(buffer, 0, BUFFER_SIZE + 1);
+			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
+			fwrite(buffer, sizeof (char), readReturn, duplFile);
+		} while (2);
+		fseek(duplFile, 0, SEEK_SET);
+	}
+	delete [] (buffer);
+	return (duplFile);
 }
 
 /**
@@ -94,7 +123,11 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
 	{
 		_startLine = aMessageREF._startLine;
 		_headers = aMessageREF._headers;
-		_messageBody = aMessageREF._messageBody;
+		if (_messageBody != NULL)
+		{
+			fclose(_messageBody);
+			_messageBody = duplicateFile(aMessageREF._messageBody);
+		}
 		_messageBodySize = aMessageREF._messageBodySize;
 		_httpVersion = aMessageREF._httpVersion;
 		_ready = aMessageREF._ready;

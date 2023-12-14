@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 03:00:24 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 03:12:50 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 namespace http {
 	std::string	fileToString(FILE *file);
 	typedef std::pair< std::string, FILE * >	t_raw_message;
+	FILE	*duplicateFile(const FILE *input);
 
 	/**
 	 * @brief 	This class describes a TCP/HTTP message.

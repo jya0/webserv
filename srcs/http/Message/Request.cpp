@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 02:28:27 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 03:13:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,31 +37,6 @@ Request::Request(const std::string &messageHeader): AMessage(messageHeader) {}
  */
 Request::~Request(void) {}
 
-FILE	*http::duplicateFile(const FILE *input)
-{
-	FILE	*duplFile;
-	char	*buffer;
-	size_t	readReturn;
-
-	buffer = new char[BUFFER_SIZE + 1];
-	duplFile = NULL;
-	if (input != NULL)
-	{
-		duplFile = tmpfile();
-		if (duplFile == NULL)
-			return (NULL);
-		fseek(duplFile, 0, SEEK_SET);
-		do {
-			memset(buffer, 0, BUFFER_SIZE + 1);
-			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
-			fwrite(buffer, sizeof (char), readReturn, duplFile);
-		} while (2);
-		fseek(duplFile, 0, SEEK_SET);
-	}
-	delete [] (buffer);
-	return (duplFile);
-}
-
 /**
  * @brief The copy assignment operator of the Request class.
  *
@@ -74,11 +49,6 @@ Request &Request::operator=(Request const &requestREF) {
 		this->AMessage::operator=(requestREF);
 		this->_httpMethod = requestREF._httpMethod;
 		this->_uri = requestREF._uri;
-		if (requestREF.getRawData() != NULL)
-		{
-			fclose(_messageBody);
-			_messageBody = duplicateFile(requestREF.getRawData());
-		}
 	}
 	return (*this);
 }
