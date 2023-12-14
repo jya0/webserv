@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 22:39:29 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 23:43:22 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,12 +113,13 @@ ssize_t	WebServer::recieveData(int &client)
 		return (-1);
 	}
 
-	std::map<int, Request>::iterator itr = requests.find(client);
-	if (itr == requests.end())
-		requests[client] = Request();
-	requests[client].appendRawData(bufSTR);
-	requests[client].setRequestStatus(false);
-	size_t pos = 0;
+	if (!requests.count(client)) {
+		requests[client] = Request(bufSTR);
+		requests[client].setRequestStatus(false);
+	}
+	else
+		requests[client].appendRawData(bufSTR);
+
 	if (requests[client].recievedEOF())
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";

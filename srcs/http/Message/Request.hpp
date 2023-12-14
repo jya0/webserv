@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 23:59:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 00:11:33 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ namespace http {
 			void setRequestStatus(bool status);
 			const FILE *getRawData() const;
 			bool recievedEOF();
+			bool recievedLastChunk();
+			bool recievedLastByte();
 	};
 };
 

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 23:56:59 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 00:11:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,13 @@ namespace http {
 			std::list<Header>	_headers;
 			FILE				*_raw;
 			fpos_t				_messageBody;
+			size_t				_messageBodySize;
 		public:
 			AMessage(void);
 			AMessage(const AMessage &aMessageREF);
 			AMessage(std::string startLine, std::list<Header> headers,
-				std::string messageBody);
-			AMessage(const FILE *rawMessage);
+				std::string messageBody, size_t messageBodySize);
+			AMessage(std::string rawMessage);
 			std::string	getStartLine(void);
 			std::list<Header>	getHeaders(void) const;
 			std::string			getHeaderValue(const std::string &headerKey) const;

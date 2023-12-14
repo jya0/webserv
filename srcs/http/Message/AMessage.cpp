@@ -57,6 +57,7 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
 		this->_startLine = aMessageREF._startLine;
 		this->_headers = aMessageREF._headers;
 		this->_messageBody = aMessageREF._messageBody;
+		this->_messageBodySize = aMessageREF._messageBodySize;
 	}
 	return (*this);
 }
@@ -68,11 +69,12 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
  * @param headers The list of headers of the message
  * @param messageBody The body of the message
  */
-AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string messageBody)
+AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string messageBody, size_t messageBodySize)
 {
 	this->_startLine = startLine;
 	this->_headers = headers;
 	this->_messageBody = messageBody;
+	this->_messageBodySize = messageBodySize;
 	return;
 }
 
@@ -121,7 +123,7 @@ void AMessage::parseMessageBody()
  *
  * @param rawMessage The raw message to be parsed
  */
-AMessage::AMessage(const FILE *rawMessage)
+AMessage::AMessage(std::string rawMessage) : _messageBodySize(rawMessage.size())
 {
 	std::istringstream iss(rawMessage);
 	std::string line;
