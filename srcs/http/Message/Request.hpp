@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 01:03:28 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:00:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,21 +62,23 @@ namespace http {
 			Request(const std::string &messageHeader);
 			~Request(void);
 
-			static std::string methodName(e_httpMethod method);
-			static e_httpMethod methodEnum(const std::string method);
+			static std::string	methodName(e_httpMethod method);
+			static e_httpMethod	methodEnum(const std::string method);
 
+			void				parseChuncked(void);
+			void				parseRequest(void);
 			const e_httpMethod	&getHttpMethodEnum(void) const;
 			const std::string	&getHttpVersion(void) const;
-			std::string	getHttpMethod(void) const;
+			std::string			getHttpMethod(void) const;
 			const std::string	&getUri(void) const;
-			bool validate(void) const;
-			void appendRawData(const std::string &_data);
-			bool requestReady() const;
-			void setRequestStatus(bool status);
-			const FILE *getRawData() const;
-			bool recievedEOF();
-			bool recievedLastChunk();
-			bool recievedLastByte();
+			bool				validate(void) const;
+			void				appendRawData(const std::string &_data);
+			bool				requestReady() const;
+			void				setRequestStatus(bool status);
+			const FILE			*getRawData() const;
+			bool				recievedEOF();
+			bool				recievedLastChunk();
+			bool				recievedLastByte();
 	};
 };
 

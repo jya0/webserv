@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 18:45:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:12:45 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,8 @@ Response &Response::operator=(const Response &responseREF)
  *
  * @param httpRaw The string to parse
  */
-Response::Response(std::string httpRaw) : AMessage(httpRaw)
+Response::Response(const std::string &messageHeader): AMessage(messageHeader)
 {
-
 	_httpVersion		=	this->_startLine.substr(0, this->_startLine.find(' '));
 	_httpStatusCode		=	strtol(this->_startLine.substr(this->_startLine.find(' ') + 1,
 								this->_startLine.find(' ', this->_startLine.find(' ') + 1) -

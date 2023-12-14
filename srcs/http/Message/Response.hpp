@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 00:21:52 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:09:24 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ namespace http {
 			Response	&operator=(const Response &responseREF);
 			Response(int status);
 			Response(int status, const std::string &responseBody);
+			Response(const std::string &messageHeader);
 
 			std::string		getHttpVersion(void) const;
 			unsigned short	getHttpStatusCode(void) const;

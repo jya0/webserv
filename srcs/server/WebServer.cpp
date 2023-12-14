@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 00:24:37 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:11:39 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,11 +124,11 @@ ssize_t	WebServer::recieveData(int &client)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
 		requests.erase(requests.find(client));
-		requests[client].parseMessageBody();
+		requests[client].parseRequest();
 		requests[client].setRequestStatus(true);
 	}
 	delete [](buffer);
-	return (status);
+	return (bytesRead);
 }
 
 ServerSocket &WebServer::getConnection()

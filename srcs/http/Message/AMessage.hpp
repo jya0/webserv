@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 01:06:49 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 01:55:21 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ namespace http {
 			void 				addHeader(Header header);
 			void				setMessageBody(const std::string &msgBodyREF);
 			void 				setStartLine(std::string startLine);
-			void 				parseMessageBody();
 	};
 }
 
