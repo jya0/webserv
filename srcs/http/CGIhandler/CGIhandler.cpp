@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 04:50:59 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 06:23:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ char	**CGIhandler::mapToArr(const std::map< std::string, std::string > &cgiEnvRE
 	int			i = 0;
 	std::string	cgiElment;
 
+	envArr = NULL;
 	if (cgiEnvREF.size() <= 0)
 		return (NULL);
 	try
@@ -148,7 +149,6 @@ char	**CGIhandler::mapToArr(const std::map< std::string, std::string > &cgiEnvRE
 		deleteEnvArr(envArr);
 		return (NULL);
 	}
-
 	return (envArr);
 };
 
@@ -214,7 +214,9 @@ void CGIhandler::executeCGI(const std::string &scriptName)
 	_cinSave = dup(STDIN_FILENO);
 	_coutSave = dup(STDOUT_FILENO);
 	createTmpFiles();
-	write(_inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size());
+	if (write(_inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size()) < 0)
+		std::cerr	<< "Failed to write"
+					<< std::endl;
 	lseek(_inFileFd, 0, SEEK_SET);
 	_startTime = std::clock();
 	_childPid = fork();

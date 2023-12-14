@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 05:20:17 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/14 06:11:06 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,29 +68,29 @@ void ServerMonitor::monitorCGI()
 	int				serverSock;
 	int				status;
 
-	for (std::vector< http::CGIhandler >::const_iterator itc = _cgiScripts.begin(); itc != _cgiScripts.end(); ++itc)
+	for (std::vector< http::CGIhandler >::iterator it = _cgiScripts.begin(); it != _cgiScripts.end(); ++it)
 	{
 		curr_time = std::clock();
-		if ((size_t)(curr_time - itc->getStartTime()) >= ((size_t)(CLOCKS_PER_SEC)*TIME_OUT_SEC))
+		if ((size_t)(curr_time - it->getStartTime()) >= ((size_t)(CLOCKS_PER_SEC)*TIME_OUT_SEC))
 		{
-			kill(itc->getChildPid(), SIGKILL);
-			clientSock = itc->getClientSocket();
-			serverSock = itc->getServerSocket();
-			closeCgiFds(*itc);
-			_cgiScripts.erase(itc);
+			kill(it->getChildPid(), SIGKILL);
+			clientSock = it->getClientSocket();
+			serverSock = it->getServerSocket();
+			closeCgiFds(*it);
+			_cgiScripts.erase(it);
 			_servers.at(serverSock)->responses[clientSock] = Response(408);
 			return;
 		}
 		else
 		{
 			status = 0;
-			int child = waitpid(itc->getChildPid(), &status, WNOHANG);
+			int child = waitpid(it->getChildPid(), &status, WNOHANG);
 			if (status == -1 || status == 1)
 				throw(http::CGIhandler::CGIexception("CGI failed to run!"));
-			if (child == itc->getChildPid() || child == -1)
+			if (child == it->getChildPid() || child == -1)
 			{
-				_servers.at((itc->getServerSocket()))->closeCGI(*itc, status);
-				_cgiScripts.erase(itc);
+				_servers.at((it->getServerSocket()))->closeCGI(*it, status);
+				_cgiScripts.erase(it);
 				return;
 			}
 		}
@@ -187,7 +187,7 @@ void ServerMonitor::startServers()
 	int server = 0;
 	int requests = 0;
 	int i = 0;
-	while (requests != 10)
+	while (2)
 	{
 		monitorCGI();
 		rc = _sockets.callPoll();

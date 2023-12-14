@@ -7881,7 +7881,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
       ;;
 
     interix3*)
-      # Interix 3.x gcc -fpic/-fPIC options generate broken code.
+      # Interix 3.x gcc / options generate broken code.
       # Instead, we relocate shared libraries at runtime.
       ;;
 
@@ -7906,13 +7906,13 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	# +Z the default
 	;;
       *)
-	lt_prog_compiler_pic='-fPIC'
+	lt_prog_compiler_pic=''
 	;;
       esac
       ;;
 
     *)
-      lt_prog_compiler_pic='-fPIC'
+      lt_prog_compiler_pic=''
       ;;
     esac
   else
@@ -7982,7 +7982,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
         # Portland Group compilers (*not* the Pentium gcc compiler,
 	# which looks to be a dead project)
 	lt_prog_compiler_wl='-Wl,'
-	lt_prog_compiler_pic='-fpic'
+	lt_prog_compiler_pic=''
 	lt_prog_compiler_static='-Bstatic'
         ;;
       ccc*)
@@ -8824,7 +8824,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 
     hpux9*)
       if test "$GCC" = yes; then
-	archive_cmds='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+	archive_cmds='$rm $output_objdir/$soname~$CC -shared  ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
 	archive_cmds='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       fi
@@ -8840,7 +8840,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 
     hpux10*)
       if test "$GCC" = yes -a "$with_gnu_ld" = no; then
-	archive_cmds='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	archive_cmds='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
       else
 	archive_cmds='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
       fi
@@ -8867,7 +8867,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	  archive_cmds='$CC -shared ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	*)
-	  archive_cmds='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	  archive_cmds='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	esac
       else
@@ -11562,7 +11562,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       ;;
     *)
       if test "$GXX" = yes; then
-        archive_cmds_CXX='$rm $output_objdir/$soname~$CC -shared -nostdlib -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+        archive_cmds_CXX='$rm $output_objdir/$soname~$CC -shared -nostdlib  ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
         # FIXME: insert proper C++ library support
         ld_shlibs_CXX=no
@@ -11629,13 +11629,13 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	  if test $with_gnu_ld = no; then
 	    case $host_cpu in
 	    hppa*64*)
-	      archive_cmds_CXX='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
+	      archive_cmds_CXX='$CC -shared -nostdlib  ${wl}+h ${wl}$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	      ;;
 	    ia64*)
-	      archive_cmds_CXX='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
+	      archive_cmds_CXX='$CC -shared -nostdlib  ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	      ;;
 	    *)
-	      archive_cmds_CXX='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
+	      archive_cmds_CXX='$CC -shared -nostdlib  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	      ;;
 	    esac
 	  fi
@@ -12294,7 +12294,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
       lt_prog_compiler_pic_CXX=
       ;;
     interix3*)
-      # Interix 3.x gcc -fpic/-fPIC options generate broken code.
+      # Interix 3.x gcc / options generate broken code.
       # Instead, we relocate shared libraries at runtime.
       ;;
     sysv4*MP*)
@@ -12309,12 +12309,12 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
       hppa*64*|ia64*)
 	;;
       *)
-	lt_prog_compiler_pic_CXX='-fPIC'
+	lt_prog_compiler_pic_CXX=''
 	;;
       esac
       ;;
     *)
-      lt_prog_compiler_pic_CXX='-fPIC'
+      lt_prog_compiler_pic_CXX=''
       ;;
     esac
   else
@@ -12407,7 +12407,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	  KCC*)
 	    # KAI C++ Compiler
 	    lt_prog_compiler_wl_CXX='--backend -Wl,'
-	    lt_prog_compiler_pic_CXX='-fPIC'
+	    lt_prog_compiler_pic_CXX=''
 	    ;;
 	  icpc* | ecpc*)
 	    # Intel C++
@@ -12418,7 +12418,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	  pgCC*)
 	    # Portland Group C++ compiler.
 	    lt_prog_compiler_wl_CXX='-Wl,'
-	    lt_prog_compiler_pic_CXX='-fpic'
+	    lt_prog_compiler_pic_CXX=''
 	    lt_prog_compiler_static_CXX='-Bstatic'
 	    ;;
 	  cxx*)
@@ -14056,7 +14056,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
       ;;
 
     interix3*)
-      # Interix 3.x gcc -fpic/-fPIC options generate broken code.
+      # Interix 3.x gcc / options generate broken code.
       # Instead, we relocate shared libraries at runtime.
       ;;
 
@@ -14081,13 +14081,13 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	# +Z the default
 	;;
       *)
-	lt_prog_compiler_pic_F77='-fPIC'
+	lt_prog_compiler_pic_F77=''
 	;;
       esac
       ;;
 
     *)
-      lt_prog_compiler_pic_F77='-fPIC'
+      lt_prog_compiler_pic_F77=''
       ;;
     esac
   else
@@ -14157,7 +14157,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
         # Portland Group compilers (*not* the Pentium gcc compiler,
 	# which looks to be a dead project)
 	lt_prog_compiler_wl_F77='-Wl,'
-	lt_prog_compiler_pic_F77='-fpic'
+	lt_prog_compiler_pic_F77=''
 	lt_prog_compiler_static_F77='-Bstatic'
         ;;
       ccc*)
@@ -14987,7 +14987,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 
     hpux9*)
       if test "$GCC" = yes; then
-	archive_cmds_F77='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+	archive_cmds_F77='$rm $output_objdir/$soname~$CC -shared  ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
 	archive_cmds_F77='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       fi
@@ -15003,7 +15003,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 
     hpux10*)
       if test "$GCC" = yes -a "$with_gnu_ld" = no; then
-	archive_cmds_F77='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	archive_cmds_F77='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
       else
 	archive_cmds_F77='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
       fi
@@ -15030,7 +15030,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	  archive_cmds_F77='$CC -shared ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	*)
-	  archive_cmds_F77='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	  archive_cmds_F77='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	esac
       else
@@ -16608,7 +16608,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
       ;;
 
     interix3*)
-      # Interix 3.x gcc -fpic/-fPIC options generate broken code.
+      # Interix 3.x gcc / options generate broken code.
       # Instead, we relocate shared libraries at runtime.
       ;;
 
@@ -16633,13 +16633,13 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	# +Z the default
 	;;
       *)
-	lt_prog_compiler_pic_GCJ='-fPIC'
+	lt_prog_compiler_pic_GCJ=''
 	;;
       esac
       ;;
 
     *)
-      lt_prog_compiler_pic_GCJ='-fPIC'
+      lt_prog_compiler_pic_GCJ=''
       ;;
     esac
   else
@@ -16709,7 +16709,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
         # Portland Group compilers (*not* the Pentium gcc compiler,
 	# which looks to be a dead project)
 	lt_prog_compiler_wl_GCJ='-Wl,'
-	lt_prog_compiler_pic_GCJ='-fpic'
+	lt_prog_compiler_pic_GCJ=''
 	lt_prog_compiler_static_GCJ='-Bstatic'
         ;;
       ccc*)
@@ -17551,7 +17551,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 
     hpux9*)
       if test "$GCC" = yes; then
-	archive_cmds_GCJ='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+	archive_cmds_GCJ='$rm $output_objdir/$soname~$CC -shared  ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
 	archive_cmds_GCJ='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       fi
@@ -17567,7 +17567,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 
     hpux10*)
       if test "$GCC" = yes -a "$with_gnu_ld" = no; then
-	archive_cmds_GCJ='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	archive_cmds_GCJ='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
       else
 	archive_cmds_GCJ='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
       fi
@@ -17594,7 +17594,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	  archive_cmds_GCJ='$CC -shared ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	*)
-	  archive_cmds_GCJ='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	  archive_cmds_GCJ='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	esac
       else

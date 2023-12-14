@@ -3167,7 +3167,7 @@ case $host_os in
       ;;
     *)
       if test "$GXX" = yes; then
-        _LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/$soname~$CC -shared -nostdlib -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+        _LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/$soname~$CC -shared -nostdlib  ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
         # FIXME: insert proper C++ library support
         _LT_AC_TAGVAR(ld_shlibs, $1)=no
@@ -3234,13 +3234,13 @@ case $host_os in
 	  if test $with_gnu_ld = no; then
 	    case $host_cpu in
 	    hppa*64*)
-	      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
+	      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib  ${wl}+h ${wl}$soname -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	      ;;
 	    ia64*)
-	      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
+	      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib  ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	      ;;
 	    *)
-	      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
+	      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	      ;;
 	    esac
 	  fi
@@ -4877,7 +4877,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=
       ;;
     interix3*)
-      # Interix 3.x gcc -fpic/-fPIC options generate broken code.
+      # Interix 3.x gcc / options generate broken code.
       # Instead, we relocate shared libraries at runtime.
       ;;
     sysv4*MP*)
@@ -4892,12 +4892,12 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       hppa*64*|ia64*)
 	;;
       *)
-	_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-fPIC'
+	_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=''
 	;;
       esac
       ;;
     *)
-      _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-fPIC'
+      _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=''
       ;;
     esac
   else
@@ -4990,7 +4990,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
 	  KCC*)
 	    # KAI C++ Compiler
 	    _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='--backend -Wl,'
-	    _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-fPIC'
+	    _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=''
 	    ;;
 	  icpc* | ecpc*)
 	    # Intel C++
@@ -5001,7 +5001,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
 	  pgCC*)
 	    # Portland Group C++ compiler.
 	    _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
-	    _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-fpic'
+	    _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=''
 	    _LT_AC_TAGVAR(lt_prog_compiler_static, $1)='-Bstatic'
 	    ;;
 	  cxx*)
@@ -5149,7 +5149,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       ;;
 
     interix3*)
-      # Interix 3.x gcc -fpic/-fPIC options generate broken code.
+      # Interix 3.x gcc / options generate broken code.
       # Instead, we relocate shared libraries at runtime.
       ;;
 
@@ -5174,13 +5174,13 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
 	# +Z the default
 	;;
       *)
-	_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-fPIC'
+	_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=''
 	;;
       esac
       ;;
 
     *)
-      _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-fPIC'
+      _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=''
       ;;
     esac
   else
@@ -5250,7 +5250,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
         # Portland Group compilers (*not* the Pentium gcc compiler,
 	# which looks to be a dead project)
 	_LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
-	_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-fpic'
+	_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=''
 	_LT_AC_TAGVAR(lt_prog_compiler_static, $1)='-Bstatic'
         ;;
       ccc*)
@@ -5920,7 +5920,7 @@ _LT_EOF
 
     hpux9*)
       if test "$GCC" = yes; then
-	_LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+	_LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/$soname~$CC -shared  ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
 	_LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       fi
@@ -5936,7 +5936,7 @@ _LT_EOF
 
     hpux10*)
       if test "$GCC" = yes -a "$with_gnu_ld" = no; then
-	_LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	_LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
       else
 	_LT_AC_TAGVAR(archive_cmds, $1)='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
       fi
@@ -5963,7 +5963,7 @@ _LT_EOF
 	  _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared ${wl}+h ${wl}$soname ${wl}+nodefaultrpath -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	*)
-	  _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	  _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared  ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
 	  ;;
 	esac
       else
