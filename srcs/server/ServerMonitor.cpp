@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 03:48:18 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 04:28:33 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,19 @@ ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _soc
 {
 	size_t i = 0;
 	WebServer *server;
+	int n = 0;
 	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++, i++)
 	{
-		server = new WebServer(*itr);
-		_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
+		try {
+			server = new WebServer(*itr);
+			_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
+			n++;
+		}
+		catch(ServerSocket::SocketIOError &e) {
+			std::cerr<<e.what()<<std::endl;
+		}
 	}
-	_sockets = PollManager(_servers.size());
+	_sockets = PollManager(n);
 	http::CGIhandler::setPollManager(_sockets);
 }
 
@@ -183,7 +190,7 @@ void ServerMonitor::startServers()
 	int server = 0;
 	int requests = 0;
 	int i = 0;
-	while (2)
+	while (requests != 10)
 	{
 		rc = _sockets.callPoll();
 		if (rc < 0)
@@ -203,6 +210,6 @@ void ServerMonitor::startServers()
 			else if ((_sockets[i].revents & POLLOUT))
 				serveClientResponse(server, triggered, requests);
 		}
-		// monitorCGI();
+		monitorCGI();
 	}
 }
