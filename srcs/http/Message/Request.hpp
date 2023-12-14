@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 22:39:58 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 00:01:03 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ namespace http {
 			void setRequestStatus(bool status);
 			FILE *getRawData();
 			bool recievedEOF();
+			bool recievedLastChunk();
+			bool recievedLastByte();
 	};
 };
 

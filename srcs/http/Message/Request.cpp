@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 23:01:04 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 00:03:28 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ Request::Request(std::string httpRaw) : AMessage(httpRaw) {
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
 		parseMessageBody();
 	if (getHeaderValue("Content-Length") != "")
-		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
+		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 16));
 }
 
 /**
@@ -213,6 +213,9 @@ bool Request::validate(void) const {
 void Request::appendRawData(const std::string &bufSTR) {
 	fseek(_raw, 0, SEEK_END);
 	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _raw);
+	_messageBodySize += bufSTR.size();
+	fseek(_raw, 0, SEEK_SET);
+
 	// _raw = _raw + _data;
 }
 
@@ -227,7 +230,36 @@ FILE *Request::getRawData() {
 	return (_raw);
 }
 
-bool Request::recievedEOF() {
+bool Request::recievedLastChunk() {
+	char		line[42];
+	size_t		bytesRead;
+	std::string lineStr;
 
+	bytesRead = 0;
+	fseek(_raw, -1, SEEK_END); // seek to end of file
+	for (int i = _messageBodySize; i > 0; i-= 42)
+	{
+		memset(line, 0, 42 * sizeof(char));
+		bytesRead += fread(line, sizeof(char), 42, _raw); // This progresses the seek location
+		lineStr = std::string(line);
+		if (lineStr.rfind("\r\n"))
+			return (true);
+		if (bytesRead == _messageBodySize)
+			break;
+		fseek(_raw, -43, SEEK_CUR); // Go back 2 bytes (1 to compensate)
+	}
+	return (false);
+}
+
+bool Request::recievedLastByte() {
+	size_t contentLength = strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10);
+	return (_messageBodySize >= contentLength);
+}
+
+bool Request::recievedEOF() {
+	if (getHeaderValue("Transfer-Encoding") == "chunked")
+		return (recievedLastChunk());
+	if (getHeaderValue("Content-Length") != "")
+		return (recievedLastByte());
 	return (false);
 }
