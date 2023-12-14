@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 08:39:03 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 09:02:26 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,7 @@ static void setHeader(Response &response, const std::string &fileStr)
 	mimeType = http::checkMimeType(fileStr);
 	if (mimeType.empty())
 		mimeType = "text/html";
-
+	std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << mimeType << std::endl;
 	response.addHeader(Header("Content-Type", mimeType));
 }
 
@@ -312,7 +312,7 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		throw (403); //forbidden
 	else
 		throw (404);
-	setHeader(response, result);
+	setHeader(response, filePathREF);
 	response.setMessageBody(result);
 	return (response);
 };
