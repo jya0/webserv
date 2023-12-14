@@ -22,7 +22,7 @@ using namespace http;
 /**
  * @brief Construct a new AMessage object (default constructor)
  */
-AMessage::AMessage(void)
+AMessage::AMessage(void): _ready(false)
 {
 	_messageBody = tmpfile();
 }
@@ -90,54 +90,15 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
 {
 	if (this != &aMessageREF)
 	{
-		this->_startLine = aMessageREF._startLine;
-		this->_headers = aMessageREF._headers;
-		this->_messageBody = aMessageREF._messageBody;
-		this->_messageBodySize = aMessageREF._messageBodySize;
+		_startLine = aMessageREF._startLine;
+		_headers = aMessageREF._headers;
+		_messageBody = aMessageREF._messageBody;
+		_messageBodySize = aMessageREF._messageBodySize;
+		_httpVersion = aMessageREF._httpVersion;
+		_ready = aMessageREF._ready;
 	}
 	return (*this);
 }
-
-/* void AMessage::parseMessageBody()
-{
-	std::string head = _messageBody.substr(0, _messageBody.find("\r\n"));
-	if (head.empty())
-		return ;
-	std::string chunks = _messageBody.substr(_messageBody.find("\r\n") + 2, _messageBody.size() - 1);
-	std::string subchunk = chunks.substr(0, 20);
-	std::string body = "";
-	int chunksize = strtol(head.c_str(), NULL, 16);
-	size_t i = 0;
-
-	while (chunksize)
-	{
-		body += chunks.substr(i, chunksize);
-		// i = chunks.find("\r\n", i) + 2;
-		i += chunksize + 2;
-		subchunk = chunks.substr(i, 20);
-		chunksize = strtol(subchunk.c_str(), NULL, 16);
-	}
-	// _messageBody = head + "\r\n\r\n" + body + "\r\n\r\n";
-	_messageBody = body;
-} */
-
-void AMessage::parseMessageBody()
-{
-	// std::string								result;
-	// size_t									chunkSize;
-	// std::pair< std::string, std::string >	sizeNchunk;
-
-	// do {
-	// 	sizeNchunk = ServerParser::splitByTwo(_messageBody, '\r');
-	// 	sizeNchunk.second.erase(sizeNchunk.second.begin());
-	// 	chunkSize = std::strtol(sizeNchunk.first.c_str(), NULL, 16);
-	// 	result += sizeNchunk.second.substr(0, chunkSize);
-	// 	_messageBody = _messageBody.substr(chunkSize + std::string(CR_LF).size() + 1, std::string::npos);
-	// } while (_messageBody.size());
-	// _messageBody = result;
-}
-
-
 
 /**
  * @brief Returns the start line of the message.
@@ -204,6 +165,24 @@ std::string	http::fileToString(FILE *file)
 	} while (bytesRead > 0);
 	fseek(file, 0, SEEK_SET);
 	return (msgBody);
+}
+
+size_t http::getFileSize(FILE *file)
+{
+	char line[MSG_BODY_BUFFER];
+	size_t bytesRead;
+
+	bytesRead = 0;
+	if (!file)
+		return (0);
+	fseek(file, 0, SEEK_SET);
+	do
+	{
+		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
+		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, file);
+	} while (bytesRead > 0);
+	fseek(file, 0, SEEK_SET);
+	return (bytesRead);
 }
 
 /**

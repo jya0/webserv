@@ -16,6 +16,8 @@
 
 # define	BUFFER_SIZE 420000
 # define	SERVER_QUEUE_SIZE 42
+
+
 class ServerSocket {
 protected:
 	std::string			ip_address;
@@ -31,7 +33,7 @@ public:
 	ServerSocket &operator=(const ServerSocket &rhs);
 	~ServerSocket();
 
-	void				sendData(int &peer_socket, std::string message);
+	ssize_t				sendData(int &peer_socket, std::string message);
 	ssize_t				recieveData(int &peer_socket, char *buffer);
 	void				startConnection();
 	void				startListening();

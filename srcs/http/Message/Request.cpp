@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 01:09:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 03:06:06 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@ using namespace http;
 /**
  * @brief Construct a new Request object (default constructor)
  */
-Request::Request(void): AMessage() {
-	
-
-}
+Request::Request(void): AMessage() {}
 
 /**
  * @brief Construct a new Request object (copy constructor)
@@ -33,9 +30,7 @@ Request::Request(Request const &RequestREF): AMessage() {
 	this->Request::operator=(RequestREF);
 }
 
-Request::Request(const std::string &messageHeader) : AMessage(messageHeader) {
-	
-}
+Request::Request(const std::string &messageHeader): AMessage(messageHeader) {}
 
 /**
  * @brief Destroy the Request object
@@ -132,6 +127,37 @@ static std::string	decodeUri(const std::string &encoded)
 // 		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
 // }
 
+void	Request::parseChuncked(void)
+{
+	// std::string								result;
+	// size_t									chunkSize;
+	// std::pair< std::string, std::string >	sizeNchunk;
+
+	// do {
+	// 	sizeNchunk = ServerParser::splitByTwo(_messageBody, '\r');
+	// 	sizeNchunk.second.erase(sizeNchunk.second.begin());
+	// 	chunkSize = std::strtol(sizeNchunk.first.c_str(), NULL, 16);
+	// 	result += sizeNchunk.second.substr(0, chunkSize);
+	// 	_messageBody = _messageBody.substr(chunkSize + std::string(CR_LF).size() + 1, std::string::npos);
+	// } while (_messageBody.size());
+	// _messageBody = result;
+}
+
+void	Request::parseRequest(void)
+{
+	std::string method = _startLine.substr(0, _startLine.find(' '));
+	_httpMethod = methodEnum(method);
+	_uri = _startLine.substr(_startLine.find(' ') + 1,
+								_startLine.find(' ',
+									_startLine.find(' ') + 1) -
+										_startLine.find(' ') - 1);
+	_uri = decodeUri(_uri);
+	_httpVersion = _startLine.substr(_startLine.find(' ',
+										_startLine.find(' ') + 1) + 1);
+	if (getHeaderValue("Transfer-Encoding") == "chunked")
+		parseChuncked();
+}
+
 /**
  * @brief Returns the HTTP method of the request.
  *
@@ -224,7 +250,7 @@ void Request::setRequestStatus(bool status) {
 	_ready = status;
 }
 
-const FILE *Request::getRawData() const {
+FILE *Request::getRawData() const {
 	return (_messageBody);
 }
 

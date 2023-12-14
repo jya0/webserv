@@ -6,13 +6,14 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 02:35:57 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:15:48 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstdlib>
 #include "ServerSocket.hpp"
 #include "Header.hpp"
+
 
 static void log(std::string mesg)
 {
@@ -78,7 +79,7 @@ ssize_t ServerSocket::recieveData(int &peer_socket, char *buffer)
 	return (bytesRecieved);
 }
 
-size_t ServerSocket::sendData(int &peer_socket, std::string message)
+ssize_t ServerSocket::sendData(int &peer_socket, std::string message)
 {
 	ssize_t bytesSent;
 	const char *s = message.c_str();

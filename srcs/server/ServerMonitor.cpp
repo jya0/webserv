@@ -6,10 +6,12 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 02:36:53 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:24:49 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
+#include "ServerMonitor.hpp"
 
 ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
@@ -167,11 +169,10 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
 	size_t bytesSent = 0;
 	size_t bytesToSend = 0;
-	Response &response = _servers.at(server)->responses.find(client);
 
-	if (server == -1 || !response.responseReady())
+	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
-	bytesToSend = response.getSize();
+	bytesToSend = http::getFileSize(_servers.at(server)->responses.find(client)->getRawData());
 	try
 	{
 		bytesSent = _servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
@@ -185,7 +186,7 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 	if (bytesSent < 0)
 	{
 		closeClientConnection(server, client);
-		return;
+		return ;
 	}
 	if (bytesSent < bytesToSend)
 		return;

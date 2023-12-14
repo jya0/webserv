@@ -54,8 +54,8 @@ class WebServer
 		WebServer(const ServerConfig &configREF);
 
 		ServerSocket	&getConnection();
-		void			sendResponse(int client, const Response &response);
-		void			sendData(int client, std::string message);
+		ssize_t			sendResponse(int client, const Response &response);
+		ssize_t 		sendData(int client, std::string message);
 		ssize_t			recieveData(int &client);
 		void			startConnection();
 		void			startListening();

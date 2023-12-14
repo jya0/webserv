@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 02:36:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:11:50 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,12 @@ void WebServer::closeClientConnection(int client)
 	}
 }
 
-void WebServer::sendData(int client, std::string message)
+ssize_t WebServer::sendData(int client, std::string message)
 {
-	_connection.sendData(client, message);
+	ssize_t bytesSent;
+
+	bytesSent = _connection.sendData(client, message);
+	return (bytesSent);
 }
 
 ssize_t WebServer::recieveData(int &client)
@@ -127,10 +130,10 @@ ssize_t WebServer::recieveData(int &client)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
 		requests.erase(requests.find(client));
-		requests[client].parseMessageBody();
+		requests[client].parseRequest();
 		requests[client].setRequestStatus(true);
 	}
-	return (status);
+	return (bytesRead);
 }
 
 ServerSocket &WebServer::getConnection()
@@ -138,7 +141,7 @@ ServerSocket &WebServer::getConnection()
 	return (_connection);
 }
 
-size_t WebServer::sendResponse(int client, const Response &response)
+ssize_t WebServer::sendResponse(int client, const Response &response)
 {
 	size_t bytesSent;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 18:45:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 03:04:25 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,8 @@ Response &Response::operator=(const Response &responseREF)
  *
  * @param httpRaw The string to parse
  */
-Response::Response(std::string httpRaw) : AMessage(httpRaw)
+Response::Response(const std::string &messageHeader): AMessage(messageHeader)
 {
-
 	_httpVersion		=	this->_startLine.substr(0, this->_startLine.find(' '));
 	_httpStatusCode		=	strtol(this->_startLine.substr(this->_startLine.find(' ') + 1,
 								this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
@@ -417,7 +416,8 @@ static void	checkCMB(const Request &requestREF, const ServerConfig &servConfREF,
 {
 	ssize_t	clientBodySize;
 
-	clientBodySize = requestREF.getMessageBody().size();
+	// clientBodySize = requestREF.getMessageBodySize();
+	clientBodySize = http::getFileSize(requestREF.getRawData());
 	if (locPTR->getSizeCMB() > 0 && clientBodySize > locPTR->getSizeCMB())
 		throw (413);
 	else if (servConfREF.getSizeCMB() > 0 && clientBodySize > servConfREF.getSizeCMB())

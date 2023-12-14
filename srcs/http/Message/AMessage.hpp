@@ -3,28 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   AMessage.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 01:06:49 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 03:05:26 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #ifndef HTTP_AMESSAGE_HPP
-# define HTTP_AMESSAGE_HPP
+#define HTTP_AMESSAGE_HPP
 
-# include	<iostream>
-# include	<string>
-# include	<list>
-# include	<utility>
-# include	<cstdio>
-# include	"Header.hpp"
+#include <iostream>
+#include <string>
+#include <list>
+#include <utility>
+#include <cstdio>
+#include "Header.hpp"
 
-# define	MSG_BODY_BUFFER	42
+#define MSG_BODY_BUFFER 42
 
-namespace http {
-	std::string	fileToString(FILE *file);
+namespace http
+{
+	std::string fileToString(FILE *file);
+	size_t getFileSize(FILE *file);
 
 	/**
 	 * @brief 	This class describes a TCP/HTTP message.
@@ -37,32 +38,33 @@ namespace http {
 	 * @method	getRawMessage	Returns the raw message.
 	 * @method	validate		Validates the message.
 	 */
-	class	AMessage {
-		private:
-		protected:
-			std::string			_startLine;
-			std::list<Header>	_headers;
-			std::string			_httpVersion;
-			bool				_ready;
-			FILE				*_messageBody;
-			size_t				_messageBodySize;
-		public:
-			AMessage(void);
-			AMessage(const AMessage &aMessageREF);
-			AMessage(std::string messageHeader);
-			virtual	~AMessage(void);
-			AMessage	&operator=(const AMessage &aMessageREF);
+	class AMessage
+	{
+	private:
+	protected:
+		std::string _startLine;
+		std::list<Header> _headers;
+		std::string _httpVersion;
+		bool _ready;
+		FILE *_messageBody;
+		size_t _messageBodySize;
 
-			std::string			getStartLine(void);
-			std::list<Header>	getHeaders(void) const;
-			std::string			getHeaderValue(const std::string &headerKey) const;
-			const FILE			*getMessageBody(void) const;
-			std::string			getMessageBodyStr(void) const;
-			std::string			getRawMessage(void) const;
-			void 				addHeader(Header header);
-			void				setMessageBody(const std::string &msgBodyREF);
-			void 				setStartLine(std::string startLine);
-			void 				parseMessageBody();
+	public:
+		AMessage(void);
+		AMessage(const AMessage &aMessageREF);
+		AMessage(std::string messageHeader);
+		virtual ~AMessage(void);
+		AMessage &operator=(const AMessage &aMessageREF);
+
+		std::string getStartLine(void);
+		std::list<Header> getHeaders(void) const;
+		std::string getHeaderValue(const std::string &headerKey) const;
+		const FILE *getMessageBody(void) const;
+		std::string getMessageBodyStr(void) const;
+		std::string getRawMessage(void) const;
+		void addHeader(Header header);
+		void setMessageBody(const std::string &msgBodyREF);
+		void setStartLine(std::string startLine);
 	};
 }
 
