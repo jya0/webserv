@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 06:39:37 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 09:35:06 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ std::string ServerSocket::recieveData(int &peer_socket)
 	char *buffer = new char[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
+	std::cout<<std::string(buffer)<<std::endl;
 	if (bytesRecieved == 0)
 	{
 		delete[] buffer;

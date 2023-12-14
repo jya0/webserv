@@ -14,6 +14,7 @@
 #include <algorithm>
 #include "AMessage.hpp"
 #include "ToString.tpp"
+#include "ServerParser_namespace.hpp"
 using namespace http;
 
 /**
@@ -75,30 +76,43 @@ AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string
 	return;
 }
 
-void AMessage::parseMessageBody()
+/* void AMessage::parseMessageBody()
 {
-	_messageBody = "";
-	std::string head = _messageBody.substr(0, _messageBody.find("\r\n\r\n"));
+	std::string head = _messageBody.substr(0, _messageBody.find("\r\n"));
 	if (head.empty())
 		return ;
-	std::string chunks = _messageBody.substr(_messageBody.find("\r\n\r\n") + 4, _messageBody.size() - 1);
-	if (chunks.empty())
-		return;
+	std::string chunks = _messageBody.substr(_messageBody.find("\r\n") + 2, _messageBody.size() - 1);
 	std::string subchunk = chunks.substr(0, 20);
 	std::string body = "";
-	int chunksize = strtol(subchunk.c_str(), NULL, 16);
+	int chunksize = strtol(head.c_str(), NULL, 16);
 	size_t i = 0;
 
 	while (chunksize)
 	{
-		i = chunks.find("\r\n", i) + 2;
 		body += chunks.substr(i, chunksize);
+		// i = chunks.find("\r\n", i) + 2;
 		i += chunksize + 2;
 		subchunk = chunks.substr(i, 20);
 		chunksize = strtol(subchunk.c_str(), NULL, 16);
 	}
 	// _messageBody = head + "\r\n\r\n" + body + "\r\n\r\n";
 	_messageBody = body;
+} */
+
+void AMessage::parseMessageBody()
+{
+	// std::string								result;
+	// size_t									chunkSize;
+	// std::pair< std::string, std::string >	sizeNchunk;
+
+	// do {
+	// 	sizeNchunk = ServerParser::splitByTwo(_messageBody, '\r');
+	// 	sizeNchunk.second.erase(sizeNchunk.second.begin());
+	// 	chunkSize = std::strtol(sizeNchunk.first.c_str(), NULL, 16);
+	// 	result += sizeNchunk.second.substr(0, chunkSize);
+	// 	_messageBody = _messageBody.substr(chunkSize + std::string(CR_LF).size() + 1, std::string::npos);
+	// } while (_messageBody.size());
+	// _messageBody = result;
 }
 
 /**

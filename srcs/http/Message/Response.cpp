@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 09:02:26 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 09:10:58 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ static std::string getFilePath(const Request &requestREF, const ServerConfig &se
 	if (checkMimeType(uriNquery.first) == MIME_CGI)
 		filePath += uriNquery.first.substr(1, std::string::npos);
 	else
-		filePath += uriNquery.first.substr(uriNquery.first.size(), std::string::npos);
+		filePath += uriNquery.first.substr(locPTR->locationUri.size(), std::string::npos);
 	return (filePath);
 }
 
