@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 07:22:47 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 08:39:03 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,16 +241,18 @@ bool Response::validate(void) const
 static std::string getFilePath(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
 {
 	std::string filePath;
+	std::pair<std::string, std::string> uriNquery;
 
 	if (locPTR == NULL)
 		return ("");
 	filePath = locPTR->getRoot();
 	if (filePath.empty())
 		filePath = servConfREF.getRoot();
-	if (checkMimeType(locPTR->locationUri) == MIME_CGI)
-		filePath += requestREF.getUri().substr(1, std::string::npos);
+	uriNquery = ServerParser::splitByTwo(requestREF.getUri(), QUERY_DELIM);
+	if (checkMimeType(uriNquery.first) == MIME_CGI)
+		filePath += uriNquery.first.substr(1, std::string::npos);
 	else
-		filePath += requestREF.getUri().substr(locPTR->locationUri.size(), std::string::npos);
+		filePath += uriNquery.first.substr(uriNquery.first.size(), std::string::npos);
 	return (filePath);
 }
 
@@ -431,11 +433,13 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 {
 	const ServerConfig::Location							*locPTR;
 	std::string												filePath;
+	std::pair< std::string, std::string >					uriNquery;
 
 	locPTR = NULL;
 	try {
 		checkHost(requestREF, servConfREF);
-		locPTR = servConfREF.getLocation(requestREF.getUri());
+		uriNquery = ServerParser::splitByTwo(requestREF.getUri(), QUERY_DELIM);
+		locPTR = servConfREF.getLocation(uriNquery.first);
 		if (locPTR != NULL && !(locPTR->limitExcept.acceptedMethods & requestREF.getHttpMethodEnum()))
 			throw (405);
 		if ((locPTR == NULL && servConfREF.getReturn().isInit) ||

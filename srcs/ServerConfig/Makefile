@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/02 14:37:00 by jyao              #+#    #+#              #
-#    Updated: 2023/12/14 06:19:28 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/14 08:20:06 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,10 +16,10 @@
 
 CXX			:=	c++
 
-# CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98 
-# CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98 
-# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 
-CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2 
+# CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS	:=	-Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98
+# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98
+# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2
 
 
 

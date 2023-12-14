@@ -3,20 +3,20 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+         #
+#    By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/01 16:46:34 by jyao              #+#    #+#              #
-#    Updated: 2023/12/14 06:19:35 by jyao             ###   ########.fr        #
+#    Updated: 2023/12/14 08:20:14 by rriyas           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	webserv
 
 CXX				=	c++
-# CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98 
-# CXXFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 
-# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 
-CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2 
+# CXXFLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98
+# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98
+# CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -O2
 
 
 UNAME := $(shell uname)

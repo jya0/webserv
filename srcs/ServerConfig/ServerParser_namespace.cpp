@@ -36,9 +36,9 @@ std::pair< std::string, std::string >	ServerParser::splitByTwo(const std::string
 
 /**
  * @brief To get any uri to the form /uri/
- * 
- * @param uri 
- * @return std::string 
+ * `
+ * @param uri
+ * @return std::string
  */
 std::string	ServerParser::appendSlashes(std::string uri)
 {
