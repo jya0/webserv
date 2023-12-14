@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 02:12:45 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:28:56 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ Response::Response(int status, const std::string &responseBody)
  *
  * @param responseREF Response object to copy
  */
-Response::Response(const Response &responseREF) : AMessage(responseREF)
+Response::Response(const Response &responseREF): AMessage(responseREF)
 {
 	*this = responseREF;
 	return;
@@ -80,10 +80,7 @@ Response::Response(const Response &responseREF) : AMessage(responseREF)
 /**
  * @brief Destroy the Response object
  */
-Response::~Response(void)
-{
-	return;
-}
+Response::~Response(void) {}
 
 /**
  * @brief The Response copy assignment operator.
@@ -412,16 +409,16 @@ static void	checkHost(const Request &requestREF, const ServerConfig &servConfREF
 		throw (400);
 }
 
-static void	checkCMB(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
-{
-	ssize_t	clientBodySize;
+// static void	checkCMB(const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
+// {
+// 	ssize_t	clientBodySize;
 
-	clientBodySize = requestREF.getMessageBody().size();
-	if (locPTR->getSizeCMB() > 0 && clientBodySize > locPTR->getSizeCMB())
-		throw (413);
-	else if (servConfREF.getSizeCMB() > 0 && clientBodySize > servConfREF.getSizeCMB())
-		throw (413);
-}
+// 	clientBodySize = requestREF.getMessageBody().size();
+// 	if (locPTR->getSizeCMB() > 0 && clientBodySize > locPTR->getSizeCMB())
+// 		throw (413);
+// 	else if (servConfREF.getSizeCMB() > 0 && clientBodySize > servConfREF.getSizeCMB())
+// 		throw (413);
+// }
 
 /**
  * @brief calls the right httpMethod and things to generate the proper response
@@ -447,7 +444,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 			return (*this = RedirectResponse(servConfREF, locPTR));
 		else if (locPTR == NULL)
 			throw (404);
-		checkCMB(requestREF, servConfREF, locPTR);
+		// checkCMB(requestREF, servConfREF, locPTR);
 		filePath = getFilePath(requestREF, servConfREF, locPTR);
 		switch (requestREF.getHttpMethodEnum())
 		{

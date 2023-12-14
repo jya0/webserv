@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 01:59:17 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 02:28:27 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,7 @@ Request::Request(const std::string &messageHeader): AMessage(messageHeader) {}
 /**
  * @brief Destroy the Request object
  */
-Request::~Request(void) {
-	if (_messageBody != NULL)
-		fclose(_messageBody);
-	return;
-}
+Request::~Request(void) {}
 
 FILE	*http::duplicateFile(const FILE *input)
 {
@@ -156,6 +152,8 @@ void	Request::parseRequest(void)
 										_startLine.find(' ') + 1) + 1);
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
 		parseChuncked();
+// 	if (getHeaderValue("Content-Length") != "")
+// 		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
 }
 
 /**
