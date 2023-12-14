@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 03:26:24 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 04:50:05 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ bool WebServer::requestReady(int client)
 	return (requests[client].requestReady());
 }
 
-void WebServer::closeCGI(CGIhandler &cgiREF, const int &statusREF)
+void WebServer::closeCGI(const CGIhandler &cgiREF, const int &statusREF)
 {
 	std::string	cgiResult;
 	char		 *readBuf;

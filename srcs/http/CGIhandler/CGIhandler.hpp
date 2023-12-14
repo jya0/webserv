@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:01:55 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/13 19:01:17 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 04:51:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,22 @@ namespace	http {
 			const std::map< std::string, std::string >	&getCgiEnv(void) const;
 			const http::Request							&getCgiRequest(void) const;
 
-			std::clock_t &getStartTime();
-			pid_t	&getChildPid();
-			int &getCinSave() ;
-			int &getCoutSave() ;
-			int &getInFileFd() ;
-			int &getOutFileFd() ;
-			FILE *getInFile() ;
-			FILE *getOutFile() ;
-			int	getClientSocket();
-			int getServerSocket();
+			const std::clock_t	&getStartTime() const;
+			const pid_t			&getChildPid() const;
+			const int			&getCinSave() const;
+			const int			&getCoutSave() const;
+			const int			&getInFileFd() const;
+			const int			&getOutFileFd() const;
+			const FILE 			*getInFile() const;
+			const FILE 			*getOutFile() const;
+			const int			&getClientSocket() const;
+			const int			&getServerSocket() const;
 			void setServerSocket(int serverSocket);
 			void setClientSocket(int clientSocket);
 			void executeCGI(const std::string &scriptName);
 			void createTmpFiles();
 			void closeChildFds();
-			void closeParentFds();
+			void closeParentFds() const;
 			void deleteEnvArr(char *const *envArr);
 			void runCGI(const std::string &scriptName);
 

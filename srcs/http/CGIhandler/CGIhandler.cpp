@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 03:04:10 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 04:50:59 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@ using namespace http;
 
 PollManager *CGIhandler::sockets = NULL;
 
-CGIhandler::CGIhandler(void): _childPid(-1), _inFile(NULL), _inFileFd(-1), _outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1) {
+CGIhandler::CGIhandler(void):	_childPid(-1), _inFile(NULL), _inFileFd(-1), 
+								_outFile(NULL), _outFileFd(-1), _cinSave(-1), _coutSave(-1),
+								_clientSocket(-1), _serverSocket(-1) {
 	_cgiEnv["GATEWAY_INTERFACE"]	= GATEWAY_INTERFACE;
 	_cgiEnv["SERVER_PROTOCOL"]		= SERVER_PROTOCOL;
 	_cgiEnv["SERVER_SOFTWARE"]		= SERVER_SOFTWARE;
@@ -194,7 +196,7 @@ void CGIhandler::closeChildFds() {
 }
 
 
-void CGIhandler::closeParentFds() {
+void CGIhandler::closeParentFds() const {
 	dup2(_cinSave, STDIN_FILENO);
 	dup2(_coutSave, STDOUT_FILENO);
 	close(_cinSave);
@@ -224,51 +226,51 @@ void CGIhandler::executeCGI(const std::string &scriptName)
 		throw(*this);
 };
 
-std::clock_t &CGIhandler::getStartTime()
+const std::clock_t &CGIhandler::getStartTime() const
 {
 	return (_startTime);
 }
 
-pid_t &CGIhandler::getChildPid()
+const pid_t &CGIhandler::getChildPid() const
 {
 	return (_childPid);
 }
 
-int &CGIhandler::getCinSave()
+const int &CGIhandler::getCinSave() const
 {
 	return (_cinSave);
 }
 
-int &CGIhandler::getCoutSave()
+const int &CGIhandler::getCoutSave() const
 {
 	return (_coutSave);
 }
 
-int &CGIhandler::getInFileFd()
+const int	&CGIhandler::getInFileFd() const
 {
 	return (_inFileFd);
 }
 
-int &CGIhandler::getOutFileFd()
+const int	&CGIhandler::getOutFileFd() const
 {
 	return (_outFileFd);
 }
 
-FILE *CGIhandler::getInFile()
+const FILE	*CGIhandler::getInFile() const
 {
 	return (_inFile);
 }
 
-FILE *CGIhandler::getOutFile()
+const FILE	*CGIhandler::getOutFile() const
 {
 	return (_outFile);
 }
 
-int	CGIhandler::getClientSocket() {
+const int	&CGIhandler::getClientSocket() const{
 	return (_clientSocket);
 }
 
-int CGIhandler::getServerSocket() {
+const int	&CGIhandler::getServerSocket() const{
 	return (_serverSocket);
 }
 

@@ -3,26 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 03:48:18 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 04:49:15 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerMonitor.hpp"
 
-ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size()), _cgiScripts()
+ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _sockets(configsREF.size())
 {
-	size_t i = 0;
 	WebServer *server;
-	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++, i++)
+
+	for (std::vector<ServerConfig>::const_iterator itr = configsREF.begin(); itr != configsREF.end(); itr++)
 	{
 		server = new WebServer(*itr);
 		_servers.insert(std::make_pair(server->getConnection().getPassiveSocket(), server));
 	}
 	_sockets = PollManager(_servers.size());
 	http::CGIhandler::setPollManager(_sockets);
+	_cgiScripts.clear();
 }
 
 ServerMonitor::ServerMonitor(std::map<int, WebServer *> servers) : _servers(servers), _sockets(_servers.size()){};
@@ -43,7 +44,7 @@ int ServerMonitor::retrieveClientHandlerSocket(int triggered)
 	return (-1);
 }
 
-static void closeCgiFds(http::CGIhandler &cgi)
+static void closeCgiFds(const http::CGIhandler &cgi)
 {
 	dup2(cgi.getCinSave(), STDIN_FILENO);
 	dup2(cgi.getCoutSave(), STDOUT_FILENO);
@@ -51,42 +52,40 @@ static void closeCgiFds(http::CGIhandler &cgi)
 	close(cgi.getCoutSave());
 	close(cgi.getInFileFd());
 	close(cgi.getOutFileFd());
-	fclose(cgi.getInFile());
-	fclose(cgi.getOutFile());
+	fclose(const_cast< FILE * >(cgi.getInFile()));
+	fclose(const_cast< FILE * >(cgi.getOutFile()));
 }
 
 void ServerMonitor::monitorCGI()
 {
-	std::clock_t curr_time;
-	int clientSock = 0;
-	int serverSock = 0;
+	std::clock_t	curr_time;
+	int				clientSock;
+	int				serverSock;
+	int				status;
 
-	int status = 0;
-	if (_cgiScripts.size() == 0)
-		return ;
-	for (size_t i = 0; i < _cgiScripts.size(); i++)
+	for (std::vector< http::CGIhandler >::const_iterator itc = _cgiScripts.begin(); itc != _cgiScripts.end(); ++itc)
 	{
 		curr_time = std::clock();
-		if ((size_t)(curr_time - _cgiScripts[i].getStartTime()) >= ((size_t)(CLOCKS_PER_SEC)*TIME_OUT_SEC))
+		if ((size_t)(curr_time - itc->getStartTime()) >= ((size_t)(CLOCKS_PER_SEC)*TIME_OUT_SEC))
 		{
-			kill(_cgiScripts[i].getChildPid(), SIGKILL);
-			clientSock = _cgiScripts[i].getClientSocket();
-			serverSock = _cgiScripts[i].getServerSocket();
-			closeCgiFds(_cgiScripts[i]);
-			_cgiScripts.erase(_cgiScripts.begin() + i);
+			kill(itc->getChildPid(), SIGKILL);
+			clientSock = itc->getClientSocket();
+			serverSock = itc->getServerSocket();
+			closeCgiFds(*itc);
+			_cgiScripts.erase(itc);
 			_servers.at(serverSock)->responses[clientSock] = Response(408);
 			return;
 		}
 		else
 		{
 			status = 0;
-			int child = waitpid(_cgiScripts[i].getChildPid(), &status, WNOHANG);
+			int child = waitpid(itc->getChildPid(), &status, WNOHANG);
 			if (status == -1 || status == 1)
 				throw(http::CGIhandler::CGIexception("CGI failed to run!"));
-			if (child == _cgiScripts[i].getChildPid() || child == -1)
+			if (child == itc->getChildPid() || child == -1)
 			{
-				_servers.at((_cgiScripts[i].getServerSocket()))->closeCGI(_cgiScripts[i], status);
-				_cgiScripts.erase(_cgiScripts.begin() + i);
+				_servers.at((itc->getServerSocket()))->closeCGI(*itc, status);
+				_cgiScripts.erase(itc);
 				return;
 			}
 		}
@@ -185,6 +184,7 @@ void ServerMonitor::startServers()
 	int i = 0;
 	while (2)
 	{
+		monitorCGI();
 		rc = _sockets.callPoll();
 		if (rc < 0)
 			throw ServerSocket::SocketIOError();
@@ -203,6 +203,5 @@ void ServerMonitor::startServers()
 			else if ((_sockets[i].revents & POLLOUT))
 				serveClientResponse(server, triggered, requests);
 		}
-		// monitorCGI();
 	}
 }
