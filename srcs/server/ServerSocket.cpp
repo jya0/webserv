@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 09:35:06 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 19:32:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,30 +63,21 @@ ServerSocket::~ServerSocket()
 	closeConnection();
 }
 
-std::string ServerSocket::recieveData(int &peer_socket)
+ssize_t	ServerSocket::recieveData(int &peer_socket, char *buffer)
 {
-	if (peer_socket == passive_socket)
-		return ("");
-	long bytesRecieved;
-	char *buffer = new char[BUFFER_SIZE + 1];
+	ssize_t	bytesRecieved;
+
+	buffer = new char[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
 	std::cout<<std::string(buffer)<<std::endl;
-	if (bytesRecieved == 0)
-	{
-		delete[] buffer;
-		return (std::string(""));
-	}
 	if (bytesRecieved < 0)
 	{
 		log("read() sys call failed: Failed to read bytes from client socket\n");
-		delete[] buffer;
 		throw SocketIOError();
 	}
 	std::cout << "------ Reading Request from client ------\n\n";
-	std::string ret(buffer);
-	delete[] buffer;
-	return (ret);
+	return (bytesRecieved);
 }
 
 void ServerSocket::sendData(int &peer_socket, std::string message)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/14 07:18:41 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 21:33:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,97 +36,103 @@ WebServer &WebServer::operator=(const WebServer &rhs)
 {
 	if (this == &rhs)
 		return (*this);
-	this->connection = rhs.connection;
-	this->clients = rhs.clients;
-	this->_config = rhs._config;
-	this->responses = rhs.responses;
-	this->requests = rhs.requests;
+	_connection		= rhs._connection;
+	_clients		= rhs._clients;
+	_config			= rhs._config;
+	responses		= rhs.responses;
+	requests		= rhs.requests;
 	return (*this);
 }
 
 
 WebServer::~WebServer()
 {
-	connection.closeConnection();
+	_connection.closeConnection();
 }
 
 void WebServer::startConnection()
 {
-	connection.startConnection();
+	_connection.startConnection();
 }
 
 void WebServer::startListening()
 {
-	connection.startListening();
+	_connection.startListening();
 }
 
 int WebServer::acceptConnection()
 {
 	int	client;
 
-	client = connection.acceptConnection();
+	client = _connection.acceptConnection();
 	if (client >= 0)
-		clients.push_back(client);
+		_clients.push_back(client);
 	return (client);
 }
 
 void WebServer::closeServerConnection()
 {
-	connection.closeConnection();
+	_connection.closeConnection();
 }
 
 void WebServer::closeClientConnection(int client)
 {
-	if (clients.size() == 0 || client == -1)
+	if (_clients.size() == 0 || client == -1)
 		return;
-	if (std::find(clients.begin(), clients.end(), client) != clients.end())
+	if (std::find(_clients.begin(), _clients.end(), client) != _clients.end())
 	{
 		close(client);
-		clients.erase(std::find(clients.begin(), clients.end(), client));
+		_clients.erase(std::find(_clients.begin(), _clients.end(), client));
 	}
 }
 
 void WebServer::sendData(int client, std::string message)
 {
-	connection.sendData(client, message);
+	_connection.sendData(client, message);
 }
 
-int WebServer::recieveData(int &client)
+ssize_t	WebServer::recieveData(int &client)
 {
-	std::string ret;
+	char		*buffer;
+	std::string	bufSTR;
+	ssize_t		bytesRead;
+
+	buffer = NULL;
 	try {
-		ret = connection.recieveData(client);
+		bytesRead = _connection.recieveData(client, buffer);
+		bufSTR = std::string(buffer, bytesRead);
+		delete [](buffer);
 	}
-	catch(ServerSocket::SocketIOError &e) {
+	catch(std::exception &e) {
 		std::cerr << "Failed to receive client request: " << e.what() << std::endl;
 		return (-1);
 	}
-	if (ret == "")
+	if (bytesRead == 0)
 	{
 		closeClientConnection(client);
 		return (-1);
 	}
+
 	std::map<int, Request>::iterator itr = requests.find(client);
 	if (itr == requests.end())
 		requests[client] = Request();
-	requests[client].appendRawData(ret);
+	requests[client].appendRawData(bufSTR);
 	requests[client].setRequestStatus(false);
 	size_t pos = 0;
-	if ((pos = requests[client].getRawData().find(CR_LF CR_LF)) != std::string::npos)
+	if ((pos = requests[client].findRawData(CR_LF CR_LF)) != std::string::npos)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
-		std::string raw = requests[client].getRawData();
-		std::map<int, Request >::iterator itr = requests.find(client);
-		requests.erase(itr);
-		requests[client] = Request(raw);
+		requests.erase(requests.find(client));
+		requests[client] = Request(requests[client].getRawData());
 		requests[client].setRequestStatus(true);
 	}
-	return (ret.size());
+	delete [](buffer);
+	return (status);
 }
 
 ServerSocket &WebServer::getConnection()
 {
-	return (connection);
+	return (_connection);
 }
 
 void WebServer::sendResponse(int client, const Response &response)
@@ -136,7 +142,7 @@ void WebServer::sendResponse(int client, const Response &response)
 }
 bool WebServer::connectedClient(int client) const
 {
-	return (std::find(clients.begin(), clients.end(), client) != clients.end());
+	return (std::find(_clients.begin(), _clients.end(), client) != _clients.end());
 }
 
 bool WebServer::responseReady(int client)

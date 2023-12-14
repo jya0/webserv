@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 06:54:40 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 18:51:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include	<iostream>
 # include	<string>
+# include	<cstdio>
 # include	"AMessage.hpp"
 
 # define	GET_METHOD		"GET"
@@ -53,7 +54,7 @@ namespace http {
 			e_httpMethod	_httpMethod;
 			std::string		_httpVersion;
 			std::string		_uri;
-			std::string		_raw;
+			FILE			*_raw;
 			bool			_ready;
 		protected:
 		public:
@@ -65,7 +66,6 @@ namespace http {
 
 			static std::string methodName(e_httpMethod method);
 			static e_httpMethod methodEnum(const std::string method);
-			void parseRawHttpMesage();
 
 			const e_httpMethod	&getHttpMethodEnum(void) const;
 			const std::string	&getHttpVersion(void) const;

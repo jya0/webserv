@@ -38,35 +38,35 @@ using namespace http;
 class DirectiveBlock;
 class WebServer
 {
-protected:
-	ServerSocket				connection;
-	std::vector<int>			clients;
-	ServerConfig				_config;
-public:
-	std::map<int, Response >	responses;
-	std::map<int, Request >		requests;
+	protected:
+		ServerSocket				_connection;
+		std::vector< int >			_clients;
+		ServerConfig				_config;
+	public:
+		std::map<int, Response >	responses;
+		std::map<int, Request >		requests;
 
-	WebServer();
-	WebServer(std::string ip, int port);
-	WebServer(const WebServer &rhs);
-	WebServer &operator=(const WebServer &rhs);
-	~WebServer();
-	WebServer(const ServerConfig &configREF);
+		WebServer();
+		WebServer(std::string ip, int port);
+		WebServer(const WebServer &rhs);
+		WebServer &operator=(const WebServer &rhs);
+		~WebServer();
+		WebServer(const ServerConfig &configREF);
 
-	ServerSocket	&getConnection();
-	void			sendResponse(int client, const Response &response);
-	void			sendData(int client, std::string message);
-	int				recieveData(int &client);
-	void			startConnection();
-	void			startListening();
-	int				acceptConnection();
-	void			closeServerConnection();
-	void			closeClientConnection(int client);
-	bool			connectedClient(int client) const;
-	bool			responseReady(int client);
-	void			buildResponse(int client);
-	bool			requestReady(int client);
-	void			closeCGI(const CGIhandler &cgiREF, const int &statusREF);
+		ServerSocket	&getConnection();
+		void			sendResponse(int client, const Response &response);
+		void			sendData(int client, std::string message);
+		ssize_t			recieveData(int &client);
+		void			startConnection();
+		void			startListening();
+		int				acceptConnection();
+		void			closeServerConnection();
+		void			closeClientConnection(int client);
+		bool			connectedClient(int client) const;
+		bool			responseReady(int client);
+		void			buildResponse(int client);
+		bool			requestReady(int client);
+		void			closeCGI(const CGIhandler &cgiREF, const int &statusREF);
 };
 
 #endif

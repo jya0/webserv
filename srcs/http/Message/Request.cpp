@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/14 06:55:26 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 21:27:57 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ using namespace http;
 /**
  * @brief Construct a new Request object (default constructor)
  */
-Request::Request(void) : AMessage() {
+Request::Request(void): AMessage() {
+	_raw = tmpfile();
 	return;
 }
 
@@ -28,7 +29,7 @@ Request::Request(void) : AMessage() {
  *
  * @param RequestREF Request to copy
  */
-Request::Request(Request const &RequestREF) : AMessage() {
+Request::Request(Request const &RequestREF): AMessage() {
 	this->Request::operator=(RequestREF);
 	return;
 }
@@ -37,7 +38,27 @@ Request::Request(Request const &RequestREF) : AMessage() {
  * @brief Destroy the Request object
  */
 Request::~Request(void) {
+	if (_raw != NULL)
+		fclose(_raw);
 	return;
+}
+
+static FILE	*duplicateFile(FILE *input)
+{
+	FILE	*dup;
+	char	*buffer;
+
+	buffer = new char[BUFFER_SIZE + 1];
+	memset(buffer, 0, BUFFER_SIZE + 1);
+	if (input != NULL)
+	{
+		dup = tmpfile();
+		if (dup == NULL)
+			return (NULL);
+		do {
+			
+		} while (
+	}
 }
 
 /**
@@ -46,12 +67,17 @@ Request::~Request(void) {
  * @param RequestREF Request to copy
  * @return Request& Reference to the copied Request
  */
-Request &Request::operator=(Request const &RequestREF) {
+Request &Request::operator=(Request const &requestREF) {
 	if (this != &RequestREF)
 	{
 		this->AMessage::operator=(RequestREF);
 		this->_httpMethod = RequestREF._httpMethod;
 		this->_uri = RequestREF._uri;
+		if (requestREF.getRawMessage() != NULL)
+		{
+			fclose(_raw);
+			_raw = 
+		}
 	}
 	return (*this);
 }
@@ -182,7 +208,7 @@ bool Request::validate(void) const {
 	return (true); /// @todo: implement
 }
 
-void Request::appendRawData(std::string _data) {
+void Request::appendRawData(const std::string &bufSTR) {
 	_raw = _raw + _data;
 }
 

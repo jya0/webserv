@@ -32,7 +32,7 @@ public:
 	~ServerSocket();
 
 	void				sendData(int &peer_socket, std::string message);
-	std::string			recieveData(int &peer_socket);
+	ssize_t				recieveData(int &peer_socket, char *buffer);
 	void				startConnection();
 	void				startListening();
 	int					acceptConnection();
