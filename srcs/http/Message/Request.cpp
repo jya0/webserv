@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 00:11:24 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 01:09:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ using namespace http;
  * @brief Construct a new Request object (default constructor)
  */
 Request::Request(void): AMessage() {
-	_raw = tmpfile();
-	return;
+	
+
 }
 
 /**
@@ -31,15 +31,18 @@ Request::Request(void): AMessage() {
  */
 Request::Request(Request const &RequestREF): AMessage() {
 	this->Request::operator=(RequestREF);
-	return;
+}
+
+Request::Request(const std::string &messageHeader) : AMessage(messageHeader) {
+	
 }
 
 /**
  * @brief Destroy the Request object
  */
 Request::~Request(void) {
-	if (_raw != NULL)
-		fclose(_raw);
+	if (_messageBody != NULL)
+		fclose(_messageBody);
 	return;
 }
 
@@ -82,8 +85,8 @@ Request &Request::operator=(Request const &requestREF) {
 		this->_uri = requestREF._uri;
 		if (requestREF.getRawData() != NULL)
 		{
-			fclose(_raw);
-			_raw = duplicateFile(requestREF.getRawData());
+			fclose(_messageBody);
+			_messageBody = duplicateFile(requestREF.getRawData());
 		}
 	}
 	return (*this);
@@ -108,26 +111,26 @@ static std::string	decodeUri(const std::string &encoded)
     return (decoded.str());
 };
 
-/**
- * @brief Construct a new Request object
- *
- * @param httpRaw The raw HTTP request to be parsed
- */
-Request::Request(FILE *httpRaw): AMessage(httpRaw) {
-	std::string method = _startLine.substr(0, _startLine.find(' '));
-	_httpMethod = methodEnum(method);
-	_uri = _startLine.substr(_startLine.find(' ') + 1,
-								_startLine.find(' ',
-									_startLine.find(' ') + 1) -
-										_startLine.find(' ') - 1);
-	_uri = decodeUri(_uri);
-	_httpVersion = _startLine.substr(_startLine.find(' ',
-										_startLine.find(' ') + 1) + 1);
-	if (getHeaderValue("Transfer-Encoding") == "chunked")
-		parseMessageBody();
-	if (getHeaderValue("Content-Length") != "")
-		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 16));
-}
+// /**
+//  * @brief Construct a new Request object
+//  *
+//  * @param httpRaw The raw HTTP request to be parsed
+//  */
+// Request::Request(FILE *httpRaw): AMessage(httpRaw) {
+// 	std::string method = _startLine.substr(0, _startLine.find(' '));
+// 	_httpMethod = methodEnum(method);
+// 	_uri = _startLine.substr(_startLine.find(' ') + 1,
+// 								_startLine.find(' ',
+// 									_startLine.find(' ') + 1) -
+// 										_startLine.find(' ') - 1);
+// 	_uri = decodeUri(_uri);
+// 	_httpVersion = _startLine.substr(_startLine.find(' ',
+// 										_startLine.find(' ') + 1) + 1);
+// 	if (getHeaderValue("Transfer-Encoding") == "chunked")
+// 		parseMessageBody();
+// 	if (getHeaderValue("Content-Length") != "")
+// 		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
+// }
 
 /**
  * @brief Returns the HTTP method of the request.
@@ -205,23 +208,13 @@ e_httpMethod Request::methodEnum(std::string method) {
 		return (NO_METHOD);
 }
 
-/**
- * @brief Validates the headers of the request.
- *
- * @return true If the headers are valid.
- * @return false If the headers are invalid.
- */
-bool Request::validate(void) const {
-	return (true); /// @todo: implement
-}
-
 void Request::appendRawData(const std::string &bufSTR) {
-	fseek(_raw, 0, SEEK_END);
-	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _raw);
+	fseek(_messageBody, 0, SEEK_END);
+	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _messageBody);
 	_messageBodySize += bufSTR.size();
-	fseek(_raw, 0, SEEK_SET);
+	fseek(_messageBody, 0, SEEK_SET);
 
-	// _raw = _raw + _data;
+	// _messageBody = _messageBody + _data;
 }
 
 bool Request::requestReady() const {
@@ -232,7 +225,7 @@ void Request::setRequestStatus(bool status) {
 }
 
 const FILE *Request::getRawData() const {
-	return (_raw);
+	return (_messageBody);
 }
 
 bool Request::recievedLastChunk() {
@@ -241,17 +234,17 @@ bool Request::recievedLastChunk() {
 	std::string lineStr;
 
 	bytesRead = 0;
-	fseek(_raw, -1, SEEK_END); // seek to end of file
+	fseek(_messageBody, -1, SEEK_END); // seek to end of file
 	for (int i = _messageBodySize; i > 0; i-= 42)
 	{
 		memset(line, 0, 42 * sizeof(char));
-		bytesRead += fread(line, sizeof(char), 42, _raw); // This progresses the seek location
+		bytesRead += fread(line, sizeof(char), 42, _messageBody); // This progresses the seek location
 		lineStr = std::string(line);
 		if (lineStr.rfind("\r\n"))
 			return (true);
 		if (bytesRead == _messageBodySize)
 			break;
-		fseek(_raw, -43, SEEK_CUR); // Go back 2 bytes (1 to compensate)
+		fseek(_messageBody, -43, SEEK_CUR); // Go back 2 bytes (1 to compensate)
 	}
 	return (false);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGIhandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:29:22 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 08:58:53 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 00:50:13 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static std::string	getQueryString(const http::Request &requestREF)
 		case (GET):
 			return (queryPair.second);
 		case (POST):
-			return (requestREF.getMessageBody());
+			return (requestREF.getMessageBodyStr());
 		default :
 			return ("");
 	}
@@ -71,7 +71,7 @@ CGIhandler::CGIhandler(const http::Request &requestREF, const ServerConfig::Loca
 	*this = CGIhandler();
 	_cgiRequest = requestREF;
 	_cgiEnv["AUTH_TYPE"] 			= requestREF.getHeaderValue(HEADER_KEY_AUTH);
-	_cgiEnv["CONTENT_LENGTH"]		= http::toString(requestREF.getMessageBody().size());
+	_cgiEnv["CONTENT_LENGTH"]		= http::toString(requestREF.getMessageBodyStr().size());
 	_cgiEnv["CONTENT_TYPE"]			= requestREF.getHeaderValue(HEADER_KEY_CONTENT_TYPE);
 	_cgiEnv["PATH_INFO"]			= getCgiPathInfo(requestREF);
 	_cgiEnv["QUERY_STRING"]			= getQueryString(requestREF);
@@ -213,7 +213,7 @@ void CGIhandler::executeCGI(const std::string &scriptName)
 	_cinSave = dup(STDIN_FILENO);
 	_coutSave = dup(STDOUT_FILENO);
 	createTmpFiles();
-	if (write(_inFileFd, _cgiRequest.getMessageBody().c_str(), _cgiRequest.getMessageBody().size()) < 0)
+	if (write(_inFileFd, _cgiRequest.getMessageBodyStr().c_str(), _cgiRequest.getMessageBodyStr().size()) < 0)
 		std::cerr	<< "Failed to write"
 					<< std::endl;
 	lseek(_inFileFd, 0, SEEK_SET);

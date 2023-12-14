@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 00:11:33 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 01:03:28 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,14 @@ namespace http {
 	class	Request: public AMessage {
 		private:
 			e_httpMethod	_httpMethod;
-			std::string		_httpVersion;
 			std::string		_uri;
-			bool			_ready;
 		protected:
 		public:
 			Request(void);
 			Request(Request const &RequestREF);
 			Request	&operator=(Request const &RequestREF);
+			Request(const std::string &messageHeader);
 			~Request(void);
-			Request(FILE *httpRaw);
 
 			static std::string methodName(e_httpMethod method);
 			static e_httpMethod methodEnum(const std::string method);

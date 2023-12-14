@@ -3,18 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   Messge.class.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.MSG_BODY_BUFFERabudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 17:43:29 by jyao              #+#    #+#             */
 /*   Updated: 2023/08/13 18:10:33 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sstream>
-#include <algorithm>
-#include "AMessage.hpp"
-#include "ToString.tpp"
-#include "ServerParser_namespace.hpp"
+#include	<sstream>
+#include	<algorithm>
+#include	<cstdio>
+#include	"AMessage.hpp"
+#include	"ToString.tpp"
+#include	"ServerParser_namespace.hpp"
+
 using namespace http;
 
 /**
@@ -22,7 +24,7 @@ using namespace http;
  */
 AMessage::AMessage(void)
 {
-	return;
+	_messageBody = tmpfile();
 }
 
 /**
@@ -35,6 +37,40 @@ AMessage::AMessage(const AMessage &aMessageREF)
 	*this = aMessageREF;
 	return;
 }
+
+
+/**
+ *
+ * @brief Construct a new AMessage object
+ *
+ * @param rawMessage The raw message to be parsed
+ */
+AMessage::AMessage(std::string messageHeader)
+{
+	*this = AMessage();
+	std::istringstream iss(messageHeader);
+	std::string line;
+
+	while (std::getline(iss, line, '\r'))
+	{
+		iss.ignore();
+		if (this->_startLine == "")
+			this->_startLine = line;
+		else if (line == "")
+			break;
+		else
+		{
+			std::string key;
+			std::string value;
+			std::istringstream iss2(line);
+			std::getline(iss2, key, ':');
+			std::getline(iss2, value, '\r');
+			value = value.substr(1, value.size());
+			this->_headers.push_back(Header(key, value));
+		}
+	}
+}
+
 
 /**
  * @brief Destroy the AMessage object
@@ -60,22 +96,6 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
 		this->_messageBodySize = aMessageREF._messageBodySize;
 	}
 	return (*this);
-}
-
-/**
- * @brief Construct a new AMessage object
- *
- * @param startLine The first line of the message
- * @param headers The list of headers of the message
- * @param messageBody The body of the message
- */
-AMessage::AMessage(std::string startLine, std::list<Header> headers, std::string messageBody, size_t messageBodySize)
-{
-	this->_startLine = startLine;
-	this->_headers = headers;
-	this->_messageBody = messageBody;
-	this->_messageBodySize = messageBodySize;
-	return;
 }
 
 /* void AMessage::parseMessageBody()
@@ -117,37 +137,7 @@ void AMessage::parseMessageBody()
 	// _messageBody = result;
 }
 
-/**
- *
- * @brief Construct a new AMessage object
- *
- * @param rawMessage The raw message to be parsed
- */
-AMessage::AMessage(std::string rawMessage) : _messageBodySize(rawMessage.size())
-{
-	std::istringstream iss(rawMessage);
-	std::string line;
 
-	while (std::getline(iss, line, '\r'))
-	{
-		iss.ignore();
-		if (this->_startLine == "")
-			this->_startLine = line;
-		else if (line == "")
-			break;
-		else
-		{
-			std::string key;
-			std::string value;
-			std::istringstream iss2(line);
-			std::getline(iss2, key, ':');
-			std::getline(iss2, value, '\r');
-			value = value.substr(1, value.size());
-			this->_headers.push_back(Header(key, value));
-		}
-	}
-	this->_messageBody = iss.str().substr(iss.tellg());
-}
 
 /**
  * @brief Returns the start line of the message.
@@ -189,9 +179,31 @@ std::string AMessage::getHeaderValue(const std::string &headerKey) const
  *
  * @return std::string The body of the message
  */
-std::string AMessage::getMessageBody(void) const
+const FILE	*AMessage::getMessageBody(void) const
 {
 	return (this->_messageBody);
+}
+
+std::string	AMessage::getMessageBodyStr(void) const
+{
+	return (fileToString(_messageBody));
+}
+
+std::string	http::fileToString(FILE *file)
+{
+	char		line[MSG_BODY_BUFFER];
+	size_t		bytesRead;
+	std::string msgBody;
+
+	bytesRead = 0;
+	fseek(file, 0, SEEK_SET);
+	do {
+		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
+		bytesRead = fread(line, sizeof(char), MSG_BODY_BUFFER, file);
+		msgBody += std::string(line);
+	} while (bytesRead > 0);
+	fseek(file, 0, SEEK_SET);
+	return (msgBody);
 }
 
 /**
@@ -201,18 +213,19 @@ std::string AMessage::getMessageBody(void) const
  */
 std::string AMessage::getRawMessage(void) const
 {
-	std::string rawMessage = this->_startLine;
-	for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
-	{
-		if (rawMessage.size() == 0)
-			rawMessage = it->getKey() + ": " + it->getValue() + CR_LF;
-		else
-			rawMessage += it->getKey() + ": " + it->getValue() + CR_LF;
-	}
-	rawMessage += CR_LF + this->_messageBody;
-	// if (_messageBody.find(CR_LF CR_LF) == std::string::npos)
-	// 	rawMessage += CR_LF CR_LF;
-	return (rawMessage);
+	// std::string rawMessage = this->_startLine;
+	// for (std::list<Header>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
+	// {
+	// 	if (rawMessage.size() == 0)
+	// 		rawMessage = it->getKey() + ": " + it->getValue() + CR_LF;
+	// 	else
+	// 		rawMessage += it->getKey() + ": " + it->getValue() + CR_LF;
+	// }
+	// rawMessage += CR_LF + this->_messageBody;
+	// // if (_messageBody.find(CR_LF CR_LF) == std::string::npos)
+	// // 	rawMessage += CR_LF CR_LF;
+	// return (rawMessage);
+	return ("");
 }
 
 void AMessage::addHeader(Header header)
@@ -226,10 +239,13 @@ void AMessage::addHeader(Header header)
 		this->_headers.push_back(header);
 }
 
-void AMessage::setMessageBody(std::string messageBody)
+void AMessage::setMessageBody(const std::string &msgBodyREF)
 {
-	this->_messageBody = messageBody;
-	addHeader(Header("Content-Length", http::toString(_messageBody.size())));
+	if (_messageBody != NULL)
+		fclose(_messageBody);
+	_messageBody = tmpfile();
+	fwrite(msgBodyREF.c_str(), sizeof (char), msgBodyREF.size(), _messageBody);
+	addHeader(Header("Content-Length", http::toString(msgBodyREF.size())));
 }
 
 void AMessage::setStartLine(std::string startLine)

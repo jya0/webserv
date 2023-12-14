@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/13 18:25:38 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 00:21:52 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,7 @@ namespace http {
 	{
 		private:
 		protected:
-			std::string		_httpVersion;
 			unsigned short	_httpStatusCode;
-			bool			_ready;
 		public:
 			Response(void);
 			Response(const Response &responseREF);
@@ -47,7 +45,6 @@ namespace http {
 			Response	&operator=(const Response &responseREF);
 			Response(int status);
 			Response(int status, const std::string &responseBody);
-			Response(std::string httpRaw);
 
 			std::string		getHttpVersion(void) const;
 			unsigned short	getHttpStatusCode(void) const;
@@ -56,8 +53,6 @@ namespace http {
 			bool			validate(void) const;
 			bool			responseReady() const;
 			void			setResponseStatus(bool status);
-
-		private:
 	};
 	class ErrorPageResponse : public Response
 	{
