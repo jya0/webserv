@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/14 09:10:58 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/14 18:45:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,8 +379,9 @@ static Response handlePost(const std::string &filePathREF, const Request &reques
 		{
 			ofile << requestREF.getMessageBody();
 			ofile.close();
+			return (Response(201)); //created
 		}
-		return (Response(201)); //created
+		throw (500);
 	}
     return (Response(304)); // not modified
 }
