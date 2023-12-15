@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 05:19:24 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:41:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,10 +170,11 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
 	size_t bytesSent = 0;
 	size_t bytesToSend = 0;
-
+	FILE *file;
 	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
-	bytesToSend = http::getFileSize(_servers.at(server)->responses[client].getRawData());
+	file = const_cast<FILE*>(_servers.at(server)->responses[client].getMessageBody());
+	bytesToSend = http::getFileSize(file);
 	try
 	{
 		bytesSent = _servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));

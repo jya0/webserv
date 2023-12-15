@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 05:29:13 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:40:43 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -443,7 +443,7 @@ static void	checkCMB(const Request &requestREF, const ServerConfig &servConfREF,
 	ssize_t	clientBodySize;
 
 	// clientBodySize = requestREF.getMessageBodySize();
-	clientBodySize = http::getFileSize(requestREF.getRawData());
+	clientBodySize = http::getFileSize(const_cast<FILE*>(requestREF.getMessageBody()));
 	if (locPTR->getSizeCMB() > 0 && clientBodySize > locPTR->getSizeCMB())
 		throw (413);
 	else if (servConfREF.getSizeCMB() > 0 && clientBodySize > servConfREF.getSizeCMB())

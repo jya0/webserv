@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 05:33:30 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 05:35:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ namespace http {
 			void				appendRawData(const std::string &_data);
 			bool				requestReady() const;
 			void				setRequestStatus(bool status);
-			FILE				*getRawData() const;
 			bool				recievedEOF();
 			bool				recievedLastChunk();
 			bool				recievedLastByte();

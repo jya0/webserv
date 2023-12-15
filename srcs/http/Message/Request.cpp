@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 05:33:09 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 05:34:57 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,10 +246,6 @@ bool Request::requestReady() const {
 }
 void Request::setRequestStatus(bool status) {
 	_ready = status;
-}
-
-FILE *Request::getRawData() const {
-	return (_messageBody);
 }
 
 bool Request::recievedLastChunk() {

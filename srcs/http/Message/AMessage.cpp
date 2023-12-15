@@ -27,7 +27,7 @@ using namespace http;
 AMessage::AMessage(void): _ready(false)
 {
 	_messageBody = tmpfile();
-	if (_messageBody != NULL)
+	if (_messageBody == NULL)
 		std::cerr << "<<<<<<<<<<<<<<<<<<<<<NO TEMP FILE!" << std::endl;
 }
 
@@ -214,7 +214,7 @@ size_t http::getFileSize(FILE *file)
 	do
 	{
 		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
-		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, file);
+		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, const_cast<FILE *>(file));
 	} while (bytesRead > 0);
 	fseek(file, 0, SEEK_SET);
 	return (bytesRead);

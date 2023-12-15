@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 05:32:59 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 05:39:29 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ namespace http {
 		void				setMessageBody(const std::string &msgBodyREF);
 		void 				setStartLine(std::string startLine);
 		t_raw_message		getRawMessage(void) const;
-		FILE				*getRawData() const;
 	};
 }
 
