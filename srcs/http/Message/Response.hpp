@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 05:58:48 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 19:11:03 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ namespace http {
 			unsigned short	getHttpStatusCode(void) const;
 			std::string		getHttpStatusString(unsigned short statusCode) const;
 			Response		buildResponse(const Request &requestREF, const ServerConfig &servConfREF);
+
 			bool			validate(void) const;
 			bool			responseReady() const;
 			void			setResponseStatus(bool status);

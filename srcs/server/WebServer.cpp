@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 08:56:21 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 18:25:07 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void WebServer::closeClientConnection(int client)
 	}
 }
 
-ssize_t WebServer::sendData(int client, std::string &message)
+ssize_t WebServer::sendData(int client, std::string message)
 {
 	ssize_t bytesSent;
 
@@ -157,16 +157,14 @@ ServerSocket &WebServer::getConnection()
 ssize_t WebServer::sendResponse(int client, Response &response)
 {
 	char		*packet;
-	std::string	packetStr;
 	ssize_t		bytesSent;
 	ssize_t		bytesRead;
 
 	bytesSent = 0;
-	t_raw_message rawResponse = response.getRawMessage();
 	if (response.getPacketStatus() == NOT_STARTED)
 	{
 		fseek(response.getMessageBody(), 0, SEEK_SET);
-		bytesSent = sendData(client, rawResponse.first);
+		bytesSent = sendData(client, response.getStartAndHeader());
 		if (bytesSent < 0)
 			throw (ServerSocket::SocketIOError());
 		response.setPacketStatus(SENDING);
@@ -175,9 +173,9 @@ ssize_t WebServer::sendResponse(int client, Response &response)
 	memset(packet, 0, BUFFER_SIZE * sizeof (char));
 	// packet = getNextPacket(response);
 	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE, response.getMessageBody());
-	packetStr = std::string(packet, bytesRead);
-	bytesSent += sendData(client, packetStr);
-	delete []packet;
+	bytesSent += sendData(client, std::string(packet, bytesRead));
+	// std::cout << "I AM AT POSITION: " << rawResponse.
+	delete [](packet);
 	return (bytesSent);
 }
 

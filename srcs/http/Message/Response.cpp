@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 08:57:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 20:06:11 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,21 +154,6 @@ ErrorPageResponse	&ErrorPageResponse::operator=(const ErrorPageResponse &eprREF)
 	return (*this);
 };
 
-static std::string	loadFile(const std::string &filePathREF)
-{
-	std::ifstream	infile;
-	std::string		result;
-
-	infile.open(filePathREF.c_str(), std::ios::in);
-	if (infile.is_open())
-	{
-		result = std::string((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
-		infile.close();
-		return (result);
-	}
-	return ("");
-}
-
 ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR): Response(status) {
 	std::string	epFile;
 	std::string	root;
@@ -184,7 +169,7 @@ ErrorPageResponse::ErrorPageResponse(const int &status, const ServerConfig &serv
 		root = locPTR->getRoot();
 	epFilePath = root + epFile;
 	if (Autoindex::isPathExist(epFilePath) > 0 && Autoindex::isPathReg(epFilePath) > 0)
-		setMessageBody(loadFile(epFilePath));
+		loadFileToMessageBody(epFilePath);
 };
 
 RedirectResponse::RedirectResponse(void): Response() {};
@@ -291,15 +276,14 @@ static void setHeader(Response &response, const std::string &fileStr)
 		mimeType = "text/html";
 	std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << mimeType << std::endl;
 	response.addHeader(Header("Content-Type", mimeType));
+	response.addHeader(Header("Content-Length", http::toString(http::getFileSize(response.getMessageBody()))));
 }
 
-static std::string	loadIndex(const std::vector< std::string > &indexPages, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
+void	loadIndex(Response &responseREF, const std::vector< std::string > &indexPages, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
 {
 	std::string	indexPagePath;
 	std::string	root;
 
-	if (locPTR == NULL)
-		return ("");
 	root = servConfREF.getRoot();
 	if (!locPTR->getRoot().empty())
 		root = locPTR->getRoot();
@@ -307,9 +291,8 @@ static std::string	loadIndex(const std::vector< std::string > &indexPages, const
 	{
 		indexPagePath = root + *itc;
 		if (Autoindex::isPathExist(indexPagePath) > 0 && Autoindex::isPathReg(indexPagePath) > 0)
-			return (loadFile(indexPagePath));
+			responseREF.loadFileToMessageBody(indexPagePath);
 	}
-	return ("");
 }
 
 static Response loadContent(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR)
@@ -325,20 +308,19 @@ static Response loadContent(const std::string &filePathREF, const Request &reque
 		indexPages = locPTR->getIndex();
 		indexPages.insert(indexPages.end(), servConfREF.getIndex().begin(), servConfREF.getIndex().end());
 		if (locPTR->getAutoIndex() == true)
-			result = Autoindex::genPage(filePathREF, requestREF);
+			response.setMessageBody(Autoindex::genPage(filePathREF, requestREF));
 		else if (!indexPages.empty() && requestREF.getUri() == locPTR->locationUri)
-			result = loadIndex(indexPages, servConfREF, locPTR);
+			loadIndex(response, indexPages, servConfREF, locPTR);
 		else
 			throw (404); // forbidden
 	}
 	else if (Autoindex::isPathReg(filePathREF) > 0)
-		result = loadFile(filePathREF);
+		response.loadFileToMessageBody(filePathREF);
 	else if (errno == EACCES)
 		throw (403); //forbidden
 	else
 		throw (404);
 	setHeader(response, filePathREF);
-	response.setMessageBody(result);
 	return (response);
 };
 

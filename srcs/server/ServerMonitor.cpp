@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 08:40:40 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 20:32:41 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,26 @@ void ServerMonitor::closeClientConnection(int server, int client)
 	_sockets.removeFd(client);
 }
 
+/* 
+static void	printFile(FILE *file)
+{
+	char	*buffer;
+	ssize_t	readReturn;
+
+	if (file == NULL)
+		return ;
+	buffer = new char[BUFFER_SIZE];
+	fseek(file, 0, SEEK_SET);
+	do {
+		memset(buffer, 0, sizeof (char) * BUFFER_SIZE);
+		readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, file);
+		std::cout << std::string(buffer, readReturn);
+	} while (readReturn > 0);
+	delete [](buffer);
+	fseek(file, 0, SEEK_SET);
+}
+ */
+
 void ServerMonitor::serveClientRequest(int server, int client)
 {
 	if (server == -1)
@@ -153,6 +173,7 @@ void ServerMonitor::serveClientRequest(int server, int client)
 	try
 	{
 		_servers.at(server)->buildResponse(client);
+		// printFile(_servers.at(server)->responses[client].getMessageBody());
 	}
 	catch (http::CGIhandler &cgi)
 	{
@@ -165,20 +186,24 @@ void ServerMonitor::serveClientRequest(int server, int client)
 	std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(client);
 	_servers.at(server)->requests.erase(itr);
 }
+/* 
+███╗   ██╗███████╗███████╗██████╗      ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗██╗███╗   ██╗ ██████╗     ██╗    ██╗██╗  ██╗███████╗███╗   ██╗    ████████╗ ██████╗     ███████╗████████╗ ██████╗ ██████╗     ███████╗███████╗███╗   ██╗██████╗ ██╗███╗   ██╗ ██████╗     ██╗     ██████╗  ██╗ ██████╗ 
+████╗  ██║██╔════╝██╔════╝██╔══██╗    ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝██║████╗  ██║██╔════╝     ██║    ██║██║  ██║██╔════╝████╗  ██║    ╚══██╔══╝██╔═══██╗    ██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗    ██╔════╝██╔════╝████╗  ██║██╔══██╗██║████╗  ██║██╔════╝     ██║     ╚════██╗███║██╔════╝ 
+██╔██╗ ██║█████╗  █████╗  ██║  ██║    ██║     ███████║█████╗  ██║     █████╔╝ ██║██╔██╗ ██║██║  ███╗    ██║ █╗ ██║███████║█████╗  ██╔██╗ ██║       ██║   ██║   ██║    ███████╗   ██║   ██║   ██║██████╔╝    ███████╗█████╗  ██╔██╗ ██║██║  ██║██║██╔██╗ ██║██║  ███╗    ██║      █████╔╝╚██║███████╗ 
+██║╚██╗██║██╔══╝  ██╔══╝  ██║  ██║    ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗ ██║██║╚██╗██║██║   ██║    ██║███╗██║██╔══██║██╔══╝  ██║╚██╗██║       ██║   ██║   ██║    ╚════██║   ██║   ██║   ██║██╔═══╝     ╚════██║██╔══╝  ██║╚██╗██║██║  ██║██║██║╚██╗██║██║   ██║    ██║     ██╔═══╝  ██║██╔═══██╗
+██║ ╚████║███████╗███████╗██████╔╝    ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗██║██║ ╚████║╚██████╔╝    ╚███╔███╔╝██║  ██║███████╗██║ ╚████║       ██║   ╚██████╔╝    ███████║   ██║   ╚██████╔╝██║         ███████║███████╗██║ ╚████║██████╔╝██║██║ ╚████║╚██████╔╝    ███████╗███████╗ ██║╚██████╔╝
+╚═╝  ╚═══╝╚══════╝╚══════╝╚═════╝      ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝      ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝       ╚═╝    ╚═════╝     ╚══════╝   ╚═╝    ╚═════╝ ╚═╝         ╚══════╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝     ╚══════╝╚══════╝ ╚═╝ ╚═════╝ 
+ */
 
 void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
 	ssize_t bytesSent = 0;
-	ssize_t bytesToSend = 0;
-	FILE *file;
 
 	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
-	file = const_cast<FILE*>(_servers.at(server)->responses[client].getMessageBody());
-	bytesToSend = http::getFileSize(file);
 	try
 	{
-		bytesSent = _servers.at(server)->sendResponse(client, (_servers.at(server)->responses[client]));
+		bytesSent = _servers.at(server)->sendResponse(client, _servers.at(server)->responses[client]);
 	}
 	catch (ServerSocket::SocketIOError &e)
 	{
@@ -191,8 +216,8 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 		closeClientConnection(server, client);
 		return ;
 	}
-	if (!feof(file))
-		return;
+	if (!feof(_servers.at(server)->responses[client].getMessageBody()))
+		return ;
 	closeClientConnection(server, client);
 	requests++;
 	std::map<int, Response>::iterator response = _servers.at(server)->responses.find(client);

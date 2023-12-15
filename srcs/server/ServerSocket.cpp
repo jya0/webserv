@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 04:15:24 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 20:23:35 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ ssize_t ServerSocket::recieveData(int &peer_socket, char *buffer)
 	ssize_t bytesRecieved;
 
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
-	std::cout << std::string(buffer) << std::endl;
+	std::cout << "DATA:" << std::string(buffer) << std::endl;
 	if (bytesRecieved < 0)
 	{
 		log("read() sys call failed: Failed to read bytes from client socket\n");
@@ -91,7 +91,11 @@ ssize_t ServerSocket::sendData(int &peer_socket, std::string message)
 		throw SocketIOError();
 	}
 	if (size_t(bytesSent) == message.size())
+	{
 		log("------ Server Response sent to client ------\n\n");
+		// log(message);
+		// log("\n");
+	}
 	return (bytesSent);
 }
 

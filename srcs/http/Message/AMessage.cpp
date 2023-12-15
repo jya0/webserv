@@ -14,6 +14,7 @@
 #include	<algorithm>
 #include	<cstdio>
 #include	<cstring>
+#include	<unistd.h>
 #include	"AMessage.hpp"
 #include	"ToString.tpp"
 #include	"ServerParser_namespace.hpp"
@@ -215,6 +216,16 @@ size_t http::getFileSize(FILE *file)
 	return (0);
 }
 
+std::string	AMessage::getStartAndHeader(void) const {
+	std::string	startNheader;
+
+	startNheader = _startLine;
+	for (std::list< Header >::const_iterator it = _headers.begin(); it != _headers.end(); it++)
+		startNheader += it->getKey() + ": " + it->getValue() + CR_LF;
+	startNheader += CR_LF;
+	return (startNheader);
+};
+
 /**
  * @brief Converts the message to a string.
  *
@@ -222,14 +233,7 @@ size_t http::getFileSize(FILE *file)
  */
 t_raw_message	AMessage::getRawMessage(void) const
 {
-	std::string	statusNheader;
-
-	statusNheader = _startLine;
-	for (std::list< Header >::const_iterator it = _headers.begin(); it != _headers.end(); it++)
-		statusNheader += it->getKey() + ": " + it->getValue() + CR_LF;
-	statusNheader += CR_LF;
-	fseek(_messageBody, 0, SEEK_SET);
-	return (std::make_pair< std::string, FILE * >(statusNheader, _messageBody));
+	return (std::make_pair< std::string, FILE * >(getStartAndHeader(), _messageBody));
 }
 
 void AMessage::addHeader(Header header)
@@ -245,12 +249,49 @@ void AMessage::addHeader(Header header)
 
 void AMessage::setMessageBody(const std::string &msgBodyREF)
 {
+	if (_messageBody == NULL)
+		_messageBody = tmpfile();
+	fseek(_messageBody, 0, SEEK_SET);
+	ftruncate(fileno(_messageBody), 0);
+	fwrite(msgBodyREF.c_str(), sizeof (char), msgBodyREF.size(), _messageBody);
+	addHeader(Header("Content-Length", http::toString(msgBodyREF.size())));
+	fseek(_messageBody, 0, SEEK_SET);
+}
+
+void AMessage::setMessageBody(FILE *msgBody)
+{
+	if (msgBody == NULL)
+		return ;
 	if (_messageBody != NULL)
 		fclose(_messageBody);
-	_messageBody = tmpfile();
-	size_t bytesWritten = fwrite(msgBodyREF.c_str(), sizeof (char), msgBodyREF.size(), _messageBody);
-	(void)bytesWritten;
-	addHeader(Header("Content-Length", http::toString(msgBodyREF.size())));
+	_messageBody = msgBody;
+	addHeader(Header("Content-Length", http::toString(http::getFileSize(msgBody))));
+	fseek(_messageBody, 0, SEEK_SET);
+}
+
+void	AMessage::loadFileToMessageBody(const std::string &filePathREF)
+{
+	FILE	*infile;
+	char	*buffer;
+	ssize_t	bytesRead;
+
+	if (_messageBody == NULL)
+		_messageBody = tmpfile();
+	buffer = new char[MSG_BODY_BUFFER];
+	fseek(_messageBody, 0, SEEK_SET);
+	infile = fopen(filePathREF.c_str(), "rb");
+	if (infile != NULL)
+	{
+		do {
+			memset(buffer, 0, sizeof (char) * MSG_BODY_BUFFER);
+			bytesRead = fread(buffer, sizeof (char), MSG_BODY_BUFFER, infile);
+			fwrite(buffer, sizeof (char), bytesRead, _messageBody);
+		} while (bytesRead > 0);
+		delete [](buffer);
+		fclose(infile);
+	}
+	addHeader(Header("Content-Length", http::toString(http::getFileSize(_messageBody))));
+	fseek(_messageBody, 0, SEEK_SET);
 }
 
 void AMessage::setStartLine(std::string startLine)
