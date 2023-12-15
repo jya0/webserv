@@ -41,6 +41,7 @@ enum e_httpMethod {
 
 namespace http {
 	FILE	*duplicateFile(const FILE *input);
+    bool    rfind(FILE *haystack, std::string needle);
 	/**
 	 * @brief This class describes an HTTP Request.
 	 * @field _httpMethod		The HTTP method of the request.
@@ -79,7 +80,6 @@ namespace http {
 			bool				requestReady() const;
 			void				setRequestStatus(bool status);
 			bool				recievedEOF();
-			bool				recievedLastChunk();
 			bool				recievedLastByte();
 	};
 };

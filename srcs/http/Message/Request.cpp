@@ -245,28 +245,36 @@ void Request::setRequestStatus(bool status) {
 	_ready = status;
 }
 
-bool Request::recievedLastChunk() {
+
+
+bool http::rfind(FILE *haystack, std::string needle) {
 	char		line[MSG_BODY_BUFFER];
 	size_t		bytesRead;
 	std::string lineStr;
 	size_t		msgBodySize;
-
-	bytesRead = 0;
-	fseek(_messageBody, -MSG_BODY_BUFFER, SEEK_END); // seek to end of file
-	msgBodySize = http::getFileSize(_messageBody);
+    bool        status;
+	status = false;
+    bytesRead = 0;
+	fseek(haystack, -MSG_BODY_BUFFER, SEEK_END); // seek to end of file
+	msgBodySize = http::getFileSize(haystack);
 	for (int i = msgBodySize; i > 0; i-= MSG_BODY_BUFFER)
 	{
 		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
-		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, _messageBody); // This progresses the seek location
+		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, haystack); // This progresses the seek location
 		lineStr = std::string(line, MSG_BODY_BUFFER);
-		if (lineStr.rfind("\r\n\r\n") != std::string::npos)
-			return (true);
+		if (lineStr.rfind(needle) != std::string::npos)
+		{
+            status = true;
+            break ;
+        }
 		if (bytesRead == msgBodySize)
 			break;
-		fseek(_messageBody, -MSG_BODY_BUFFER, SEEK_CUR); // Go back 2 bytes (1 to compensate)
+		fseek(haystack, -MSG_BODY_BUFFER, SEEK_CUR); // Go back 2 bytes (1 to compensate)
 	}
-	return (false);
+    fseek(haystack, 0, SEEK_SET);
+	return (status);
 }
+
 
 bool Request::recievedLastByte() {
 	size_t contentLength = strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10);
@@ -274,9 +282,10 @@ bool Request::recievedLastByte() {
 }
 
 bool Request::recievedEOF() {
-	if (getHeaderValue("Transfer-Encoding") == "chunked")
-		return (recievedLastChunk());
+	FILE *file = getMessageBody();
+    if (getHeaderValue("Transfer-Encoding") == "chunked")
+		return (http::rfind(file, "0\r\n\r\n"));
 	if (!getHeaderValue("Content-Length").empty())
 		return (recievedLastByte());
-	return (recievedLastChunk());
+	return (http::rfind(file, "\r\n\r\n"));
 }
