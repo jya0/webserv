@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 03:11:50 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:18:21 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "WebServer.hpp"
 #include "PollManager.hpp"
 #include "Header.hpp"
+#include "Response.hpp"
 
 WebServer::WebServer()
 {
@@ -85,7 +86,7 @@ void WebServer::closeClientConnection(int client)
 	}
 }
 
-ssize_t WebServer::sendData(int client, std::string message)
+ssize_t WebServer::sendData(int client, std::string &message)
 {
 	ssize_t bytesSent;
 
@@ -123,9 +124,7 @@ ssize_t WebServer::recieveData(int &client)
 		requests[client] = Request(bufSTR);
 		requests[client].setRequestStatus(false);
 	}
-	else
-		requests[client].appendRawData(bufSTR);
-
+	requests[client].appendRawData(bufSTR);
 	if (requests[client].recievedEOF())
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
@@ -141,12 +140,39 @@ ServerSocket &WebServer::getConnection()
 	return (_connection);
 }
 
-ssize_t WebServer::sendResponse(int client, const Response &response)
+static char*	getNextPacket(Response &response)
 {
-	size_t bytesSent;
+	ssize_t bytesRead = 0;
 
-	std::string rawResponse = response.getRawMessage();
-	bytesSent = sendData(client, rawResponse);
+	FILE *file = response.getRawMessage().second;
+	int startPos = response.getPacketStartPos();
+	char *packet = new char[BUFFER_SIZE + 1];
+	fseek(file, startPos, SEEK_SET);
+	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE, file);
+	if (bytesRead > 0)
+		response.movePacketStartPos(startPos + startPos);
+	return (packet);
+}
+
+ssize_t WebServer::sendResponse(int client, Response &response)
+{
+	char		*packet;
+	std::string	packetStr;
+	size_t		bytesSent;
+
+	bytesSent = 0;
+	t_raw_message rawResponse = response.getRawMessage();
+	if (response.getPacketStatus() == NOT_STARTED)
+	{
+		bytesSent = sendData(client, rawResponse.first);
+		if (bytesSent < 0)
+			;
+		response.setPacketStatus(SENDING);
+	}
+	packet = getNextPacket(response);
+	packetStr = std::string(packet);
+	bytesSent += sendData(client, packetStr);
+	delete []packet;
 	return (bytesSent);
 }
 

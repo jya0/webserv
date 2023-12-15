@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 14:36:49 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 03:25:23 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:14:49 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@
 # include	<sys/stat.h>
 # include	<unistd.h>
 
+
+#define NOT_STARTED	1
+#define SENDING		2
+
 namespace http {
 	/**
 	 * @brief This class describes an HTTP Response.
@@ -37,6 +41,8 @@ namespace http {
 	{
 		private:
 		protected:
+			int				_packetStatus;
+			int				_packetStartPos;
 			unsigned short	_httpStatusCode;
 		public:
 			Response(void);
@@ -54,6 +60,10 @@ namespace http {
 			bool			validate(void) const;
 			bool			responseReady() const;
 			void			setResponseStatus(bool status);
+			int				getPacketStatus() const;
+			void			setPacketStatus(int _status);
+			int				getPacketStartPos()const;
+			void			movePacketStartPos(int newPos);
 	};
 	class ErrorPageResponse : public Response
 	{

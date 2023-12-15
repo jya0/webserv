@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 03:27:01 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:22:47 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 namespace http {
 	std::string	fileToString(FILE *file);
+	size_t getFileSize(FILE *file);
 	typedef std::pair< std::string, FILE * >	t_raw_message;
 	FILE	*duplicateFile(const FILE *input);
 
@@ -65,6 +66,7 @@ namespace http {
 			void				setMessageBody(const std::string &msgBodyREF);
 			void 				setStartLine(std::string startLine);
 			t_raw_message		getRawMessage(void) const;
+			FILE				*getRawData() const;
 	};
 }
 
