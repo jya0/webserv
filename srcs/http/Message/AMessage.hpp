@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 05:21:58 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 05:32:59 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,10 @@
 #define MSG_BODY_BUFFER 42
 
 namespace http {
-	typedef std::pair< std::string, FILE * >	t_raw_message;
-
 	std::string	fileToString(FILE *file);
 	size_t 		getFileSize(FILE *file);
 	FILE		*duplicateFile(const FILE *input);
+	typedef std::pair< std::string, FILE * >	t_raw_message;
 
 	/**
 	 * @brief 	This class describes a TCP/HTTP message.
@@ -67,6 +66,7 @@ namespace http {
 		void				setMessageBody(const std::string &msgBodyREF);
 		void 				setStartLine(std::string startLine);
 		t_raw_message		getRawMessage(void) const;
+		FILE				*getRawData() const;
 	};
 }
 

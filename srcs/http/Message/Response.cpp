@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 03:29:11 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:29:13 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ Response::Response(void) : AMessage()
 	this->addHeader(Header("Content-Type", "text/html"));
 	this->addHeader(Header("Server", SERVER_SOFTWARE));
 	_ready = false;
+	_packetStartPos = 0;
+	_packetStatus = NOT_STARTED;
 	return ;
 }
 
@@ -51,6 +53,8 @@ Response::Response(int status)
 	this->_startLine = ss.str();
 	this->setMessageBody(this->getHttpStatusString(status));
 	_ready = true;
+	_packetStartPos = 0;
+	_packetStatus = NOT_STARTED;
 	return;
 }
 
@@ -96,6 +100,8 @@ Response &Response::operator=(const Response &responseREF)
 		this->_httpVersion = responseREF._httpVersion;
 		this->_httpStatusCode = responseREF._httpStatusCode;
 		this->_ready = responseREF._ready;
+		this->_packetStartPos = responseREF._packetStartPos;
+		this->_packetStatus = responseREF._packetStatus;
 	}
 	return (*this);
 }
@@ -112,7 +118,30 @@ Response::Response(const std::string &messageHeader): AMessage(messageHeader)
 								this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
 								this->_startLine.find(' ') - 1).c_str(), NULL, 10);
 	_ready = true;
+	_packetStartPos = 0;
+	_packetStatus = NOT_STARTED;
 }
+
+int Response::getPacketStatus() const
+{
+	return (_packetStatus);
+}
+
+void Response::setPacketStatus(int _status)
+{
+	_packetStatus = _status;
+}
+
+int Response::getPacketStartPos() const
+{
+	return (_packetStartPos);
+}
+
+void Response::movePacketStartPos(int newPos)
+{
+	_packetStartPos = newPos;
+}
+
 
 ErrorPageResponse::ErrorPageResponse(void): Response() {};
 
@@ -445,7 +474,7 @@ Response Response::buildResponse(const Request &requestREF, const ServerConfig &
 			return (*this = RedirectResponse(servConfREF, locPTR));
 		else if (locPTR == NULL)
 			throw (404);
-		// checkCMB(requestREF, servConfREF, locPTR);
+		checkCMB(requestREF, servConfREF, locPTR);
 		filePath = getFilePath(requestREF, servConfREF, locPTR);
 		switch (requestREF.getHttpMethodEnum())
 		{

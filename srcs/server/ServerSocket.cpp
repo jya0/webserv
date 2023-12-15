@@ -6,7 +6,7 @@
 /*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:30:35 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 03:15:48 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 04:15:24 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ ssize_t ServerSocket::recieveData(int &peer_socket, char *buffer)
 ssize_t ServerSocket::sendData(int &peer_socket, std::string message)
 {
 	ssize_t bytesSent;
-	const char *s = message.c_str();
+	const char *packet = message.c_str();
 
-	bytesSent = send(peer_socket, s, message.size(), 0);
+	bytesSent = send(peer_socket, packet, message.size(), 0);
 	if (bytesSent < 0)
 	{
 		log("send() sys call failed: Failed to send bytes to client socket\n");

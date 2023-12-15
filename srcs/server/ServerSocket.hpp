@@ -13,6 +13,9 @@
 # include	<unistd.h>
 # include	<fcntl.h>
 # include	<exception>
+# include "AMessage.hpp"
+
+using namespace http;
 
 # define	BUFFER_SIZE 420000
 # define	SERVER_QUEUE_SIZE 42
