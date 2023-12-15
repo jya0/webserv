@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 05:18:21 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:51:26 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ ssize_t WebServer::sendResponse(int client, Response &response)
 {
 	char		*packet;
 	std::string	packetStr;
-	size_t		bytesSent;
+	ssize_t		bytesSent;
 
 	bytesSent = 0;
 	t_raw_message rawResponse = response.getRawMessage();
@@ -166,7 +166,7 @@ ssize_t WebServer::sendResponse(int client, Response &response)
 	{
 		bytesSent = sendData(client, rawResponse.first);
 		if (bytesSent < 0)
-			;
+			throw (ServerSocket::SocketIOError());
 		response.setPacketStatus(SENDING);
 	}
 	packet = getNextPacket(response);

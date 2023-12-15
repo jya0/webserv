@@ -36,7 +36,7 @@ AMessage::AMessage(void): _ready(false)
  *
  * @param aMessageREF Message to copy
  */
-AMessage::AMessage(const AMessage &aMessageREF)
+AMessage::AMessage(const AMessage &aMessageREF): _messageBody(NULL)
 {
 	*this = aMessageREF;
 	return;
@@ -49,12 +49,11 @@ AMessage::AMessage(const AMessage &aMessageREF)
  *
  * @param rawMessage The raw message to be parsed
  */
-AMessage::AMessage(std::string messageHeader)
+AMessage::AMessage(std::string messageHeader): _messageBody(NULL)
 {
-	*this = AMessage();
+	this->operator=(AMessage());
 	std::istringstream iss(messageHeader);
 	std::string line;
-
 	while (std::getline(iss, line, '\r'))
 	{
 		iss.ignore();
@@ -124,10 +123,8 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
 		_startLine = aMessageREF._startLine;
 		_headers = aMessageREF._headers;
 		if (_messageBody != NULL)
-		{
 			fclose(_messageBody);
-			_messageBody = duplicateFile(aMessageREF._messageBody);
-		}
+		_messageBody = duplicateFile(aMessageREF._messageBody);
 		_messageBodySize = aMessageREF._messageBodySize;
 		_httpVersion = aMessageREF._httpVersion;
 		_ready = aMessageREF._ready;

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 05:41:32 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 05:48:13 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,9 +168,10 @@ void ServerMonitor::serveClientRequest(int server, int client)
 
 void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
-	size_t bytesSent = 0;
-	size_t bytesToSend = 0;
+	ssize_t bytesSent = 0;
+	ssize_t bytesToSend = 0;
 	FILE *file;
+
 	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
 	file = const_cast<FILE*>(_servers.at(server)->responses[client].getMessageBody());
