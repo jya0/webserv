@@ -303,7 +303,11 @@ bool http::rfind(FILE *haystack, std::string needle) {
 
 
 bool Request::recievedLastByte() {
-	size_t contentLength = strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10);
+	size_t contentLength;
+	
+	contentLength = strtol(getHeaderValue("Content-Length").substr(0, 15 + 19).c_str(), NULL, 10);
+	if (!getHeaderValue("content-length").empty())
+		contentLength = strtol(getHeaderValue("content-length").substr(0, 15 + 19).c_str(), NULL, 10);
 	return (http::getFileSize(_messageBody) >= contentLength);
 }
 
