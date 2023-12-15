@@ -99,6 +99,7 @@ ssize_t WebServer::recieveData(int &client)
 	char *buffer;
 	std::string bufSTR;
 	ssize_t bytesRead;
+	size_t	endOfHeader;
 
 	buffer = NULL;
 	try
@@ -123,6 +124,12 @@ ssize_t WebServer::recieveData(int &client)
 	{
 		requests[client] = Request(bufSTR);
 		requests[client].setRequestStatus(false);
+		endOfHeader = bufSTR.find(CR_LF CR_LF);
+		if (endOfHeader != std::string::npos)
+		{
+			endOfHeader += std::string(CR_LF CR_LF).size();
+			bufSTR = bufSTR.substr(endOfHeader, std::string::npos);
+		}
 	}
 	requests[client].appendRawData(bufSTR);
 	if (requests[client].recievedEOF())

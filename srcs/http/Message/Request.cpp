@@ -125,6 +125,7 @@ void	Request::parseChunked(void)
 			memset(chunkBuf, 0, sizeof (char) * chunkSize);
 			bytesRead = fread(chunkBuf, sizeof (char), chunkSize, _messageBody);
 			totalLength += bytesRead;
+			fseek(_messageBody, 2, SEEK_CUR);
 			fgetpos(_messageBody, &readStart);
 			fsetpos(_messageBody, &writeStart);
 			fwrite(chunkBuf, sizeof (char), chunkSize, _messageBody);

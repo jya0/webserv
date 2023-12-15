@@ -5,15 +5,39 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "C++ Launch",
+			"name": "(gdb) Launch",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/webserv",
 			"args": ["${workspaceFolder}/conf.d/startup.conf"],
+			"stopAtEntry": false,
+			"cwd": "${fileDirname}",
 			"environment": [],
-			"cwd": "${workspaceFolder}",
-			"MIMode": "lldb",
-			"preLaunchTask": "C/C++: g++ build active file"
-		}
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				},
+				{
+					"description": "Set Disassembly Flavor to Intel",
+					"text": "-gdb-set disassembly-flavor intel",
+					"ignoreFailures": true
+				}
+			]
+		},
+		// {
+		// 	"name": "C++ Launch",
+		// 	"type": "cppdbg",
+		// 	"request": "launch",
+		// 	"program": "${workspaceFolder}/webserv",
+		// 	"args": ["${workspaceFolder}/conf.d/startup.conf"],
+		// 	"environment": [],
+		// 	"cwd": "${workspaceFolder}",
+		// 	"MIMode": "lldb",
+		// 	"preLaunchTask": "C/C++: g++ build active file"
+		// }
 	]
 }
