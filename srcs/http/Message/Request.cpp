@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 05:34:57 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/15 06:15:24 by rriyas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,13 +254,13 @@ bool Request::recievedLastChunk() {
 	std::string lineStr;
 
 	bytesRead = 0;
-	fseek(_messageBody, -1, SEEK_END); // seek to end of file
+	fseek(_messageBody, -42, SEEK_END); // seek to end of file
 	for (int i = _messageBodySize; i > 0; i-= 42)
 	{
 		memset(line, 0, 42 * sizeof(char));
 		bytesRead += fread(line, sizeof(char), 42, _messageBody); // This progresses the seek location
-		lineStr = std::string(line);
-		if (lineStr.rfind("\r\n"))
+		lineStr = std::string(line, 42);
+		if (lineStr.rfind("\r\n\r\n") != std::string::npos)
 			return (true);
 		if (bytesRead == _messageBodySize)
 			break;
@@ -279,5 +279,5 @@ bool Request::recievedEOF() {
 		return (recievedLastChunk());
 	if (getHeaderValue("Content-Length") != "")
 		return (recievedLastByte());
-	return (false);
+	return (recievedLastChunk());
 }

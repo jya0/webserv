@@ -18,6 +18,7 @@
 #include	"ToString.tpp"
 #include	"ServerParser_namespace.hpp"
 #include	"ServerSocket.hpp"
+#include	<sys/stat.h>
 
 using namespace http;
 
@@ -103,7 +104,7 @@ FILE	*http::duplicateFile(const FILE *input)
 			memset(buffer, 0, BUFFER_SIZE + 1);
 			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
 			fwrite(buffer, sizeof (char), readReturn, duplFile);
-		} while (2);
+		} while (readReturn > 0);
 		fseek(duplFile, 0, SEEK_SET);
 	}
 	delete [] (buffer);
@@ -193,7 +194,7 @@ std::string	http::fileToString(FILE *file)
 	do {
 		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
 		bytesRead = fread(line, sizeof(char), MSG_BODY_BUFFER, file);
-		msgBody += std::string(line);
+		msgBody += std::string(line, MSG_BODY_BUFFER);
 	} while (bytesRead > 0);
 	fseek(file, 0, SEEK_SET);
 	return (msgBody);
@@ -201,20 +202,14 @@ std::string	http::fileToString(FILE *file)
 
 size_t http::getFileSize(FILE *file)
 {
-	char line[MSG_BODY_BUFFER];
-	size_t bytesRead;
-
-	bytesRead = 0;
+	struct stat stat_buf;
+	int			status;
 	if (!file)
 		return (0);
-	fseek(file, 0, SEEK_SET);
-	do
-	{
-		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
-		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, const_cast<FILE *>(file));
-	} while (bytesRead > 0);
-	fseek(file, 0, SEEK_SET);
-	return (bytesRead);
+	status = fstat(fileno(file), &stat_buf);
+	if (status == 0)
+		return (stat_buf.st_size);
+	return (0);
 }
 
 /**
@@ -250,7 +245,8 @@ void AMessage::setMessageBody(const std::string &msgBodyREF)
 	if (_messageBody != NULL)
 		fclose(_messageBody);
 	_messageBody = tmpfile();
-	fwrite(msgBodyREF.c_str(), sizeof (char), msgBodyREF.size(), _messageBody);
+	size_t bytesWritten = fwrite(msgBodyREF.c_str(), sizeof (char), msgBodyREF.size(), _messageBody);
+	(void)bytesWritten;
 	addHeader(Header("Content-Length", http::toString(msgBodyREF.size())));
 }
 
