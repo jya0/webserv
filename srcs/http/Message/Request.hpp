@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 05:35:01 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 01:55:56 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ enum e_httpMethod {
 
 namespace http {
 	FILE	*duplicateFile(const FILE *input);
+	void	printFile(FILE *file);
     bool    rfind(FILE *haystack, std::string needle);
 	/**
 	 * @brief This class describes an HTTP Request.

@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 08:25:23 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 02:05:48 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,26 @@ static std::string	decodeUri(const std::string &encoded)
 // 	_messageBody = result;
 // }
 
+
+void	http::printFile(FILE *file)
+{
+	char	*buffer;
+	ssize_t	readReturn;
+
+	if (file == NULL)
+		return ;
+	buffer = new char[BUFFER_SIZE];
+	fseek(file, 0, SEEK_SET);
+	do {
+		memset(buffer, 0, sizeof (char) * BUFFER_SIZE);
+		readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, file);
+		std::cout << std::string(buffer, readReturn);
+	} while (readReturn > 0);
+	delete [](buffer);
+	fseek(file, 0, SEEK_SET);
+}
+
+
 static size_t	getChunkSize(FILE *messageBody)
 {
 	int		c;
@@ -110,6 +130,7 @@ void	Request::parseChunked(void)
 	size_t	chunkSize;
 	size_t	totalLength;
 	ssize_t	bytesRead;
+	ssize_t	bytesWrote;
 	fpos_t	writeStart;
 	fpos_t	readStart;
 
@@ -124,12 +145,12 @@ void	Request::parseChunked(void)
 			chunkBuf = new char[chunkSize];
 			memset(chunkBuf, 0, sizeof (char) * chunkSize);
 			bytesRead = fread(chunkBuf, sizeof (char), chunkSize, _messageBody);
-			totalLength += bytesRead;
 			fseek(_messageBody, 2, SEEK_CUR);
 			fgetpos(_messageBody, &readStart);
 			fsetpos(_messageBody, &writeStart);
-			fwrite(chunkBuf, sizeof (char), chunkSize, _messageBody);
-			fgetpos(_messageBody, &writeStart);
+			bytesWrote = fwrite(chunkBuf, sizeof (char), chunkSize, _messageBody);
+			writeStart += bytesWrote;
+			totalLength += bytesWrote;
 			delete [](chunkBuf);
 		} while (chunkSize > 0);
 	}
@@ -137,6 +158,8 @@ void	Request::parseChunked(void)
 		std::cerr << e.what() << std::endl;
 	}
 	ftruncate(fileno(_messageBody), totalLength);
+	std::cout << "LOGLOGLOGLOG" << std::endl;
+	printFile(_messageBody);
 	fseek(_messageBody, 0, SEEK_SET);
 }
 

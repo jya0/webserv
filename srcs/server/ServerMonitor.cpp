@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 20:32:41 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 01:56:02 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,26 +138,6 @@ void ServerMonitor::closeClientConnection(int server, int client)
 	_sockets.removeFd(client);
 }
 
-/* 
-static void	printFile(FILE *file)
-{
-	char	*buffer;
-	ssize_t	readReturn;
-
-	if (file == NULL)
-		return ;
-	buffer = new char[BUFFER_SIZE];
-	fseek(file, 0, SEEK_SET);
-	do {
-		memset(buffer, 0, sizeof (char) * BUFFER_SIZE);
-		readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, file);
-		std::cout << std::string(buffer, readReturn);
-	} while (readReturn > 0);
-	delete [](buffer);
-	fseek(file, 0, SEEK_SET);
-}
- */
-
 void ServerMonitor::serveClientRequest(int server, int client)
 {
 	if (server == -1)
@@ -173,7 +153,7 @@ void ServerMonitor::serveClientRequest(int server, int client)
 	try
 	{
 		_servers.at(server)->buildResponse(client);
-		// printFile(_servers.at(server)->responses[client].getMessageBody());
+		// http::printFile(_servers.at(server)->responses[client].getMessageBody());
 	}
 	catch (http::CGIhandler &cgi)
 	{

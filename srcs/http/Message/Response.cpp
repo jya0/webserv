@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 20:06:11 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 02:44:05 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,39 +353,37 @@ static Response handleHead(const std::string &filePathREF, const Request &reques
 }
 
 static Response handlePut(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
-	std::ofstream	ofile;
-	int				status;
+	FILE	*ofile;
+	int		status;
 
 	(void)servConfREF;
 	(void)locPTR;
 	status = 201; //created
 	if (Autoindex::isPathExist(filePathREF) > 0)
 		status = 204; //no content
-	ofile.open(filePathREF.c_str(), std::ios::trunc);
-	if (ofile.is_open())
+	ofile = fopen(filePathREF.c_str(), "wb");
+	if (ofile != NULL)
 	{
-		ofile << requestREF.getMessageBody();
-		ofile.close();
+		http::filecpy(requestREF.getMessageBody(), ofile);
+		fclose(ofile);
 	}
 	else
 		status = 304; // not modified
-	Response response (status);
-	response.addHeader(Header("Content-Type", "text/html"));
-	return (response);
+	return (Response(status));
 }
 
 static Response handlePost(const std::string &filePathREF, const Request &requestREF, const ServerConfig &servConfREF, const ServerConfig::Location *locPTR) {
-	std::ofstream	ofile;
+	FILE	*ofile;
 
 	(void)servConfREF;
 	(void)locPTR;
 	if (Autoindex::isPathExist(filePathREF) == 0)
 	{
-		ofile.open(filePathREF.c_str(), std::ios::trunc);
-		if (ofile.is_open())
+		ofile = fopen(filePathREF.c_str(), "wb");
+		if (ofile != NULL)
 		{
-			ofile << requestREF.getMessageBody();
-			ofile.close();
+			http::filecpy(requestREF.getMessageBody(), ofile);
+			fclose(ofile);
 			return (Response(201)); //created
 		}
 		throw (500);

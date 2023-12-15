@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/15 19:02:35 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 02:42:06 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@
 #include <cstdio>
 #include "Header.hpp"
 
-#define MSG_BODY_BUFFER 42
+#define MSG_BODY_BUFFER 424242
 
 namespace http {
 	std::string	fileToString(FILE *file);
 	size_t 		getFileSize(FILE *file);
 	FILE		*duplicateFile(const FILE *input);
+	void		filecpy(FILE *src, FILE *dst);
 	typedef std::pair< std::string, FILE * >	t_raw_message;
 
 	/**

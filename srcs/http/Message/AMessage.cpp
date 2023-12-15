@@ -269,29 +269,38 @@ void AMessage::setMessageBody(FILE *msgBody)
 	fseek(_messageBody, 0, SEEK_SET);
 }
 
-void	AMessage::loadFileToMessageBody(const std::string &filePathREF)
+void	http::filecpy(FILE *src, FILE *dst)
 {
-	FILE	*infile;
 	char	*buffer;
 	ssize_t	bytesRead;
 
+	if (src == NULL || dst == NULL)
+		return ;
+	buffer = new char[MSG_BODY_BUFFER];
+	fseek(src, 0, SEEK_SET);
+	fseek(dst, 0, SEEK_SET);
+	do {
+		memset(buffer, 0, sizeof (char) * MSG_BODY_BUFFER);
+		bytesRead = fread(buffer, sizeof (char), MSG_BODY_BUFFER, src);
+		fwrite(buffer, sizeof (char), bytesRead, dst);
+	} while (bytesRead > 0);
+	delete [](buffer);
+	fseek(src, 0, SEEK_SET);
+	fseek(dst, 0, SEEK_SET);
+}
+
+void	AMessage::loadFileToMessageBody(const std::string &filePathREF)
+{
+	FILE	*infile;
+
 	if (_messageBody == NULL)
 		_messageBody = tmpfile();
-	buffer = new char[MSG_BODY_BUFFER];
 	fseek(_messageBody, 0, SEEK_SET);
 	infile = fopen(filePathREF.c_str(), "rb");
-	if (infile != NULL)
-	{
-		do {
-			memset(buffer, 0, sizeof (char) * MSG_BODY_BUFFER);
-			bytesRead = fread(buffer, sizeof (char), MSG_BODY_BUFFER, infile);
-			fwrite(buffer, sizeof (char), bytesRead, _messageBody);
-		} while (bytesRead > 0);
-		delete [](buffer);
-		fclose(infile);
-	}
-	addHeader(Header("Content-Length", http::toString(http::getFileSize(_messageBody))));
+	filecpy(infile, _messageBody);
+	fclose(infile);
 	fseek(_messageBody, 0, SEEK_SET);
+	addHeader(Header("Content-Length", http::toString(http::getFileSize(_messageBody))));
 }
 
 void AMessage::setStartLine(std::string startLine)
