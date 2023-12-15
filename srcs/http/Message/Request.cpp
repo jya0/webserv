@@ -159,7 +159,7 @@ void	Request::parseChunked(void)
 	}
 	ftruncate(fileno(_messageBody), totalLength);
 	std::cout << "LOGLOGLOGLOG" << std::endl;
-	printFile(_messageBody);
+	// printFile(_messageBody);
 	fseek(_messageBody, 0, SEEK_SET);
 }
 
@@ -281,6 +281,8 @@ bool http::rfind(FILE *haystack, std::string needle) {
     bytesRead = 0;
 	fseek(haystack, -MSG_BODY_BUFFER, SEEK_END); // seek to end of file
 	msgBodySize = http::getFileSize(haystack);
+	if (msgBodySize == 0)
+		return (true);
 	for (int i = msgBodySize; i > 0; i-= MSG_BODY_BUFFER)
 	{
 		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
@@ -307,9 +309,9 @@ bool Request::recievedLastByte() {
 
 bool Request::recievedEOF() {
 	FILE *file = getMessageBody();
-    if (getHeaderValue("Transfer-Encoding") == "chunked")
+    if (getHeaderValue("Transfer-Encoding") == "chunked" || getHeaderValue("transfer-encoding") == "chunked")
 		return (http::rfind(file, "0\r\n\r\n"));
-	if (!getHeaderValue("Content-Length").empty())
+	if (!getHeaderValue("Content-Length").empty() || !getHeaderValue("content-length").empty())
 		return (recievedLastByte());
 	return (http::rfind(file, "\r\n\r\n"));
 }

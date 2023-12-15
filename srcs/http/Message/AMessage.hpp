@@ -20,7 +20,7 @@
 #include <cstdio>
 #include "Header.hpp"
 
-#define MSG_BODY_BUFFER 424242
+#define MSG_BODY_BUFFER 42
 
 namespace http {
 	std::string	fileToString(FILE *file);
