@@ -3,15 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 03:27:19 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:29:08 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<cstdlib>
 #include	<sstream>
+#include	<iostream>
+#include	<unistd.h>
+#include	<stdio.h>
 #include	"Request.hpp"
 #include	"ServerSocket.hpp"
 using namespace http;
@@ -72,41 +75,68 @@ static std::string	decodeUri(const std::string &encoded)
     return (decoded.str());
 };
 
-// /**
-//  * @brief Construct a new Request object
-//  *
-//  * @param httpRaw The raw HTTP request to be parsed
-//  */
-// Request::Request(FILE *httpRaw): AMessage(httpRaw) {
-// 	std::string method = _startLine.substr(0, _startLine.find(' '));
-// 	_httpMethod = methodEnum(method);
-// 	_uri = _startLine.substr(_startLine.find(' ') + 1,
-// 								_startLine.find(' ',
-// 									_startLine.find(' ') + 1) -
-// 										_startLine.find(' ') - 1);
-// 	_uri = decodeUri(_uri);
-// 	_httpVersion = _startLine.substr(_startLine.find(' ',
-// 										_startLine.find(' ') + 1) + 1);
-// 	if (getHeaderValue("Transfer-Encoding") == "chunked")
-// 		parseMessageBody();
-// 	if (getHeaderValue("Content-Length") != "")
-// 		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
+
+// {
+// 	do {
+// 		sizeNchunk = ServerParser::splitByTwo(_messageBody, '\r');
+// 		sizeNchunk.second.erase(sizeNchunk.second.begin());
+// 		chunkSize = std::strtol(sizeNchunk.first.c_str(), NULL, 16);
+// 		result += sizeNchunk.second.substr(0, chunkSize);
+// 		_messageBody = _messageBody.substr(chunkSize + std::string(CR_LF).size() + 1, std::string::npos);
+// 	} while (_messageBody.size());
+// 	_messageBody = result;
 // }
 
-void	Request::parseChuncked(void)
+static size_t	getChunkSize(FILE *messageBody)
 {
-	// std::string								result;
-	// size_t									chunkSize;
-	// std::pair< std::string, std::string >	sizeNchunk;
+	int		c;
+	int		index;
+	char	chunkSizeBuf[HEX_STR_BUFFER + 1];
 
-	// do {
-	// 	sizeNchunk = ServerParser::splitByTwo(_messageBody, '\r');
-	// 	sizeNchunk.second.erase(sizeNchunk.second.begin());
-	// 	chunkSize = std::strtol(sizeNchunk.first.c_str(), NULL, 16);
-	// 	result += sizeNchunk.second.substr(0, chunkSize);
-	// 	_messageBody = _messageBody.substr(chunkSize + std::string(CR_LF).size() + 1, std::string::npos);
-	// } while (_messageBody.size());
-	// _messageBody = result;
+	index = 0;
+	memset(chunkSizeBuf, 0, sizeof (char) * (HEX_STR_BUFFER + 1));
+	do {
+		c = fgetc(messageBody);
+		chunkSizeBuf[index % HEX_STR_BUFFER] = c;
+		++index;
+	} while (c != CR);
+	fseek(messageBody, 1, SEEK_CUR); // to skip '\n'
+	return (std::strtol(chunkSizeBuf, NULL, 16));
+}
+
+void	Request::parseChunked(void)
+{
+	char	*chunkBuf;
+	size_t	chunkSize;
+	size_t	totalLength;
+	ssize_t	bytesRead;
+	fpos_t	writeStart;
+	fpos_t	readStart;
+
+	totalLength = 0;
+	fseek(_messageBody, 0, SEEK_SET);
+	fgetpos(_messageBody, &readStart);
+	fgetpos(_messageBody, &writeStart);
+	try {
+		do {
+			fsetpos(_messageBody, &readStart);
+			chunkSize = getChunkSize(_messageBody);
+			chunkBuf = new char[chunkSize];
+			memset(chunkBuf, 0, sizeof (char) * chunkSize);
+			bytesRead = fread(chunkBuf, sizeof (char), chunkSize, _messageBody);
+			totalLength += bytesRead;
+			fgetpos(_messageBody, &readStart);
+			fsetpos(_messageBody, &writeStart);
+			fwrite(chunkBuf, sizeof (char), chunkSize, _messageBody);
+			fgetpos(_messageBody, &writeStart);
+			delete [](chunkBuf);
+		} while (chunkSize > 0);
+	}
+	catch (std::exception &e) {
+		std::cerr << e.what() << std::endl;
+	}
+	ftruncate(fileno(_messageBody), totalLength);
+	fseek(_messageBody, 0, SEEK_SET);
 }
 
 void	Request::parseRequest(void)
@@ -121,7 +151,7 @@ void	Request::parseRequest(void)
 	_httpVersion = _startLine.substr(_startLine.find(' ',
 										_startLine.find(' ') + 1) + 1);
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
-		parseChuncked();
+		parseChunked();
 // 	if (getHeaderValue("Content-Length") != "")
 // 		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
 }

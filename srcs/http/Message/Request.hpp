@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/12/15 03:06:19 by rriyas           ###   ########.fr       */
-=======
-/*   Updated: 2023/12/15 03:12:40 by jyao             ###   ########.fr       */
->>>>>>> f84865cec3bff481a0f02f509a0b16ea62fca5ee
+/*   Updated: 2023/12/15 05:21:25 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +23,9 @@
 # define	HEAD_METHOD		"HEAD"
 # define	PUT_METHOD		"PUT"
 # define	DELETE_METHOD	"DELETE"
+
+# define	HEX_STR_BUFFER	16
+# define	CR				'\r'
 
 /**
  * @brief An enum for the HTTP methods supported by the server.
@@ -68,7 +67,7 @@ namespace http {
 			static std::string	methodName(e_httpMethod method);
 			static e_httpMethod	methodEnum(const std::string method);
 
-			void				parseChuncked(void);
+			void				parseChunked(void);
 			void				parseRequest(void);
 			const e_httpMethod	&getHttpMethodEnum(void) const;
 			const std::string	&getHttpVersion(void) const;
