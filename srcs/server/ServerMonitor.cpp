@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerMonitor.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 06:46:52 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 08:40:40 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 		closeClientConnection(server, client);
 		return ;
 	}
-	if (bytesSent < bytesToSend)
+	if (!feof(file))
 		return;
 	closeClientConnection(server, client);
 	requests++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 06:15:24 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 08:25:23 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ Request::Request(void): AMessage() {}
  *
  * @param RequestREF Request to copy
  */
-Request::Request(Request const &RequestREF): AMessage() {
+Request::Request(Request const &RequestREF): AMessage(RequestREF) {
 	this->Request::operator=(RequestREF);
 }
 
@@ -152,8 +152,6 @@ void	Request::parseRequest(void)
 										_startLine.find(' ') + 1) + 1);
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
 		parseChunked();
-// 	if (getHeaderValue("Content-Length") != "")
-// 		_messageBody = _messageBody.substr(0, strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10));
 }
 
 /**
@@ -235,7 +233,6 @@ e_httpMethod Request::methodEnum(std::string method) {
 void Request::appendRawData(const std::string &bufSTR) {
 	fseek(_messageBody, 0, SEEK_END);
 	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _messageBody);
-	_messageBodySize += bufSTR.size();
 	fseek(_messageBody, 0, SEEK_SET);
 
 	// _messageBody = _messageBody + _data;
@@ -249,35 +246,37 @@ void Request::setRequestStatus(bool status) {
 }
 
 bool Request::recievedLastChunk() {
-	char		line[42];
+	char		line[MSG_BODY_BUFFER];
 	size_t		bytesRead;
 	std::string lineStr;
+	size_t		msgBodySize;
 
 	bytesRead = 0;
-	fseek(_messageBody, -42, SEEK_END); // seek to end of file
-	for (int i = _messageBodySize; i > 0; i-= 42)
+	fseek(_messageBody, -MSG_BODY_BUFFER, SEEK_END); // seek to end of file
+	msgBodySize = http::getFileSize(_messageBody);
+	for (int i = msgBodySize; i > 0; i-= MSG_BODY_BUFFER)
 	{
-		memset(line, 0, 42 * sizeof(char));
-		bytesRead += fread(line, sizeof(char), 42, _messageBody); // This progresses the seek location
-		lineStr = std::string(line, 42);
+		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
+		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, _messageBody); // This progresses the seek location
+		lineStr = std::string(line, MSG_BODY_BUFFER);
 		if (lineStr.rfind("\r\n\r\n") != std::string::npos)
 			return (true);
-		if (bytesRead == _messageBodySize)
+		if (bytesRead == msgBodySize)
 			break;
-		fseek(_messageBody, -43, SEEK_CUR); // Go back 2 bytes (1 to compensate)
+		fseek(_messageBody, -MSG_BODY_BUFFER, SEEK_CUR); // Go back 2 bytes (1 to compensate)
 	}
 	return (false);
 }
 
 bool Request::recievedLastByte() {
 	size_t contentLength = strtol(getHeaderValue("Content-Length").substr(0, 15 + 10).c_str(), NULL, 10);
-	return (_messageBodySize >= contentLength);
+	return (http::getFileSize(_messageBody) >= contentLength);
 }
 
 bool Request::recievedEOF() {
 	if (getHeaderValue("Transfer-Encoding") == "chunked")
 		return (recievedLastChunk());
-	if (getHeaderValue("Content-Length") != "")
+	if (!getHeaderValue("Content-Length").empty())
 		return (recievedLastByte());
 	return (recievedLastChunk());
 }

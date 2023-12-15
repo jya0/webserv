@@ -17,7 +17,7 @@
 
 using namespace http;
 
-# define	BUFFER_SIZE 420000
+# define	BUFFER_SIZE 500
 # define	SERVER_QUEUE_SIZE 42
 
 

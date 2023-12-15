@@ -43,6 +43,26 @@ AMessage::AMessage(const AMessage &aMessageREF): _messageBody(NULL)
 	return;
 }
 
+/**
+ * @brief The copy assignment operator of the AMessage class.
+ *
+ * @param aMessageREF Message to copy
+ * @return AMessage& Reference to the copied message
+ */
+AMessage &AMessage::operator=(const AMessage &aMessageREF)
+{
+	if (this != &aMessageREF)
+	{
+		_startLine = aMessageREF._startLine;
+		_headers = aMessageREF._headers;
+		if (_messageBody != NULL)
+			fclose(_messageBody);
+		_messageBody = duplicateFile(aMessageREF._messageBody);
+		_httpVersion = aMessageREF._httpVersion;
+		_ready = aMessageREF._ready;
+	}
+	return (*this);
+}
 
 /**
  *
@@ -52,9 +72,12 @@ AMessage::AMessage(const AMessage &aMessageREF): _messageBody(NULL)
  */
 AMessage::AMessage(std::string messageHeader): _messageBody(NULL)
 {
-	this->operator=(AMessage());
 	std::istringstream iss(messageHeader);
 	std::string line;
+
+	_messageBody = tmpfile();
+	if (_messageBody == NULL)
+		std::cerr << "<<<<<<<<<<<<<<<<<<<<<NO TEMP FILE!" << std::endl;
 	while (std::getline(iss, line, '\r'))
 	{
 		iss.ignore();
@@ -69,7 +92,8 @@ AMessage::AMessage(std::string messageHeader): _messageBody(NULL)
 			std::istringstream iss2(line);
 			std::getline(iss2, key, ':');
 			std::getline(iss2, value, '\r');
-			value = value.substr(1, value.size());
+			if (!value.empty())
+				value = value.substr(1, value.size());
 			this->_headers.push_back(Header(key, value));
 		}
 	}
@@ -92,7 +116,7 @@ FILE	*http::duplicateFile(const FILE *input)
 	char	*buffer;
 	size_t	readReturn;
 
-	buffer = new char[BUFFER_SIZE + 1];
+	buffer = new char[BUFFER_SIZE];
 	duplFile = NULL;
 	if (input != NULL)
 	{
@@ -100,8 +124,9 @@ FILE	*http::duplicateFile(const FILE *input)
 		if (duplFile == NULL)
 			return (NULL);
 		fseek(duplFile, 0, SEEK_SET);
+		fseek(const_cast<FILE *>(input), 0, SEEK_SET);
 		do {
-			memset(buffer, 0, BUFFER_SIZE + 1);
+			memset(buffer, 0, BUFFER_SIZE);
 			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
 			fwrite(buffer, sizeof (char), readReturn, duplFile);
 		} while (readReturn > 0);
@@ -109,28 +134,6 @@ FILE	*http::duplicateFile(const FILE *input)
 	}
 	delete [] (buffer);
 	return (duplFile);
-}
-
-/**
- * @brief The copy assignment operator of the AMessage class.
- *
- * @param aMessageREF Message to copy
- * @return AMessage& Reference to the copied message
- */
-AMessage &AMessage::operator=(const AMessage &aMessageREF)
-{
-	if (this != &aMessageREF)
-	{
-		_startLine = aMessageREF._startLine;
-		_headers = aMessageREF._headers;
-		if (_messageBody != NULL)
-			fclose(_messageBody);
-		_messageBody = duplicateFile(aMessageREF._messageBody);
-		_messageBodySize = aMessageREF._messageBodySize;
-		_httpVersion = aMessageREF._httpVersion;
-		_ready = aMessageREF._ready;
-	}
-	return (*this);
 }
 
 /**
@@ -173,7 +176,7 @@ std::string AMessage::getHeaderValue(const std::string &headerKey) const
  *
  * @return std::string The body of the message
  */
-const FILE	*AMessage::getMessageBody(void) const
+FILE	*AMessage::getMessageBody(void) const
 {
 	return (this->_messageBody);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 06:43:36 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 08:56:21 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,37 +139,43 @@ ServerSocket &WebServer::getConnection()
 	return (_connection);
 }
 
-static char*	getNextPacket(Response &response)
-{
-	ssize_t bytesRead = 0;
+// static ssize_t	getNextPacket(Response &response, char *packet)
+// {
+// 	ssize_t bytesRead = 0;
 
-	FILE *file = response.getRawMessage().second;
-	int startPos = response.getPacketStartPos();
-	char *packet = new char[BUFFER_SIZE + 1];
-	fseek(file, startPos, SEEK_SET);
-	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE, file);
-	if (bytesRead > 0)
-		response.movePacketStartPos(startPos + startPos);
-	return (packet);
-}
+// 	FILE *file = response.getRawMessage().second;
+// 	// int startPos = response.getPacketStartPos();
+// 	char *packet = new char[BUFFER_SIZE];
+// 	memset(packet, 0, BUFFER_SIZE * sizeof (char));
+// 	// fseek(file, startPos, SEEK_SET);
+// 	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE, file);
+// 	// if (bytesRead > 0)
+// 	// 	response.movePacketStartPos(startPos + startPos);
+// 	return (bytesRead);
+// }
 
 ssize_t WebServer::sendResponse(int client, Response &response)
 {
 	char		*packet;
 	std::string	packetStr;
 	ssize_t		bytesSent;
+	ssize_t		bytesRead;
 
 	bytesSent = 0;
 	t_raw_message rawResponse = response.getRawMessage();
 	if (response.getPacketStatus() == NOT_STARTED)
 	{
+		fseek(response.getMessageBody(), 0, SEEK_SET);
 		bytesSent = sendData(client, rawResponse.first);
 		if (bytesSent < 0)
 			throw (ServerSocket::SocketIOError());
 		response.setPacketStatus(SENDING);
 	}
-	packet = getNextPacket(response);
-	packetStr = std::string(packet);
+	packet = new char[BUFFER_SIZE];
+	memset(packet, 0, BUFFER_SIZE * sizeof (char));
+	// packet = getNextPacket(response);
+	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE, response.getMessageBody());
+	packetStr = std::string(packet, bytesRead);
 	bytesSent += sendData(client, packetStr);
 	delete []packet;
 	return (bytesSent);
