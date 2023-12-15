@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rriyas <rriyas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/15 21:08:25 by rriyas           ###   ########.fr       */
+/*   Updated: 2023/12/15 05:35:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ enum e_httpMethod {
 
 namespace http {
 	FILE	*duplicateFile(const FILE *input);
-	bool	rfind(FILE *haystack, std::string needle);
 	/**
 	 * @brief This class describes an HTTP Request.
 	 * @field _httpMethod		The HTTP method of the request.
@@ -80,6 +79,7 @@ namespace http {
 			bool				requestReady() const;
 			void				setRequestStatus(bool status);
 			bool				recievedEOF();
+			bool				recievedLastChunk();
 			bool				recievedLastByte();
 	};
 };
