@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/16 02:05:48 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 03:20:32 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ void	Request::parseChunked(void)
 	char	*chunkBuf;
 	size_t	chunkSize;
 	size_t	totalLength;
-	ssize_t	bytesRead;
 	ssize_t	bytesWrote;
 	fpos_t	writeStart;
 	fpos_t	readStart;
@@ -144,12 +143,13 @@ void	Request::parseChunked(void)
 			chunkSize = getChunkSize(_messageBody);
 			chunkBuf = new char[chunkSize];
 			memset(chunkBuf, 0, sizeof (char) * chunkSize);
-			bytesRead = fread(chunkBuf, sizeof (char), chunkSize, _messageBody);
+			fread(chunkBuf, sizeof (char), chunkSize, _messageBody);
 			fseek(_messageBody, 2, SEEK_CUR);
 			fgetpos(_messageBody, &readStart);
 			fsetpos(_messageBody, &writeStart);
 			bytesWrote = fwrite(chunkBuf, sizeof (char), chunkSize, _messageBody);
-			writeStart += bytesWrote;
+			fseek(_messageBody, bytesWrote, SEEK_CUR);
+			fgetpos(_messageBody, &writeStart);
 			totalLength += bytesWrote;
 			delete [](chunkBuf);
 		} while (chunkSize > 0);
