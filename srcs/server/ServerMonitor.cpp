@@ -192,7 +192,7 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
 	ssize_t bytesSent = 0;
 
-	if (server == -1 ||  _servers.at(server)->requestReady(client) == false)
+	if (server == -1 ||  _servers.at(server)->responseReady(client) == false)
 		return;
 	std::map<int, Response>::iterator itr = _servers.at(server)->responses.find(client);
 	bytesSent = _servers.at(server)->sendResponse(client, _servers.at(server)->responses[client]);
@@ -221,7 +221,7 @@ void ServerMonitor::startServers()
 	int server = 0;
 	int requests = 0;
 	int i = 0;
-	while (requests < 10000)
+	while (requests < 10)
 	{
 		monitorCGI();
 		rc = _sockets.callPoll();
