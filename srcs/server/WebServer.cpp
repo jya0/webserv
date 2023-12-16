@@ -93,8 +93,8 @@ ssize_t WebServer::recieveData(int &client)
 	ssize_t		bytesRead;
 	size_t		endOfHeader;
 
-	buffer = new char[BUFFER_SIZE];
-	memset(buffer, 0, BUFFER_SIZE);
+	buffer = new char[RECV_BUFFER_SIZE];
+	memset(buffer, 0, RECV_BUFFER_SIZE);
 	bytesRead = _connection.recieveData(client, buffer);
 	if (bytesRead <= 0)
 	{
@@ -139,8 +139,8 @@ ssize_t WebServer::sendResponse(int client, Response &response)
 	ssize_t		bytesRead;
 	std::string headerStr;
 	bytesSent = 0;
-	packet = new char[BUFFER_SIZE];
-	memset(packet, 0, BUFFER_SIZE * sizeof (char));
+	packet = new char[SEND_BUFFER_SIZE];
+	memset(packet, 0, SEND_BUFFER_SIZE * sizeof (char));
 	headerStr = std::string("");
 	if (response.getPacketStatus() == NOT_STARTED)
 	{
@@ -148,7 +148,7 @@ ssize_t WebServer::sendResponse(int client, Response &response)
 		headerStr = response.getStartAndHeader();
 		response.setPacketStatus(SENDING);
 	}
-	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE - headerStr.size(), response.getMessageBody());
+	bytesRead = fread(packet, sizeof(char), SEND_BUFFER_SIZE - headerStr.size(), response.getMessageBody());
 	bytesSent = _connection.sendData(client, headerStr + std::string(packet, bytesRead));
 	delete [](packet);
 	return (bytesSent);

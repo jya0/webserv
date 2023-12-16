@@ -87,11 +87,11 @@ void	http::printFile(FILE *file)
 
 	if (file == NULL)
 		return ;
-	buffer = new char[BUFFER_SIZE];
+	buffer = new char[MSG_BODY_BUFFER];
 	fseek(file, 0, SEEK_SET);
 	do {
-		memset(buffer, 0, sizeof (char) * BUFFER_SIZE);
-		readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, file);
+		memset(buffer, 0, sizeof (char) * MSG_BODY_BUFFER);
+		readReturn = fread(buffer, sizeof (char), MSG_BODY_BUFFER, file);
 		std::cout << std::string(buffer, readReturn);
 	} while (readReturn > 0);
 	delete [](buffer);

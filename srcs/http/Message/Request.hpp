@@ -60,7 +60,6 @@ namespace http {
 		private:
 			e_httpMethod	_httpMethod;
 			std::string		_uri;
-			size_t			_bodySize;
 		protected:
 		public:
 			Request(void);

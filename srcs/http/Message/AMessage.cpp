@@ -123,7 +123,7 @@ FILE	*http::duplicateFile(const FILE *input)
 	char	*buffer;
 	size_t	readReturn;
 
-	buffer = new char[BUFFER_SIZE];
+	buffer = new char[MSG_BODY_BUFFER];
 	duplFile = NULL;
 	if (input != NULL)
 	{
@@ -133,8 +133,8 @@ FILE	*http::duplicateFile(const FILE *input)
 		fseek(duplFile, 0, SEEK_SET);
 		fseek(const_cast<FILE *>(input), 0, SEEK_SET);
 		do {
-			memset(buffer, 0, BUFFER_SIZE);
-			readReturn = fread(buffer, sizeof (char), BUFFER_SIZE, const_cast<FILE *>(input));
+			memset(buffer, 0, MSG_BODY_BUFFER);
+			readReturn = fread(buffer, sizeof (char), MSG_BODY_BUFFER, const_cast<FILE *>(input));
 			fwrite(buffer, sizeof (char), readReturn, duplFile);
 		} while (readReturn > 0);
 		fseek(duplFile, 0, SEEK_SET);
