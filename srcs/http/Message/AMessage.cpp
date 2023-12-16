@@ -74,7 +74,7 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
  *
  * @param rawMessage The raw message to be parsed
  */
-AMessage::AMessage(std::string messageHeader): _messageBody(NULL)
+AMessage::AMessage(std::string messageHeader):  _ready(false), _messageBody(NULL)
 {
 	std::istringstream iss(messageHeader);
 	std::string line;

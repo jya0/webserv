@@ -69,7 +69,7 @@ ssize_t ServerSocket::recieveData(int &peer_socket, char *buffer)
 	ssize_t bytesRecieved;
 
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
-	std::cout << "DATA: " << std::string(buffer) << std::endl;
+	// std::cout << "DATA: " << std::string(buffer) << std::endl;
 	if (bytesRecieved <= 0)
 		return (bytesRecieved);
 	log("------ Reading Request from client ------\n\n");

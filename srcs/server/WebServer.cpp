@@ -110,6 +110,8 @@ ssize_t WebServer::recieveData(int &client)
 		endOfHeader = bufSTR.find(CR_LF CR_LF);
 		if (endOfHeader != std::string::npos)
 		{
+			std::cout<<"HEADER ***************************************\n";
+			std::cout<<bufSTR.substr(0, endOfHeader)<<std::endl;
 			endOfHeader += std::string(CR_LF CR_LF).size();
 			bufSTR = bufSTR.substr(endOfHeader, std::string::npos);
 		}

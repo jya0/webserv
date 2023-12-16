@@ -60,6 +60,7 @@ namespace http {
 		private:
 			e_httpMethod	_httpMethod;
 			std::string		_uri;
+			size_t			_bodySize;
 		protected:
 		public:
 			Request(void);
@@ -77,7 +78,6 @@ namespace http {
 			const std::string	&getHttpVersion(void) const;
 			std::string			getHttpMethod(void) const;
 			const std::string	&getUri(void) const;
-			bool				validate(void) const;
 			void				appendRawData(const std::string &_data);
 			bool				requestReady() const;
 			void				setRequestStatus(bool status);

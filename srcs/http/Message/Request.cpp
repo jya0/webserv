@@ -22,7 +22,9 @@ using namespace http;
 /**
  * @brief Construct a new Request object (default constructor)
  */
-Request::Request(void): AMessage() {}
+Request::Request(void): AMessage() {
+	_bodySize = 0;
+}
 
 /**
  * @brief Construct a new Request object (copy constructor)
@@ -33,7 +35,9 @@ Request::Request(Request const &RequestREF): AMessage(RequestREF) {
 	this->Request::operator=(RequestREF);
 }
 
-Request::Request(const std::string &messageHeader): AMessage(messageHeader) {}
+Request::Request(const std::string &messageHeader): AMessage(messageHeader) {
+	_bodySize = 0;
+}
 
 /**
  * @brief Destroy the Request object
@@ -52,6 +56,7 @@ Request &Request::operator=(Request const &requestREF) {
 		this->AMessage::operator=(requestREF);
 		this->_httpMethod = requestREF._httpMethod;
 		this->_uri = requestREF._uri;
+		this->_bodySize = requestREF._bodySize;
 	}
 	return (*this);
 }
@@ -74,19 +79,6 @@ static std::string	decodeUri(const std::string &encoded)
     }
     return (decoded.str());
 };
-
-
-// {
-// 	do {
-// 		sizeNchunk = ServerParser::splitByTwo(_messageBody, '\r');
-// 		sizeNchunk.second.erase(sizeNchunk.second.begin());
-// 		chunkSize = std::strtol(sizeNchunk.first.c_str(), NULL, 16);
-// 		result += sizeNchunk.second.substr(0, chunkSize);
-// 		_messageBody = _messageBody.substr(chunkSize + std::string(CR_LF).size() + 1, std::string::npos);
-// 	} while (_messageBody.size());
-// 	_messageBody = result;
-// }
-
 
 void	http::printFile(FILE *file)
 {
@@ -258,6 +250,7 @@ e_httpMethod Request::methodEnum(std::string method) {
 
 void Request::appendRawData(const std::string &bufSTR) {
 	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _messageBody);
+	_bodySize += bufSTR.size();
 	// _messageBody = _messageBody + _data;
 }
 
@@ -307,7 +300,7 @@ bool Request::recievedLastByte() {
 	contentLength = strtol(getHeaderValue("Content-Length").substr(0, 15 + 19).c_str(), NULL, 10);
 	if (!getHeaderValue("content-length").empty())
 		contentLength = strtol(getHeaderValue("content-length").substr(0, 15 + 19).c_str(), NULL, 10);
-	return (http::getFileSize(_messageBody) >= contentLength);
+	return (this->_bodySize >= contentLength);
 }
 
 bool Request::recievedEOF() {
@@ -323,7 +316,7 @@ bool Request::recievedEOF() {
 	else if (!getHeaderValue("Content-Length").empty() || !getHeaderValue("content-length").empty())
 		found = recievedLastByte();
 	else
-		found = http::rfind(file, "\r\n\r\n");
+		found = true; //no body
 	fsetpos(_messageBody, &checkPoint);
 	return (found);
 }

@@ -147,7 +147,7 @@ void ServerMonitor::serveClientRequest(int server, int client)
 {
 	ssize_t bytesRead;
 	
-	if (server == -1)
+	if (server == -1 || _servers.at(server)->requestReady(client) == true)
 		return;
 	bytesRead = _servers.at(server)->recieveData(client);
 	if (bytesRead <= 0)
@@ -159,8 +159,6 @@ void ServerMonitor::serveClientRequest(int server, int client)
 			std::cerr<< "Nothing left to read. Closing socket now...\n"<<std::endl;
 		return ;
 	}
-	if (_servers.at(server)->requestReady(client) == false)
-		return;
 	try
 	{
 		_servers.at(server)->buildResponse(client);
