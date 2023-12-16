@@ -282,7 +282,8 @@ void	http::filecpy(FILE *src, FILE *dst)
 {
 	char	*buffer;
 	ssize_t	bytesRead;
-
+	ssize_t totalWritten = 0;
+	ssize_t totalToWrite = 0;
 	if (src == NULL || dst == NULL)
 		return ;
 	buffer = new char[MSG_BODY_BUFFER];
@@ -291,7 +292,8 @@ void	http::filecpy(FILE *src, FILE *dst)
 	do {
 		memset(buffer, 0, sizeof (char) * MSG_BODY_BUFFER);
 		bytesRead = fread(buffer, sizeof (char), MSG_BODY_BUFFER, src);
-		fwrite(buffer, sizeof (char), bytesRead, dst);
+		totalToWrite += bytesRead;
+		totalWritten += fwrite(buffer, sizeof (char), bytesRead, dst);
 	} while (bytesRead > 0);
 	delete [](buffer);
 	std::cout << "SRCS: " << http::getFileSize(src) << std::endl;
@@ -307,7 +309,7 @@ void	AMessage::loadFileToMessageBody(const std::string &filePathREF)
 	if (_messageBody == NULL)
 		_messageBody = tmpfile();
 	fseek(_messageBody, 0, SEEK_SET);
-	infile = fopen(filePathREF.c_str(), "rb");
+	infile = fopen(filePathREF.c_str(), "r");
 	filecpy(infile, _messageBody);
 	close(fileno(infile));
 	fclose(infile);

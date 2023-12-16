@@ -159,6 +159,8 @@ void ServerMonitor::serveClientRequest(int server, int client)
 			std::cerr<< "Nothing left to read. Closing socket now...\n"<<std::endl;
 		return ;
 	}
+	if (_servers.at(server)->requestReady(client) == false)
+		return ;
 	try
 	{
 		_servers.at(server)->buildResponse(client);

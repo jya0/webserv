@@ -300,7 +300,7 @@ bool Request::recievedLastByte() {
 	contentLength = strtol(getHeaderValue("Content-Length").substr(0, 15 + 19).c_str(), NULL, 10);
 	if (!getHeaderValue("content-length").empty())
 		contentLength = strtol(getHeaderValue("content-length").substr(0, 15 + 19).c_str(), NULL, 10);
-	return (this->_bodySize >= contentLength);
+	return (this->_bodySize == contentLength);
 }
 
 bool Request::recievedEOF() {

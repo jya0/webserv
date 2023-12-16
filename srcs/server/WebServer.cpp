@@ -93,8 +93,8 @@ ssize_t WebServer::recieveData(int &client)
 	ssize_t		bytesRead;
 	size_t		endOfHeader;
 
-	buffer = new char[BUFFER_SIZE + 1];
-	memset(buffer, 0, BUFFER_SIZE + 1);
+	buffer = new char[BUFFER_SIZE];
+	memset(buffer, 0, BUFFER_SIZE);
 	bytesRead = _connection.recieveData(client, buffer);
 	if (bytesRead <= 0)
 	{

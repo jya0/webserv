@@ -361,7 +361,7 @@ static Response handlePut(const std::string &filePathREF, const Request &request
 	status = 201; //created
 	if (Autoindex::isPathExist(filePathREF) > 0)
 		status = 204; //no content
-	ofile = fopen(filePathREF.c_str(), "wb");
+	ofile = fopen(filePathREF.c_str(), "w");
 	if (ofile != NULL)
 	{
 		http::filecpy(requestREF.getMessageBody(), ofile);
@@ -380,7 +380,7 @@ static Response handlePost(const std::string &filePathREF, const Request &reques
 	(void)locPTR;
 	if (Autoindex::isPathExist(filePathREF) == 0)
 	{
-		ofile = fopen(filePathREF.c_str(), "wb");
+		ofile = fopen(filePathREF.c_str(), "w");
 		if (ofile != NULL)
 		{
 			http::filecpy(requestREF.getMessageBody(), ofile);
