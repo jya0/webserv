@@ -57,7 +57,10 @@ AMessage &AMessage::operator=(const AMessage &aMessageREF)
 		_startLine = aMessageREF._startLine;
 		_headers = aMessageREF._headers;
 		if (_messageBody != NULL)
+		{
+			close(fileno(_messageBody));
 			fclose(_messageBody);
+		}
 		_messageBody = duplicateFile(aMessageREF._messageBody);
 		_httpVersion = aMessageREF._httpVersion;
 		_ready = aMessageREF._ready;
@@ -107,7 +110,10 @@ AMessage::AMessage(std::string messageHeader): _messageBody(NULL)
 AMessage::~AMessage(void)
 {
 	if (_messageBody != NULL)
+	{
+		close(fileno(_messageBody));
 		fclose(_messageBody);
+	}
 	return;
 }
 
@@ -263,7 +269,10 @@ void AMessage::setMessageBody(FILE *msgBody)
 	if (msgBody == NULL)
 		return ;
 	if (_messageBody != NULL)
+	{
+		close(fileno(_messageBody));
 		fclose(_messageBody);
+	}
 	_messageBody = msgBody;
 	addHeader(Header("Content-Length", http::toString(http::getFileSize(msgBody))));
 	fseek(_messageBody, 0, SEEK_SET);
@@ -298,6 +307,7 @@ void	AMessage::loadFileToMessageBody(const std::string &filePathREF)
 	fseek(_messageBody, 0, SEEK_SET);
 	infile = fopen(filePathREF.c_str(), "rb");
 	filecpy(infile, _messageBody);
+	close(fileno(infile));
 	fclose(infile);
 	fseek(_messageBody, 0, SEEK_SET);
 	addHeader(Header("Content-Length", http::toString(http::getFileSize(_messageBody))));

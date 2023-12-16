@@ -86,40 +86,23 @@ void WebServer::closeClientConnection(int client)
 	}
 }
 
-ssize_t WebServer::sendData(int client, std::string message)
-{
-	ssize_t bytesSent;
-
-	bytesSent = _connection.sendData(client, message);
-	return (bytesSent);
-}
-
 ssize_t WebServer::recieveData(int &client)
 {
-	char *buffer;
-	std::string bufSTR;
-	ssize_t bytesRead;
-	size_t	endOfHeader;
+	char		*buffer;
+	std::string	bufSTR;
+	ssize_t		bytesRead;
+	size_t		endOfHeader;
 
-	buffer = NULL;
-	try
+	buffer = new char[BUFFER_SIZE + 1];
+	memset(buffer, 0, BUFFER_SIZE + 1);
+	bytesRead = _connection.recieveData(client, buffer);
+	if (bytesRead <= 0)
 	{
-		buffer = new char[BUFFER_SIZE + 1];
-		memset(buffer, 0, BUFFER_SIZE + 1);
-		bytesRead = _connection.recieveData(client, buffer);
-		bufSTR = std::string(buffer, bytesRead);
 		delete[] (buffer);
+		return (bytesRead);
 	}
-	catch (std::exception &e)
-	{
-		std::cerr << "Failed to receive client request: " << e.what() << std::endl;
-		return (-1);
-	}
-	if (bytesRead == 0)
-	{
-		closeClientConnection(client);
-		return (-1);
-	}
+	bufSTR = std::string(buffer, bytesRead);
+	delete[] (buffer);
 	if (!requests.count(client))
 	{
 		requests[client] = Request(bufSTR);
@@ -146,42 +129,24 @@ ServerSocket &WebServer::getConnection()
 	return (_connection);
 }
 
-// static ssize_t	getNextPacket(Response &response, char *packet)
-// {
-// 	ssize_t bytesRead = 0;
-
-// 	FILE *file = response.getRawMessage().second;
-// 	// int startPos = response.getPacketStartPos();
-// 	char *packet = new char[BUFFER_SIZE];
-// 	memset(packet, 0, BUFFER_SIZE * sizeof (char));
-// 	// fseek(file, startPos, SEEK_SET);
-// 	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE, file);
-// 	// if (bytesRead > 0)
-// 	// 	response.movePacketStartPos(startPos + startPos);
-// 	return (bytesRead);
-// }
-
 ssize_t WebServer::sendResponse(int client, Response &response)
 {
 	char		*packet;
 	ssize_t		bytesSent;
 	ssize_t		bytesRead;
-
+	std::string headerStr;
 	bytesSent = 0;
+	packet = new char[BUFFER_SIZE];
+	memset(packet, 0, BUFFER_SIZE * sizeof (char));
+	headerStr = std::string("");
 	if (response.getPacketStatus() == NOT_STARTED)
 	{
 		fseek(response.getMessageBody(), 0, SEEK_SET);
-		bytesSent = sendData(client, response.getStartAndHeader());
-		if (bytesSent < 0)
-			throw (ServerSocket::SocketIOError());
+		headerStr = response.getStartAndHeader();
 		response.setPacketStatus(SENDING);
 	}
-	packet = new char[BUFFER_SIZE];
-	memset(packet, 0, BUFFER_SIZE * sizeof (char));
-	// packet = getNextPacket(response);
-	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE, response.getMessageBody());
-	bytesSent += sendData(client, std::string(packet, bytesRead));
-	// std::cout << "I AM AT POSITION: " << rawResponse.
+	bytesRead = fread(packet, sizeof(char), BUFFER_SIZE - headerStr.size(), response.getMessageBody());
+	bytesSent = _connection.sendData(client, headerStr + std::string(packet, bytesRead));
 	delete [](packet);
 	return (bytesSent);
 }

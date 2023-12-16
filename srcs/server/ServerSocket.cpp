@@ -69,13 +69,10 @@ ssize_t ServerSocket::recieveData(int &peer_socket, char *buffer)
 	ssize_t bytesRecieved;
 
 	bytesRecieved = recv(peer_socket, buffer, BUFFER_SIZE, 0);
-	std::cout << "DATA:" << std::string(buffer) << std::endl;
-	if (bytesRecieved < 0)
-	{
-		log("read() sys call failed: Failed to read bytes from client socket\n");
-		throw SocketIOError();
-	}
-	std::cout << "------ Reading Request from client ------\n\n";
+	std::cout << "DATA: " << std::string(buffer) << std::endl;
+	if (bytesRecieved <= 0)
+		return (bytesRecieved);
+	log("------ Reading Request from client ------\n\n");
 	return (bytesRecieved);
 }
 
@@ -86,16 +83,8 @@ ssize_t ServerSocket::sendData(int &peer_socket, std::string message)
 
 	bytesSent = send(peer_socket, packet, message.size(), 0);
 	if (bytesSent < 0)
-	{
-		log("send() sys call failed: Failed to send bytes to client socket\n");
-		throw SocketIOError();
-	}
-	if (size_t(bytesSent) == message.size())
-	{
-		log("------ Server Response sent to client ------\n\n");
-		// log(message);
-		// log("\n");
-	}
+		return (bytesSent);
+	log("------ Server Response sent to client ------\n\n");
 	return (bytesSent);
 }
 
@@ -121,8 +110,7 @@ void ServerSocket::startListening()
 	if (listen(passive_socket, SERVER_QUEUE_SIZE) < 0)
 	{
 		log("listen() sys call failed: Cannot listen from server socket\n");
-		close(passive_socket);
-		passive_socket = -1;
+		closeConnection();
 		throw SocketIOError();
 	}
 	std::cout << "\n*** Listening on ADDRESS: "
@@ -136,12 +124,7 @@ int ServerSocket::acceptConnection()
 	int peer_socket = accept(passive_socket, (sockaddr *)&socket_address,
 							 &socket_address_len);
 	if (peer_socket < 0)
-	{
-		std::cout << "accept() sys call failed: Server failed to accept incoming connection from ADDRESS: "
-				  << inet_ntoa(socket_address.sin_addr) << "; PORT: "
-				  << ntohs(socket_address.sin_port);
-		throw SocketIOError();
-	}
+		return (-1);
 	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	std::cout << "Connection accepted!\n";
 	return (peer_socket);

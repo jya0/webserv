@@ -29,6 +29,11 @@ ServerMonitor::ServerMonitor(const std::vector<ServerConfig> &configsREF) : _soc
 			std::cerr << e.what() << std::endl;
 		}
 	}
+	if (_servers.size() == 0)
+	{
+		std::cerr<<"All servers failed to start. Please update the config file with new ips or ports!\n";
+		throw ServerSocket::SocketIOError();
+	}
 	_sockets = PollManager(_servers.size());
 	http::CGIhandler::setPollManager(_sockets);
 	_cgiScripts.clear();
@@ -60,6 +65,8 @@ static void closeCgiFds(const http::CGIhandler &cgi)
 	close(cgi.getCoutSave());
 	close(cgi.getInFileFd());
 	close(cgi.getOutFileFd());
+	close(fileno(const_cast<FILE *>(cgi.getInFile())));
+	close(fileno(const_cast<FILE *>(cgi.getOutFile())));
 	fclose(const_cast<FILE *>(cgi.getInFile()));
 	fclose(const_cast<FILE *>(cgi.getOutFile()));
 }
@@ -116,14 +123,12 @@ bool ServerMonitor::incomingConnectiontoServer(int triggered)
 
 void ServerMonitor::acceptIncomingConnection(int triggered)
 {
-	int client = -1;
-	try
+	int	client;
+
+	client = _servers.find(triggered)->second->acceptConnection();
+	if (client < 0)
 	{
-		client = _servers.find(triggered)->second->acceptConnection();
-	}
-	catch (ServerSocket::SocketIOError &e)
-	{
-		std::cerr << "Failed to accept incoming connection from a client: " << e.what() << std::endl;
+		std::cerr << "accept() sys call failed: Server failed to accept incoming connection from ADDRESS: "<< std::endl;
 		return;
 	}
 	if (_sockets.getNfds() < MAX_SOCKETS)
@@ -140,20 +145,25 @@ void ServerMonitor::closeClientConnection(int server, int client)
 
 void ServerMonitor::serveClientRequest(int server, int client)
 {
+	ssize_t bytesRead;
+	
 	if (server == -1)
 		return;
-	int status = _servers.at(server)->recieveData(client);
-	if (status == -1)
+	bytesRead = _servers.at(server)->recieveData(client);
+	if (bytesRead <= 0)
 	{
 		closeClientConnection(server, client);
-		return;
+		if (bytesRead == -1)
+			std::cerr << "recv() sys call failed: Failed to read bytes from client socket\n"<< std::endl;
+		else
+			std::cerr<< "Nothing left to read. Closing socket now...\n"<<std::endl;
+		return ;
 	}
 	if (_servers.at(server)->requestReady(client) == false)
 		return;
 	try
 	{
 		_servers.at(server)->buildResponse(client);
-		// http::printFile(_servers.at(server)->responses[client].getMessageBody());
 	}
 	catch (http::CGIhandler &cgi)
 	{
@@ -181,20 +191,12 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 
 	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
-	try
-	{
-		bytesSent = _servers.at(server)->sendResponse(client, _servers.at(server)->responses[client]);
-	}
-	catch (ServerSocket::SocketIOError &e)
-	{
-		std::cerr << "Failed to serve client with a response: " << e.what() << std::endl;
-		closeClientConnection(server, client);
-		return;
-	}
+	bytesSent = _servers.at(server)->sendResponse(client, _servers.at(server)->responses[client]);
 	if (bytesSent < 0)
 	{
+		std::cerr << "send() sys call failed: Failed to send bytes to client socket\n" << std::endl;
 		closeClientConnection(server, client);
-		return ;
+		return;
 	}
 	if (!feof(_servers.at(server)->responses[client].getMessageBody()))
 		return ;

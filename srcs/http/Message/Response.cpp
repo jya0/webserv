@@ -365,6 +365,7 @@ static Response handlePut(const std::string &filePathREF, const Request &request
 	if (ofile != NULL)
 	{
 		http::filecpy(requestREF.getMessageBody(), ofile);
+		close(fileno(ofile));
 		fclose(ofile);
 	}
 	else
@@ -383,6 +384,7 @@ static Response handlePost(const std::string &filePathREF, const Request &reques
 		if (ofile != NULL)
 		{
 			http::filecpy(requestREF.getMessageBody(), ofile);
+			close(fileno(ofile));
 			fclose(ofile);
 			return (Response(201)); //created
 		}
