@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/16 04:25:39 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 05:59:23 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,11 +145,12 @@ void	Request::parseChunked(void)
 			chunkBuf = new char[chunkSize];
 			memset(chunkBuf, 0, sizeof (char) * chunkSize);
 			bytesRead = fread(chunkBuf, sizeof (char), chunkSize, _messageBody);
+			// char	c = fgetc(_messageBody);
+			// c = fgetc(_messageBody);
 			fseek(_messageBody, 2, SEEK_CUR);
 			fgetpos(_messageBody, &readStart);
 			fsetpos(_messageBody, &writeStart);
 			bytesWrote = fwrite(chunkBuf, sizeof (char), bytesRead, _messageBody);
-			fseek(_messageBody, bytesWrote, SEEK_CUR);
 			fgetpos(_messageBody, &writeStart);
 			totalLength += bytesWrote;
 			delete [](chunkBuf);
@@ -159,7 +160,7 @@ void	Request::parseChunked(void)
 		std::cerr << e.what() << std::endl;
 	}
 	ftruncate(fileno(_messageBody), totalLength);
-	std::cout << "LOGLOGLOGLOG" << std::endl;
+	std::cout << "LOGLOGLOGLOG" << http::getFileSize(_messageBody) << std::endl;
 	// printFile(_messageBody);
 	fseek(_messageBody, 0, SEEK_SET);
 }
