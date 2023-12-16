@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:37:54 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/16 01:55:56 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 04:25:15 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define	DELETE_METHOD	"DELETE"
 
 # define	HEX_STR_BUFFER	16
+# define	RFIND_RANGE		42
 # define	CR				'\r'
 
 /**

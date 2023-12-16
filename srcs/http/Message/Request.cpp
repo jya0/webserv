@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:38:23 by kalmheir          #+#    #+#             */
-/*   Updated: 2023/12/16 03:42:56 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 04:25:39 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include	<sstream>
 #include	<iostream>
 #include	<unistd.h>
-#include	<stdio.h>
+#include	<cstdio>
 #include	"Request.hpp"
 #include	"ServerSocket.hpp"
 using namespace http;
@@ -256,10 +256,7 @@ e_httpMethod Request::methodEnum(std::string method) {
 }
 
 void Request::appendRawData(const std::string &bufSTR) {
-	fseek(_messageBody, 0, SEEK_END);
 	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _messageBody);
-	fseek(_messageBody, 0, SEEK_SET);
-
 	// _messageBody = _messageBody + _data;
 }
 
@@ -273,22 +270,22 @@ void Request::setRequestStatus(bool status) {
 
 
 bool http::rfind(FILE *haystack, std::string needle) {
-	char		line[MSG_BODY_BUFFER];
+	char		line[RFIND_RANGE];
 	size_t		bytesRead;
 	std::string lineStr;
 	size_t		msgBodySize;
     bool        status;
 	status = false;
     bytesRead = 0;
-	fseek(haystack, -MSG_BODY_BUFFER, SEEK_END); // seek to end of file
+	fseek(haystack, -RFIND_RANGE, SEEK_END); // seek to end of file
 	msgBodySize = http::getFileSize(haystack);
 	if (msgBodySize == 0)
 		return (true);
-	for (int i = msgBodySize; i > 0; i-= MSG_BODY_BUFFER)
+	for (int i = msgBodySize; i > 0; i-= RFIND_RANGE)
 	{
-		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
-		bytesRead += fread(line, sizeof(char), MSG_BODY_BUFFER, haystack); // This progresses the seek location
-		lineStr = std::string(line, MSG_BODY_BUFFER);
+		memset(line, 0, RFIND_RANGE * sizeof(char));
+		bytesRead += fread(line, sizeof(char), RFIND_RANGE, haystack); // This progresses the seek location
+		lineStr = std::string(line, RFIND_RANGE);
 		if (lineStr.rfind(needle) != std::string::npos)
 		{
             status = true;
@@ -296,7 +293,7 @@ bool http::rfind(FILE *haystack, std::string needle) {
         }
 		if (bytesRead == msgBodySize)
 			break;
-		fseek(haystack, -MSG_BODY_BUFFER, SEEK_CUR); // Go back 2 bytes (1 to compensate)
+		fseek(haystack, -RFIND_RANGE, SEEK_CUR); // Go back 2 bytes (1 to compensate)
 	}
     fseek(haystack, 0, SEEK_SET);
 	return (status);
@@ -313,10 +310,19 @@ bool Request::recievedLastByte() {
 }
 
 bool Request::recievedEOF() {
-	FILE *file = getMessageBody();
+	FILE	*file;
+	fpos_t	checkPoint;
+	bool	found;
+	
+	found = false;
+	file = getMessageBody();
+	fgetpos(_messageBody, &checkPoint);
     if (getHeaderValue("Transfer-Encoding") == "chunked" || getHeaderValue("transfer-encoding") == "chunked")
-		return (http::rfind(file, "0\r\n\r\n"));
-	if (!getHeaderValue("Content-Length").empty() || !getHeaderValue("content-length").empty())
-		return (recievedLastByte());
-	return (http::rfind(file, "\r\n\r\n"));
+		found = http::rfind(file, "0\r\n\r\n");
+	else if (!getHeaderValue("Content-Length").empty() || !getHeaderValue("content-length").empty())
+		found = recievedLastByte();
+	else
+		found = http::rfind(file, "\r\n\r\n");
+	fsetpos(_messageBody, &checkPoint);
+	return (found);
 }

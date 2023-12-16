@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 21:00:20 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/16 02:42:06 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 04:24:01 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <cstdio>
 #include "Header.hpp"
 
-#define MSG_BODY_BUFFER 42
+#define MSG_BODY_BUFFER 424242
 
 namespace http {
 	std::string	fileToString(FILE *file);
