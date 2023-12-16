@@ -88,7 +88,6 @@ http::IsMimeTypeUnary::IsMimeTypeUnary(const std::string &mimeType): _mimeType(m
 
 bool	http::IsMimeTypeUnary::operator()(const t_mime_pair &mimePairREF)
 {
-	// std::cerr << mimePairREF.second;
 	for (std::vector< std::string >::const_iterator	itc = mimePairREF.first.begin(); itc != mimePairREF.first.end(); ++itc)
 	{
 		if (*itc == _mimeType)

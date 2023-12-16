@@ -24,11 +24,7 @@ void	DirectiveBlock::clearDvesMap(void) {
 	std::multimap<std::string, ADirective *>::const_iterator iter;
 
 	for (iter = _dvesMap.begin(); iter != _dvesMap.end(); ++iter)
-	{
 		delete (iter->second);
-	}
-	// _dvesMap.clear();
-	// delete (_dvesMap.begin()->second);
 }
 
 DirectiveBlock::~DirectiveBlock(void) {
@@ -52,8 +48,6 @@ void	DirectiveBlock::insertMapDirective(ADirective *dvePTR) {
 	if (dvePTR == NULL)
 		return ;
 	dvePair = std::make_pair(dvePTR->getName(), dvePTR);
-	// std::multimap<std::string, ADirective *>	ma;
-	// std::pair<std::string, ADirective *> *p = new std::pair<std::string, ADirective *>(dvePTR->getName(), dvePTR);
 	_dvesMap.insert(dvePair);
 }
 

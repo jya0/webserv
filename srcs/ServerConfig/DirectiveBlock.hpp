@@ -39,8 +39,6 @@ class DirectiveBlock : public ADirective {
 		std::vector< std::vector< std::string > >	readDirectivesSimple(const std::string &dveName) const;
 		DirectiveBlock								*readDirectiveBlock(const std::string &dveName, const std::string &dveValue) const;
 		DirectiveBlock								*readDirectiveBlock(const std::string &dveName) const;
-/* 		std::pair< std::multimap< std::string, ADirective * >::iterator, std::multimap< std::string, ADirective * >::iterator> \
-			operator[](const std::string &key); */
 		void	printDirective(void) const;
 		int		parseDirective(void);
 		int		checkDirective(const e_directiveType &dveContextREF) const;

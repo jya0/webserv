@@ -69,7 +69,6 @@ ssize_t ServerSocket::recieveData(int &peer_socket, char *buffer)
 	ssize_t bytesRecieved;
 
 	bytesRecieved = recv(peer_socket, buffer, RECV_BUFFER_SIZE, 0);
-	// std::cout << "DATA: " << std::string(buffer) << std::endl;
 	if (bytesRecieved <= 0)
 		return (bytesRecieved);
 	log("------ Reading Request from client ------\n\n");
@@ -91,8 +90,6 @@ ssize_t ServerSocket::sendData(int &peer_socket, std::string message)
 void ServerSocket::startConnection()
 {
 	passive_socket = socket(AF_INET, SOCK_STREAM, 0);
-	// int set = 1;
-	// setsockopt(passive_socket, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 	if (passive_socket < 0)
 	{
 		log("socket() sys call failed: Socket creation failed\n");
@@ -127,8 +124,6 @@ int ServerSocket::acceptConnection()
 							 &socket_address_len);
 	if (peer_socket < 0)
 		return (-1);
-		// int set = 1;
-	// setsockopt(peer_socket, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 	fcntl(peer_socket, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	std::cout << "Connection accepted!\n";
 	return (peer_socket);

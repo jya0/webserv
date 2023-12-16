@@ -274,7 +274,6 @@ static void setHeader(Response &response, const std::string &fileStr)
 	mimeType = http::checkMimeType(fileStr);
 	if (mimeType.empty())
 		mimeType = "text/html";
-	std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << mimeType << std::endl;
 	response.addHeader(Header("Content-Type", mimeType));
 	response.addHeader(Header("Content-Length", http::toString(http::getFileSize(response.getMessageBody()))));
 }
@@ -424,7 +423,6 @@ static void	checkCMB(const Request &requestREF, const ServerConfig &servConfREF,
 {
 	ssize_t	clientBodySize;
 
-	// clientBodySize = requestREF.getMessageBodySize();
 	clientBodySize = http::getFileSize(const_cast<FILE*>(requestREF.getMessageBody()));
 	if (locPTR->getSizeCMB() > 0 && clientBodySize > locPTR->getSizeCMB())
 		throw (413);

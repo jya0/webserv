@@ -124,7 +124,6 @@ ssize_t WebServer::recieveData(int &client)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
 		requests[client].parseRequest();
-		std::cout << "I HABE: " << http::getFileSize(requests[client].getMessageBody()) << std::endl;
 		requests[client].setRequestStatus(true);
 	}
 	return (bytesRead);

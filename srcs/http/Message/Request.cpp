@@ -139,8 +139,6 @@ void	Request::parseChunked(void)
 			chunkBuf = new char[chunkSize];
 			memset(chunkBuf, 0, sizeof (char) * chunkSize);
 			bytesRead = fread(chunkBuf, sizeof (char), chunkSize, _messageBody);
-			// char	c = fgetc(_messageBody);
-			// c = fgetc(_messageBody);
 			fseek(_messageBody, 2, SEEK_CUR);
 			fgetpos(_messageBody, &readStart);
 			fsetpos(_messageBody, &writeStart);
@@ -154,8 +152,6 @@ void	Request::parseChunked(void)
 		std::cerr << e.what() << std::endl;
 	}
 	ftruncate(fileno(_messageBody), totalLength);
-	std::cout << "LOGLOGLOGLOG" << http::getFileSize(_messageBody) << std::endl;
-	// printFile(_messageBody);
 	fseek(_messageBody, 0, SEEK_SET);
 }
 
@@ -255,7 +251,6 @@ void Request::appendRawData(const std::string &bufSTR) {
 		return ;
 	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _messageBody);
 	_bodySize += bufSTR.size();
-	// _messageBody = _messageBody + _data;
 }
 
 bool Request::requestReady() const {
@@ -264,8 +259,6 @@ bool Request::requestReady() const {
 void Request::setRequestStatus(bool status) {
 	_ready = status;
 }
-
-
 
 bool http::rfind(FILE *haystack, std::string needle) {
 	char		line[RFIND_RANGE];

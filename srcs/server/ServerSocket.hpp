@@ -19,7 +19,6 @@ using namespace http;
 
 # define	RECV_BUFFER_SIZE	8000
 # define	SEND_BUFFER_SIZE	1000
-// # define	BUFFER_SIZE			1000
 # define	SERVER_QUEUE_SIZE	305
 
 
