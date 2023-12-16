@@ -49,6 +49,7 @@ namespace http {
 		std::string _httpVersion;
 		bool _ready;
 		FILE *_messageBody;
+		size_t	_bodySize;
 
 	public:
 		AMessage(void);

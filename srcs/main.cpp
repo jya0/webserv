@@ -15,6 +15,8 @@
 #include	"ServerMonitor.hpp"
 #include	"ServerSocket.hpp"
 #include	"ServerParser_namespace.hpp"
+#include	<signal.h>
+#include	<csignal>
 
 
 int main(int argc, char **argv)
@@ -27,6 +29,7 @@ int main(int argc, char **argv)
 	}
 	try
 	{
+		signal(SIGPIPE, SIG_IGN);
 		std::vector<ServerConfig> configs = ServerParser::parseConfigFile(argv[1]);
 		ServerMonitor monitor(configs);
 		monitor.startServers();
