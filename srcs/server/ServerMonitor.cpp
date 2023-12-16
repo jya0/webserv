@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 17:53:34 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/16 01:56:02 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 09:10:53 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 {
 	ssize_t bytesSent = 0;
 
-	if (server == -1 || _servers.at(server)->responseReady(client) == false)
+	if (server == -1 ||  _servers.at(server)->requestReady(client) == false)
 		return;
 	std::map<int, Response>::iterator itr = _servers.at(server)->responses.find(client);
 	bytesSent = _servers.at(server)->sendResponse(client, _servers.at(server)->responses[client]);
