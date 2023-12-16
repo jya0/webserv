@@ -285,6 +285,8 @@ void	http::filecpy(FILE *src, FILE *dst)
 		fwrite(buffer, sizeof (char), bytesRead, dst);
 	} while (bytesRead > 0);
 	delete [](buffer);
+	std::cout << "SRCS: " << http::getFileSize(src) << std::endl;
+	std::cout << "DST: " << http::getFileSize(dst) << std::endl;
 	fseek(src, 0, SEEK_SET);
 	fseek(dst, 0, SEEK_SET);
 }

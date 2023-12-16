@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 17:55:39 by rriyas            #+#    #+#             */
-/*   Updated: 2023/12/15 18:25:07 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 05:39:22 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ ssize_t WebServer::recieveData(int &client)
 	{
 		std::cout << "------ Finished Reading Request from client completely------\n\n";
 		requests[client].parseRequest();
+		std::cout << "I HABE: " << http::getFileSize(requests[client].getMessageBody()) << std::endl;
 		requests[client].setRequestStatus(true);
 	}
 	return (bytesRead);
