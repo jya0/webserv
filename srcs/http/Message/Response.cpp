@@ -6,7 +6,7 @@
 /*   By: jyao <jyao@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 18:30:42 by jyao              #+#    #+#             */
-/*   Updated: 2023/12/16 05:50:47 by jyao             ###   ########.fr       */
+/*   Updated: 2023/12/16 09:02:53 by jyao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ Response::Response(const std::string &messageHeader): AMessage(messageHeader)
 	_httpStatusCode		=	strtol(this->_startLine.substr(this->_startLine.find(' ') + 1,
 								this->_startLine.find(' ', this->_startLine.find(' ') + 1) -
 								this->_startLine.find(' ') - 1).c_str(), NULL, 10);
-	_ready = true;
+	_ready = false;
 	_packetStartPos = 0;
 	_packetStatus = NOT_STARTED;
 }
