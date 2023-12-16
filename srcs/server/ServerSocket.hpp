@@ -17,10 +17,10 @@
 
 using namespace http;
 
-# define	RECV_BUFFER_SIZE	424242
-# define	SEND_BUFFER_SIZE	424242
+# define	RECV_BUFFER_SIZE	8000
+# define	SEND_BUFFER_SIZE	1000
 // # define	BUFFER_SIZE			1000
-# define	SERVER_QUEUE_SIZE 42
+# define	SERVER_QUEUE_SIZE	305
 
 
 class ServerSocket {

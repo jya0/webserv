@@ -149,14 +149,17 @@ void ServerMonitor::serveClientRequest(int server, int client)
 	
 	if (server == -1 || _servers.at(server)->requestReady(client) == true)
 		return;
+	std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(client);
 	bytesRead = _servers.at(server)->recieveData(client);
 	if (bytesRead <= 0)
 	{
 		closeClientConnection(server, client);
 		if (bytesRead == -1)
 			std::cerr << "recv() sys call failed: Failed to read bytes from client socket\n"<< std::endl;
-		else
+		else if (bytesRead == 0)
 			std::cerr<< "Nothing left to read. Closing socket now...\n"<<std::endl;
+		if (itr != _servers.at(server)->requests.end())
+			_servers.at(server)->requests.erase(itr);
 		return ;
 	}
 	if (_servers.at(server)->requestReady(client) == false)
@@ -173,7 +176,7 @@ void ServerMonitor::serveClientRequest(int server, int client)
 		_servers.at(server)->responses[client].setResponseStatus(false);
 	}
 	_servers.at(server)->responses[client].setPacketStatus(NOT_STARTED);
-	std::map<int, Request>::iterator itr = _servers.at(server)->requests.find(client);
+	itr = _servers.at(server)->requests.find(client);
 	_servers.at(server)->requests.erase(itr);
 }
 /* 
@@ -191,19 +194,23 @@ void ServerMonitor::serveClientResponse(int server, int client, int &requests)
 
 	if (server == -1 || _servers.at(server)->responseReady(client) == false)
 		return;
+	std::map<int, Response>::iterator itr = _servers.at(server)->responses.find(client);
 	bytesSent = _servers.at(server)->sendResponse(client, _servers.at(server)->responses[client]);
 	if (bytesSent < 0)
 	{
 		std::cerr << "send() sys call failed: Failed to send bytes to client socket\n" << std::endl;
 		closeClientConnection(server, client);
+		if (itr != _servers.at(server)->responses.end())
+			_servers.at(server)->responses.erase(itr);
 		return;
 	}
-	if (!feof(_servers.at(server)->responses[client].getMessageBody()))
+	FILE *file = _servers.at(server)->responses[client].getMessageBody();
+	if (file != NULL && !feof(file))
 		return ;
 	closeClientConnection(server, client);
 	requests++;
-	std::map<int, Response>::iterator response = _servers.at(server)->responses.find(client);
-	_servers.at(server)->responses.erase(response);
+	itr = _servers.at(server)->responses.find(client);
+	_servers.at(server)->responses.erase(itr);
 }
 
 void ServerMonitor::startServers()
@@ -214,7 +221,7 @@ void ServerMonitor::startServers()
 	int server = 0;
 	int requests = 0;
 	int i = 0;
-	while (2)
+	while (requests < 10000)
 	{
 		monitorCGI();
 		rc = _sockets.callPoll();

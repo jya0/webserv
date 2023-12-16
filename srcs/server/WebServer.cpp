@@ -106,6 +106,8 @@ ssize_t WebServer::recieveData(int &client)
 	if (!requests.count(client))
 	{
 		requests[client] = Request(bufSTR);
+		if (requests[client].getMessageBody() == NULL)
+			return (-1);
 		requests[client].setRequestStatus(false);
 		endOfHeader = bufSTR.find(CR_LF CR_LF);
 		if (endOfHeader != std::string::npos)
@@ -116,6 +118,7 @@ ssize_t WebServer::recieveData(int &client)
 			bufSTR = bufSTR.substr(endOfHeader, std::string::npos);
 		}
 	}
+
 	requests[client].appendRawData(bufSTR);
 	if (requests[client].recievedEOF())
 	{
@@ -138,17 +141,22 @@ ssize_t WebServer::sendResponse(int client, Response &response)
 	ssize_t		bytesSent;
 	ssize_t		bytesRead;
 	std::string headerStr;
+	FILE		*file;
+
 	bytesSent = 0;
+	file = response.getMessageBody();
+	if (file == NULL)
+		return (0);
 	packet = new char[SEND_BUFFER_SIZE];
 	memset(packet, 0, SEND_BUFFER_SIZE * sizeof (char));
 	headerStr = std::string("");
 	if (response.getPacketStatus() == NOT_STARTED)
 	{
-		fseek(response.getMessageBody(), 0, SEEK_SET);
+		fseek(file, 0, SEEK_SET);
 		headerStr = response.getStartAndHeader();
 		response.setPacketStatus(SENDING);
 	}
-	bytesRead = fread(packet, sizeof(char), SEND_BUFFER_SIZE - headerStr.size(), response.getMessageBody());
+	bytesRead = fread(packet, sizeof(char), SEND_BUFFER_SIZE - headerStr.size(), file);
 	bytesSent = _connection.sendData(client, headerStr + std::string(packet, bytesRead));
 	delete [](packet);
 	return (bytesSent);

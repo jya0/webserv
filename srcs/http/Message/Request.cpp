@@ -106,6 +106,8 @@ static size_t	getChunkSize(FILE *messageBody)
 	char	chunkSizeBuf[HEX_STR_BUFFER + 1];
 
 	index = 0;
+	if (messageBody == NULL)
+		return (0);
 	memset(chunkSizeBuf, 0, sizeof (char) * (HEX_STR_BUFFER + 1));
 	do {
 		c = fgetc(messageBody);
@@ -249,6 +251,8 @@ e_httpMethod Request::methodEnum(std::string method) {
 }
 
 void Request::appendRawData(const std::string &bufSTR) {
+	if (_messageBody == NULL)
+		return ;
 	fwrite(bufSTR.c_str(), sizeof(char), bufSTR.size(), _messageBody);
 	_bodySize += bufSTR.size();
 	// _messageBody = _messageBody + _data;
@@ -265,30 +269,20 @@ void Request::setRequestStatus(bool status) {
 
 bool http::rfind(FILE *haystack, std::string needle) {
 	char		line[RFIND_RANGE];
-	size_t		bytesRead;
 	std::string lineStr;
 	size_t		msgBodySize;
     bool        status;
+
 	status = false;
-    bytesRead = 0;
-	fseek(haystack, -RFIND_RANGE, SEEK_END); // seek to end of file
 	msgBodySize = http::getFileSize(haystack);
 	if (msgBodySize == 0)
 		return (true);
-	for (int i = msgBodySize; i > 0; i-= RFIND_RANGE)
-	{
-		memset(line, 0, RFIND_RANGE * sizeof(char));
-		bytesRead += fread(line, sizeof(char), RFIND_RANGE, haystack); // This progresses the seek location
-		lineStr = std::string(line, RFIND_RANGE);
-		if (lineStr.rfind(needle) != std::string::npos)
-		{
-            status = true;
-            break ;
-        }
-		if (bytesRead == msgBodySize)
-			break;
-		fseek(haystack, -RFIND_RANGE, SEEK_CUR); // Go back 2 bytes (1 to compensate)
-	}
+	fseek(haystack, -std::min(msgBodySize, size_t(RFIND_RANGE)), SEEK_END);
+	memset(line, 0, RFIND_RANGE * sizeof(char));
+	fread(line, sizeof(char), RFIND_RANGE, haystack);
+	lineStr = std::string(line, RFIND_RANGE);
+	if (lineStr.rfind(needle) != std::string::npos)
+		status = true;
     fseek(haystack, 0, SEEK_SET);
 	return (status);
 }
@@ -310,6 +304,8 @@ bool Request::recievedEOF() {
 	
 	found = false;
 	file = getMessageBody();
+	if (file == NULL)
+		return (true);
 	fgetpos(_messageBody, &checkPoint);
     if (getHeaderValue("Transfer-Encoding") == "chunked" || getHeaderValue("transfer-encoding") == "chunked")
 		found = http::rfind(file, "0\r\n\r\n");

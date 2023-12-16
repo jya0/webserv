@@ -25,7 +25,7 @@
 # define	DELETE_METHOD	"DELETE"
 
 # define	HEX_STR_BUFFER	16
-# define	RFIND_RANGE		42
+# define	RFIND_RANGE		20
 # define	CR				'\r'
 
 /**

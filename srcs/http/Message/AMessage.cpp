@@ -41,7 +41,6 @@ AMessage::AMessage(void): _ready(false)
 AMessage::AMessage(const AMessage &aMessageREF): _messageBody(NULL)
 {
 	*this = aMessageREF;
-	return;
 }
 
 /**
@@ -114,7 +113,6 @@ AMessage::~AMessage(void)
 		close(fileno(_messageBody));
 		fclose(_messageBody);
 	}
-	return;
 }
 
 FILE	*http::duplicateFile(const FILE *input)
@@ -123,22 +121,22 @@ FILE	*http::duplicateFile(const FILE *input)
 	char	*buffer;
 	size_t	readReturn;
 
+	
+	if (input == NULL)
+		return (NULL);
+	duplFile = tmpfile();
+	if (duplFile == NULL)
+		return (NULL);
 	buffer = new char[MSG_BODY_BUFFER];
-	duplFile = NULL;
-	if (input != NULL)
-	{
-		duplFile = tmpfile();
-		if (duplFile == NULL)
-			return (NULL);
-		fseek(duplFile, 0, SEEK_SET);
-		fseek(const_cast<FILE *>(input), 0, SEEK_SET);
-		do {
-			memset(buffer, 0, MSG_BODY_BUFFER);
-			readReturn = fread(buffer, sizeof (char), MSG_BODY_BUFFER, const_cast<FILE *>(input));
-			fwrite(buffer, sizeof (char), readReturn, duplFile);
-		} while (readReturn > 0);
-		fseek(duplFile, 0, SEEK_SET);
-	}
+	fseek(duplFile, 0, SEEK_SET);
+	fseek(const_cast<FILE *>(input), 0, SEEK_SET);
+	do {
+		memset(buffer, 0, MSG_BODY_BUFFER);
+		readReturn = fread(buffer, sizeof (char), MSG_BODY_BUFFER, const_cast<FILE *>(input));
+		fwrite(buffer, sizeof (char), readReturn, duplFile);
+	} while (readReturn > 0);
+	fseek(duplFile, 0, SEEK_SET);
+	
 	delete [] (buffer);
 	return (duplFile);
 }
@@ -200,6 +198,8 @@ std::string	http::fileToString(FILE *file)
 	std::string msgBody;
 
 	bytesRead = 0;
+	if (file == NULL)
+		return ("");
 	fseek(file, 0, SEEK_SET);
 	do {
 		memset(line, 0, MSG_BODY_BUFFER * sizeof(char));
@@ -256,7 +256,7 @@ void AMessage::addHeader(Header header)
 void AMessage::setMessageBody(const std::string &msgBodyREF)
 {
 	if (_messageBody == NULL)
-		_messageBody = tmpfile();
+		return ;
 	fseek(_messageBody, 0, SEEK_SET);
 	ftruncate(fileno(_messageBody), 0);
 	fwrite(msgBodyREF.c_str(), sizeof (char), msgBodyREF.size(), _messageBody);
@@ -307,7 +307,7 @@ void	AMessage::loadFileToMessageBody(const std::string &filePathREF)
 	FILE	*infile;
 
 	if (_messageBody == NULL)
-		_messageBody = tmpfile();
+		return ;
 	fseek(_messageBody, 0, SEEK_SET);
 	infile = fopen(filePathREF.c_str(), "r");
 	filecpy(infile, _messageBody);
